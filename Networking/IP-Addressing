@@ -1,1 +1,122 @@
 
+Understand what an IP address is, why it is required, the different types of IP addresses, their classes, and how they are used in computer networks.
+
+What is an IP Address?
+
+An IP (Internet Protocol) Address is a unique logical address assigned to every device connected to a network. It identifies a device and enables communication between devices over a network or the Internet.
+
+Just as your home has a postal address for receiving mail, every computer or smartphone needs an IP address to send and receive data.
+
+Why Do We Need an IP Address?
+To uniquely identify devices.
+To enable communication between devices.
+To route data from the source to the destination.
+To access websites and online services.
+To manage network devices efficiently.
+IPv4 Address Format
+
+An IPv4 address is 32 bits long and consists of 4 octets, separated by dots.
+
+Example:
+
+192.168.1.10
+
+Each octet ranges from:
+
+0 to 255
+
+
+ipv4 structure
+
++---------+---------+---------+---------+
+| 192     | 168     | 1       | 10      |
++---------+---------+---------+---------+
+    8 bits    8 bits    8 bits    8 bits
+
+
+Types of IP Addresses
+1. Public IP Address
+Assigned by an Internet Service Provider (ISP).
+Accessible over the Internet.
+Used by websites and cloud servers.
+
+Example:
+
+49.36.120.15
+2. Private IP Address
+
+Used within local networks.
+
+Private IP ranges:
+
+10.0.0.0 – 10.255.255.255
+
+172.16.0.0 – 172.31.255.255
+
+192.168.0.0 – 192.168.255.255
+
+Example:
+
+192.168.1.20
+3. Static IP Address
+Fixed address.
+Does not change.
+Commonly used for servers.
+4. Dynamic IP Address
+Assigned automatically by DHCP.
+Can change over time.
+Commonly used for personal computers and mobile devices.
+
+| Class | Range                       | Default Subnet Mask | Usage               |
+| ----- | --------------------------- | ------------------- | ------------------- |
+| A     | 1.0.0.0 – 126.255.255.255   | 255.0.0.0           | Large Networks      |
+| B     | 128.0.0.0 – 191.255.255.255 | 255.255.0.0         | Medium Networks     |
+| C     | 192.0.0.0 – 223.255.255.255 | 255.255.255.0       | Small Networks      |
+| D     | 224.0.0.0 – 239.255.255.255 | Multicast           | Group Communication |
+| E     | 240.0.0.0 – 255.255.255.255 | Experimental        | Research            |
+
+
+
+special ip address 
+
+| Address         | Purpose                        |
+| --------------- | ------------------------------ |
+| 127.0.0.1       | Loopback (localhost)           |
+| 0.0.0.0         | Default or unspecified address |
+| 255.255.255.255 | Broadcast address              |
+
+
+
+Linux Commands
+
+Check your IP address:
+
+ip addr
+
+or
+
+hostname -I
+
+Check network interfaces:
+
+ip link
+
+Check routing table:
+
+ip route
+Windows Commands
+ipconfig
+
+Detailed information:
+
+ipconfig /all
+Interview Questions
+What is an IP address?
+What is the difference between IPv4 and IPv6?
+What is the difference between a public and a private IP address?
+What is the purpose of a static IP address?
+What is the loopback address?
+What is the broadcast address?
+What is the default subnet mask for a Class C network?
+Which command displays the IP address in Linux?
+
