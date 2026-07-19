@@ -1,1 +1,65 @@
 
+Learn the OSI Model, understand the role of each layer, and identify the protocols and devices used at each layer.
+
+2. What is the OSI Model?
+
+The Open Systems Interconnection (OSI) Model is a conceptual framework that divides network communication into seven layers. 
+Each layer performs a specific function and communicates with the layers directly above and below it.
+
+
+OSI MODEL Diagram 
+
++----------------------+
+| 7. Application       |
++----------------------+
+| 6. Presentation      |
++----------------------+
+| 5. Session           |
++----------------------+
+| 4. Transport         |
++----------------------+
+| 3. Network           |
++----------------------+
+| 2. Data Link         |
++----------------------+
+| 1. Physical          |
++----------------------+
+
+
+| Layer | Name         | Main Function            | Example Protocols      |
+| ----- | ------------ | ------------------------ | ---------------------- |
+| 7     | Application  | User services            | HTTP, HTTPS, FTP, SMTP |
+| 6     | Presentation | Encryption & Compression | SSL/TLS                |
+| 5     | Session      | Session management       | NetBIOS                |
+| 4     | Transport    | Reliable communication   | TCP, UDP               |
+| 3     | Network      | Routing                  | IP, ICMP               |
+| 2     | Data Link    | MAC addressing           | Ethernet               |
+| 1     | Physical     | Signal transmission      | Cables, Fiber          |
+
+
+
+| Layer       | Device       |
+| ----------- | ------------ |
+| Physical    | Hub          |
+| Data Link   | Switch       |
+| Network     | Router       |
+| Application | Proxy Server |
+
+
+Application Layer → Sends an HTTP request.
+Presentation Layer → Encrypts the data using TLS.
+Session Layer → Maintains the communication session.
+Transport Layer → Breaks data into TCP segments.
+Network Layer → Routes packets using IP.
+Data Link Layer → Adds MAC addresses.
+Physical Layer → Sends bits through Ethernet or Wi-Fi.
+
+
+7. Interview Questions
+What is the OSI Model?
+Why does it have seven layers?
+Which layer uses IP addresses?
+Which layer uses MAC addresses?
+Difference between Layer 2 and Layer 3?
+Which layer is responsible for encryption?
+Which layer uses TCP?
