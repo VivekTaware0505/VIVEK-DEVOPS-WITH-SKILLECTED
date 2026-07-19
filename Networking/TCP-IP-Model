@@ -1,1 +1,147 @@
 
+TCP/IP Model
+🎯 Objective
+
+Learn the TCP/IP model, understand the function of each layer, identify the protocols used at each layer, and understand how data travels across the Internet.
+
+What is the TCP/IP Model?
+
+The TCP/IP (Transmission Control Protocol/Internet Protocol) model is the standard networking model used for communication over the Internet. It defines how devices communicate, send, receive, and route data between networks.
+
+Unlike the OSI model, which has 7 layers, the TCP/IP model has 4 layers and is widely used in real-world networking.
+
+TCP/IP Model Diagram
++----------------------------------+
+|  Application Layer               |
+|----------------------------------|
+| HTTP | HTTPS | FTP | DNS | SMTP  |
++----------------------------------+
+
++----------------------------------+
+|  Transport Layer                 |
+|----------------------------------|
+| TCP | UDP                        |
++----------------------------------+
+
++----------------------------------+
+|  Internet Layer                  |
+|----------------------------------|
+| IP | ICMP | ARP                  |
++----------------------------------+
+
++----------------------------------+
+|  Network Access Layer            |
+|----------------------------------|
+| Ethernet | Wi-Fi | MAC           |
++----------------------------------+
+
+
+
+Layers of the TCP/IP Model
+
+| Layer          | Function                                 | Common Protocols                 |
+| -------------- | ---------------------------------------- | -------------------------------- |
+| Application    | Provides services to user applications   | HTTP, HTTPS, FTP, DNS, SMTP, SSH |
+| Transport      | Ensures end-to-end communication         | TCP, UDP                         |
+| Internet       | Handles logical addressing and routing   | IP, ICMP, ARP                    |
+| Network Access | Transfers data over the physical network | Ethernet, Wi-Fi                  |
+
+
+
+
+
+Layer-by-Layer Explanation
+1. Application Layer
+Function
+
+Provides network services directly to applications used by the user.
+
+Examples
+HTTP
+HTTPS
+FTP
+DNS
+SMTP
+SSH
+Real-world Example
+
+When you open google.com, your browser communicates with the web server using HTTP or HTTPS.
+
+2. Transport Layer
+Function
+Breaks data into segments.
+Ensures reliable communication (TCP).
+Provides faster communication when reliability is less important (UDP).
+Protocols
+TCP
+UDP
+Example
+File download → TCP
+Video streaming → UDP
+3. Internet Layer
+Function
+Assigns logical IP addresses.
+Finds the best route for packets.
+Delivers packets between networks.
+Protocols
+IPv4
+IPv6
+ICMP
+ARP
+Device
+Router
+4. Network Access Layer
+Function
+Sends data over the physical network.
+Uses MAC addresses.
+Converts data into electrical, optical, or wireless signals.
+Technologies
+Ethernet
+Wi-Fi
+Fiber
+MAC Address
+Devices
+Switch
+Network Interface Card (NIC)
+Data Flow Example
+
+When you visit www.google.com:
+
+The browser sends an HTTPS request (Application Layer).
+TCP divides the data into segments (Transport Layer).
+IP adds source and destination IP addresses (Internet Layer).
+Ethernet or Wi-Fi transmits the data to the router (Network Access Layer).
+
+
+
+TCP/IP vs OSI Model
+
+| Feature              | TCP/IP                                          | OSI                                    |
+| -------------------- | ----------------------------------------------- | -------------------------------------- |
+| Number of Layers     | 4                                               | 7                                      |
+| Developed By         | DARPA                                           | ISO                                    |
+| Practical Use        | Used on the Internet                            | Mainly a reference model               |
+| Application Layer    | Combines Application, Presentation, and Session | Separate layers                        |
+| Transport Layer      | TCP and UDP                                     | Transport                              |
+| Internet Layer       | IP Routing                                      | Network                                |
+| Network Access Layer | Data Link + Physical                            | Separate Data Link and Physical layers |
+
+
+Advantages
+Simple and practical.
+Used worldwide.
+Supports communication between different operating systems.
+Scalable for networks of all sizes.
+Reliable communication using TCP.
+Efficient routing through IP.
+
+
+Interview Questions
+What is the TCP/IP model?
+How many layers are in the TCP/IP model?
+Which protocols work at the Transport layer?
+What is the difference between TCP and UDP?
+Which layer performs routing?
+Which protocol assigns IP addresses?
+Which device works at the Internet layer?
+Why is the TCP/IP model preferred over the OSI model?
