@@ -1,1 +1,150 @@
 
+ARP (Address Resolution Protocol)
+🎯 Objective
+
+Learn what ARP is, why it is needed, how it works, and how Linux uses ARP to communicate with devices on the same local network.
+
+📖 What is ARP?
+
+ARP (Address Resolution Protocol) is a network protocol used to find the MAC address of a device when its IP address is already known.
+
+In simple words:
+
+IP Address tells us "who" we want to reach, while ARP finds the MAC Address needed to actually deliver the data on the local network.
+
+ARP operates only within a Local Area Network (LAN).
+
+Why Do We Need ARP?
+
+Suppose your computer wants to send data to:
+
+IP Address
+
+192.168.1.20
+
+The computer knows the destination IP address but does not know the destination MAC address.
+
+Since Ethernet communication requires MAC addresses, the computer first uses ARP to discover the MAC address.
+
+How ARP Works
+Step 1
+
+Your computer wants to send data to:
+
+192.168.1.20
+Step 2
+
+It checks the ARP Cache.
+
+If the MAC address is already stored:
+
+✔ Send data immediately.
+
+If not:
+
+Proceed to Step 3.
+
+Step 3
+
+Broadcast an ARP Request:
+
+Who has 192.168.1.20?
+Tell 192.168.1.10
+
+Every device on the LAN receives this request.
+
+Step 4
+
+Only the device with IP:
+
+192.168.1.20
+
+responds:
+
+My MAC Address is
+
+00:1A:2B:3C:4D:5E
+Step 5
+
+The sender stores this information in its ARP Cache and sends the Ethernet frame using the discovered MAC address.
+
+
+ARP Workflow Diagram
+
++-------------------+
+| PC-A              |
+| IP : 192.168.1.10 |
+| MAC: AA:AA:AA     |
++-------------------+
+          │
+          │ ARP Request
+          ▼
+"Who has 192.168.1.20?"
+          │
+────────────────────────────── LAN
+          │
+          ▼
++-------------------+
+| PC-B              |
+| IP : 192.168.1.20 |
+| MAC: BB:BB:BB     |
++-------------------+
+
+ARP Reply:
+"My MAC is BB:BB:BB"
+
+The sender stores this information in its ARP Cache and sends the Ethernet frame using the discovered MAC address.
+
+
+What is an ARP Cache?
+
+An ARP Cache is a temporary table that stores mappings between IP addresses and MAC addresses.
+
+This avoids sending an ARP request every time data needs to be transmitted.
+
+Linux Commands
+View ARP Cache
+ip neigh
+
+or
+
+arp -a
+
+Delete an ARP Entry
+sudo ip neigh flush all
+
+Show IP Address
+ip addr
+
+Test Connectivity
+ping 192.168.1.20
+
+
+
+Advantages of ARP
+Automatically discovers MAC addresses.
+Enables communication within a LAN.
+Reduces manual configuration.
+Stores mappings in cache for faster communication.
+Limitations
+Works only on local networks.
+Broadcast requests increase network traffic.
+Can be vulnerable to ARP Spoofing or ARP Poisoning attacks.
+
+
+Interview Questions
+What is ARP?
+Why is ARP required?
+Which layer does ARP operate between?
+What is an ARP Cache?
+What is an ARP Request?
+What is an ARP Reply?
+Which Linux command displays the ARP table?
+What is ARP Spoofing?
+
+
+Key Learnings
+Learned the purpose of ARP.
+Understood how IP addresses are mapped to MAC addresses.
+Learned about ARP Requests, Replies, and the ARP Cache.
+Practiced viewing the ARP table using Linux commands.
