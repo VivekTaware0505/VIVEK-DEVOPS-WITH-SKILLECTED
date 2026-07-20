@@ -1,1 +1,160 @@
 
+DNS (Domain Name System)
+🎯 Objective
+
+Learn what DNS is, why it is needed, how it works, understand DNS records, and practice common Linux commands used for DNS troubleshooting.
+
+📖 What is DNS?
+
+DNS (Domain Name System) is the phonebook of the Internet.
+
+Humans remember domain names like:
+
+www.google.com
+
+Computers communicate using IP addresses like:
+
+142.250.183.206
+
+DNS translates the domain name into its corresponding IP address.
+
+Why Do We Need DNS?
+
+Without DNS, you would have to remember IP addresses for every website.
+
+For example:
+
+Instead of typing:
+
+https://www.google.com
+
+you would need to remember something like:
+
+142.250.183.206
+
+DNS makes the Internet easier to use by converting human-readable names into machine-readable IP addresses.
+
+DNS Working Process
+
+Suppose you open:
+
+The DNS lookup process is:
+
++---------+
+| Browser |
++---------+
+     │
+     ▼
++----------------+
+| Local DNS Cache|
++----------------+
+     │
+     ▼
++----------------+
+| DNS Resolver   |
++----------------+
+     │
+     ▼
++----------------+
+| Root DNS Server|
++----------------+
+     │
+     ▼
++----------------+
+| TLD Server     |
+| (.com)         |
++----------------+
+     │
+     ▼
++----------------+
+| Authoritative  |
+| DNS Server     |
++----------------+
+     │
+     ▼
+IP Address Returned
+     │
+     ▼
+Browser connects to website
+
+
+
+Types of DNS Servers
+1. Recursive Resolver
+Receives the DNS query from the client.
+Finds the required IP address.
+2. Root Name Server
+Directs the request to the correct Top-Level Domain (TLD) server.
+3. TLD Server
+Handles domains like:
+.com
+.org
+.in
+.net
+4. Authoritative Name Server
+
+Returns the final IP address of the requested domain.
+
+
+Common DNS Record Types
+
+| Record | Purpose                                       |
+| ------ | --------------------------------------------- |
+| A      | Maps a domain name to an IPv4 address         |
+| AAAA   | Maps a domain name to an IPv6 address         |
+| CNAME  | Creates an alias for another domain           |
+| MX     | Specifies the mail server                     |
+| NS     | Specifies the authoritative name server       |
+| TXT    | Stores verification or other text information |
+| PTR    | Reverse DNS lookup (IP → Domain)              |
+
+
+Linux Commands
+Check DNS Resolution
+nslookup google.com
+
+Display DNS Information (if dig is installed)
+dig google.com
+
+Display Host Information
+host google.com
+
+Test Connectivity
+ping google.com
+
+View Configured DNS Servers
+cat /etc/resolv.conf
+
+
+Advantages of DNS
+Easy to remember domain names.
+Fast translation of names to IP addresses.
+Supports load balancing.
+Highly scalable.
+Distributed and fault tolerant.
+Limitations
+If a DNS server fails, websites may become unreachable by name.
+Incorrect DNS configuration can prevent access to services.
+Can be targeted by attacks such as DNS spoofing or cache poisoning.
+
+
+Interview Questions
+What is DNS?
+Why is DNS required?
+What is the purpose of an A record?
+What is the difference between A and AAAA records?
+What is an MX record used for?
+What is a CNAME record?
+Which Linux command checks DNS resolution?
+What is the role of an Authoritative DNS Server?
+
+
+Key Learnings
+Learned how DNS converts domain names into IP addresses.
+Understood the DNS lookup process.
+Learned common DNS record types.
+Practiced DNS troubleshooting using Linux commands.
+
+
+
+www.google.com
