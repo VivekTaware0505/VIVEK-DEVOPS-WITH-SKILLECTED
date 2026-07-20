@@ -1,1 +1,91 @@
 
+MAC Address vs IP Address
+🎯 Objective
+
+Understand the difference between a MAC Address and an IP Address, their purpose, characteristics, and how they work together in network communication.
+
+📖 What is a MAC Address?
+
+A MAC (Media Access Control) Address is a physical (hardware) address assigned to a network interface card (NIC) by the manufacturer. It uniquely identifies a device on a local network (LAN).
+
+Example:
+
+00:1A:2B:3C:4D:5E
+Characteristics
+48-bit address (6 bytes)
+Usually written in hexadecimal
+Unique for every network interface
+Works at the Data Link Layer (Layer 2) of the OSI model
+📖 What is an IP Address?
+
+An IP (Internet Protocol) Address is a logical address assigned to a device so it can communicate over a network or the Internet.
+
+Example:
+
+192.168.1.10
+Characteristics
+IPv4: 32 bits
+IPv6: 128 bits
+Can be changed manually or assigned automatically using DHCP
+Works at the Network Layer (Layer 3)
+How They Work Together
+
+Suppose your laptop wants to send data to another computer on the same network.
+
+Laptop
+IP  : 192.168.1.10
+MAC : AA:BB:CC:DD:EE:01
+          │
+          │
+          ▼
+Switch
+          │
+          ▼
+Printer
+IP  : 192.168.1.20
+MAC : FF:11:22:33:44:55
+The IP address identifies the destination device.
+The MAC address is used to deliver the frame to the correct device within the local network.
+Before sending the frame, the sender uses ARP (Address Resolution Protocol) to find the destination MAC address corresponding to the destination IP.
+
+
+MAC Address vs IP Address
+| Feature     | MAC Address           | IP Address                      |
+| ----------- | --------------------- | ------------------------------- |
+| Full Form   | Media Access Control  | Internet Protocol               |
+| Type        | Physical Address      | Logical Address                 |
+| Assigned By | Manufacturer          | Network Administrator / DHCP    |
+| Layer       | Data Link (Layer 2)   | Network (Layer 3)               |
+| Length      | 48 bits               | 32 bits (IPv4), 128 bits (IPv6) |
+| Format      | `00:1A:2B:3C:4D:5E`   | `192.168.1.10`                  |
+| Changes     | Usually fixed         | Can change                      |
+| Scope       | Local Network         | Local or Internet               |
+| Used For    | Device identification | Routing packets                 |
+
+
+Linux Commands
+Show MAC Address
+ip link
+
+or
+
+ip addr
+
+Look for the line beginning with link/ether.
+
+
+
+Interview Questions
+What is a MAC address?
+What is an IP address?
+Can a MAC address change?
+Can an IP address change?
+Which OSI layer uses MAC addresses?
+Which OSI layer uses IP addresses?
+What is the difference between a physical and a logical address?
+Which protocol maps an IP address to a MAC address?
+Key Learnings
+Learned the difference between MAC and IP addresses.
+Understood that MAC addresses identify devices within a LAN, while IP addresses identify devices across networks.
+Learned that ARP is used to map IP addresses to MAC addresses.
+Practiced finding MAC and IP addresses using Linux commands.
