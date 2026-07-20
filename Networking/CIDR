@@ -1,1 +1,118 @@
 
+Objective
+
+Understand what CIDR is, why it was introduced, how CIDR notation works, and how it is used to efficiently allocate IP addresses in modern networks.
+
+📖 What is CIDR?
+
+CIDR (Classless Inter-Domain Routing) is a method of allocating IP addresses and routing Internet Protocol packets more efficiently than the old class-based system (Class A, B, and C).
+
+Instead of relying on fixed classes, CIDR uses a prefix length (such as /24 or /16) to specify how many bits belong to the network portion of the address.
+
+Why Was CIDR Introduced?
+
+The classful addressing system had several drawbacks:
+
+Wasted many IP addresses.
+Limited flexibility.
+Increased routing table size.
+Could not efficiently support growing networks.
+
+CIDR solves these problems by allowing networks of different sizes to be created based on actual requirements.
+
+CIDR Notation
+
+A CIDR address consists of:
+
+IP Address / Prefix Length
+
+Example:
+
+192.168.1.0/24
+
+Here:
+
+IP Address → 192.168.1.0
+Prefix Length → /24
+
+This means:
+
+First 24 bits → Network ID
+Remaining 8 bits → Host ID
+CIDR Diagram
+192.168.1.0/24
+
+11000000.10101000.00000001.00000000
+|||||||| |||||||| ||||||||
+Network Portion (24 bits)
+
+........ ........ ........ ||||||||
+Host Portion (8 bits)
+
+
+Common CIDR Prefixes
+
+| CIDR | Subnet Mask     | Usable Hosts |
+| ---- | --------------- | -----------: |
+| /8   | 255.0.0.0       |   16,777,214 |
+| /16  | 255.255.0.0     |       65,534 |
+| /24  | 255.255.255.0   |          254 |
+| /25  | 255.255.255.128 |          126 |
+| /26  | 255.255.255.192 |           62 |
+| /27  | 255.255.255.224 |           30 |
+| /28  | 255.255.255.240 |           14 |
+| /29  | 255.255.255.248 |            6 |
+| /30  | 255.255.255.252 |            2 |
+
+CIDR vs Classful Addressing
+| Feature        | Classful Addressing   | CIDR                          |
+| -------------- | --------------------- | ----------------------------- |
+| Network Size   | Fixed                 | Flexible                      |
+| IP Utilization | Poor                  | Efficient                     |
+| Routing        | Larger routing tables | Smaller routing tables        |
+| Scalability    | Limited               | High                          |
+| Current Usage  | Mostly obsolete       | Standard in modern networking |
+
+
+
+
+AWS Example
+
+CIDR is heavily used in AWS networking.
+
+Example:
+
+VPC
+10.0.0.0/16
+
+├── Public Subnet
+│      10.0.1.0/24
+
+└── Private Subnet
+       10.0.2.0/24
+
+This allows you to divide one large VPC into multiple smaller subnets for different purposes.
+
+Linux Commands
+
+Display IP address:
+
+ip addr
+
+Display routing table:
+
+ip route
+
+Display network interfaces:
+
+ip link
+
+Interview Questions
+What is CIDR?
+Why was CIDR introduced?
+What does /24 mean?
+What is the difference between CIDR and subnetting?
+Why is CIDR important in AWS?
+Which CIDR block would you choose for a VPC with multiple subnets?
+How many usable hosts are available in a /26 network?
+What are the advantages of CIDR over classful addressing?
