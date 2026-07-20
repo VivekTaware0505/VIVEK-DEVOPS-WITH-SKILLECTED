@@ -134,3 +134,14 @@ ip route
 Display network interfaces:
 
 ip link
+
+
+Interview Questions
+What is subnetting?
+Why is subnetting required?
+What is a subnet mask?
+What is the difference between Network ID and Host ID?
+How many usable hosts are available in a /24 network?
+What is CIDR?
+Why are broadcast domains reduced using subnetting?
+How do routers use subnets?
