@@ -1,1 +1,136 @@
 
+🎯 Objective
+
+Learn what subnetting is, why it is used, how subnet masks work, and how to divide a large network into smaller subnetworks.
+
+📖 What is Subnetting?
+
+Subnetting is the process of dividing one large network into multiple smaller networks called subnets.
+
+Instead of having one large network with thousands of devices, subnetting divides it into smaller groups. This improves performance, security, and network management.
+
+🎯 Why Do We Need Subnetting?
+
+Suppose a company has 1000 computers.
+
+Without subnetting:
+
+Company Network
+──────────────────────────────────
+PC1
+PC2
+PC3
+PC4
+...
+PC1000
+
+Problems:
+
+Too much network traffic
+Slow communication
+Difficult management
+Poor security
+
+After subnetting:
+
+Company
+│
+├── HR Department
+│     50 PCs
+│
+├── Sales Department
+│     100 PCs
+│
+├── Finance Department
+│     40 PCs
+│
+└── IT Department
+      60 PCs
+
+Each department has its own subnet.
+
+Advantages of Subnetting
+Reduces network traffic.
+Improves network performance.
+Enhances security.
+Simplifies troubleshooting.
+Better IP address utilization.
+Easier network management.
+Limits broadcast domains.
+What is a Subnet Mask?
+
+A subnet mask tells us which part of an IP address represents the Network ID and which part represents the Host ID.
+
+Example:
+
+IP Address
+
+192.168.10.25
+
+Subnet Mask
+
+255.255.255.0
+Binary Representation
+IP Address
+
+192.168.10.25
+
+11000000.10101000.00001010.00011001
+
+Subnet Mask
+
+255.255.255.0
+
+11111111.11111111.11111111.00000000
+
+The 1s indicate the network portion, while the 0s indicate the host portion.
+
+Network ID and Host ID
+
+Example:
+
+IP Address
+
+192.168.10.25
+
+Subnet Mask
+
+255.255.255.0
+
+Network ID
+
+192.168.10.0
+
+Host ID
+
+25
+
+
+Common Subnet Masks
+
+| CIDR | Subnet Mask     | Number of Hosts |
+| ---- | --------------- | --------------: |
+| /24  | 255.255.255.0   |             254 |
+| /25  | 255.255.255.128 |             126 |
+| /26  | 255.255.255.192 |              62 |
+| /27  | 255.255.255.224 |              30 |
+| /28  | 255.255.255.240 |              14 |
+| /29  | 255.255.255.248 |               6 |
+| /30  | 255.255.255.252 |               2 |
+
+
+
+
+Linux Commands
+
+Display IP address:
+
+ip addr
+
+Display routing table:
+
+ip route
+
+Display network interfaces:
+
+ip link
