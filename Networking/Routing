@@ -1,1 +1,214 @@
 
+Routing
+🎯 Objective
+
+Understand what routing is, how routers work, the different types of routing, routing tables, routing protocols, and how Linux systems make routing decisions.
+
+📖 What is Routing?
+
+Routing is the process of forwarding data packets from one network to another using a router.
+
+When a device wants to communicate with another device on a different network, the router determines the best path and forwards the packet.
+
+Example
+
+Your laptop is on:
+
+192.168.1.10
+
+A web server is on:
+
+142.250.183.206
+
+Since these devices are on different networks, the data passes through one or more routers before reaching the destination.
+
+Why Do We Need Routing?
+
+Without routing:
+
+Devices could communicate only within the same network.
+Internet communication would not be possible.
+Large enterprise networks could not connect different offices.
+
+Routing allows communication between:
+
+Home networks
+Office networks
+Data centers
+Cloud networks (AWS, Azure, GCP)
+The Internet
+
+
+How Routing Works
++-----------+
+| Laptop    |
+|192.168.1.10|
++-----------+
+      │
+      ▼
++-----------+
+| Router    |
+|192.168.1.1|
++-----------+
+      │
+      ▼
++------------------+
+| Internet         |
++------------------+
+      │
+      ▼
++------------------+
+| Web Server       |
+|142.250.xxx.xxx   |
++------------------+
+
+What is a Router?
+
+A router is a networking device that connects different networks and forwards packets based on IP addresses.
+
+Functions of a router:
+
+Connects multiple networks
+Chooses the best path
+Forwards packets
+Maintains a routing table
+Can perform NAT, DHCP, and firewall functions
+Routing Table
+
+A routing table contains information about:
+
+Destination network
+Gateway (Next Hop)
+Network interface
+Route metric
+
+Example:
+
+Destination        Gateway         Interface
+0.0.0.0/0          192.168.1.1     eth0
+192.168.1.0/24     Direct          eth0
+10.0.0.0/24        192.168.2.1     eth1
+Types of Routing
+1. Static Routing
+
+Routes are manually configured.
+
+Advantages
+Easy for small networks
+Predictable
+Low resource usage
+Disadvantages
+Manual updates
+Not scalable
+2. Dynamic Routing
+
+Routers automatically learn routes using routing protocols.
+
+Examples:
+
+RIP
+OSPF
+EIGRP
+BGP
+Advantages
+Automatically adapts to network changes
+Scalable
+Suitable for large networks
+Disadvantages
+More CPU and memory usage
+More complex to configure
+
+
+Static vs Dynamic Routing
+| Feature       | Static Routing | Dynamic Routing |
+| ------------- | -------------- | --------------- |
+| Configuration | Manual         | Automatic       |
+| Best For      | Small Networks | Large Networks  |
+| Maintenance   | High           | Low             |
+| Scalability   | Limited        | Excellent       |
+| Updates       | Manual         | Automatic       |
+| Complexity    | Low            | Higher          |
+
+
+
+Default Gateway
+
+The Default Gateway is the router that forwards packets when the destination network is not directly connected.
+
+Example:
+
+Laptop
+
+IP Address:
+192.168.1.10
+
+Gateway:
+192.168.1.1
+
+When you access a website, your laptop sends the packet to 192.168.1.1, and the router forwards it toward the destination.
+
+Linux Commands
+Display Routing Table
+ip route
+Display IP Address
+ip addr
+Show Network Interfaces
+ip link
+Display Active Connections
+ss -tun
+Trace Packet Path
+traceroute google.com
+
+If traceroute is not installed:
+
+sudo apt install traceroute
+
+Routing Protocols
+| Protocol | Full Form                                  | Use Case                               |
+| -------- | ------------------------------------------ | -------------------------------------- |
+| RIP      | Routing Information Protocol               | Small networks                         |
+| OSPF     | Open Shortest Path First                   | Enterprise networks                    |
+| EIGRP    | Enhanced Interior Gateway Routing Protocol | Cisco environments                     |
+| BGP      | Border Gateway Protocol                    | Internet routing between organizations |
+
+AWS Example
+
+In AWS, Route Tables determine where traffic goes.
+
+Example:
+
+VPC
+│
+├── Public Route Table
+│     └── 0.0.0.0/0 → Internet Gateway
+│
+└── Private Route Table
+      └── 0.0.0.0/0 → NAT Gateway
+
+This is one of the most common networking configurations you'll create in AWS.
+
+Practical Tasks
+View your routing table:
+ip route
+
+Display your IP address:
+ip addr
+
+Trace the route to Google:
+traceroute google.com
+
+Identify your default gateway.
+Save screenshots of the outputs.
+
+
+
+Interview Questions
+What is routing?
+What is a router?
+What is a routing table?
+What is the default gateway?
+Difference between static and dynamic routing?
+Name four routing protocols.
+What is BGP used for?
+What is the purpose of a route table in AWS?
+
