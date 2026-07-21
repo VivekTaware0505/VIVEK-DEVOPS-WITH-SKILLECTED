@@ -1,1 +1,148 @@
 
+DHCP (Dynamic Host Configuration Protocol)
+🎯 Objective
+
+Learn what DHCP is, why it is required, how it works, understand the DHCP process (DORA), and practice Linux commands related to network configuration.
+
+📖 What is DHCP?
+
+DHCP (Dynamic Host Configuration Protocol) is a network protocol that automatically assigns IP addresses and other network settings (such as subnet mask, default gateway, and DNS server) to devices connected to a network.
+
+Without DHCP, every device would need to be configured manually, which would be time-consuming and error-prone.
+
+Why Do We Need DHCP?
+
+Imagine an office with 500 computers.
+
+Without DHCP:
+
+Every computer must be assigned an IP address manually.
+Duplicate IP addresses may cause network conflicts.
+Network administration becomes difficult.
+
+With DHCP:
+
+Devices automatically receive valid network settings.
+Reduces configuration errors.
+Saves time for administrators.
+Information Provided by DHCP
+
+A DHCP server typically assigns:
+
+IP Address
+Subnet Mask
+Default Gateway
+DNS Server
+Lease Time
+
+Example:
+
+IP Address      : 192.168.1.100
+Subnet Mask     : 255.255.255.0
+Gateway         : 192.168.1.1
+DNS Server      : 8.8.8.8
+Lease Time      : 24 Hours
+DHCP Working (DORA Process)
+
+DHCP follows a four-step process known as DORA.
+
+Client                  DHCP Server
+
+ |------ DHCP Discover ------>|
+ |<------- DHCP Offer ---------|
+ |------ DHCP Request -------->|
+ |<--------- DHCP ACK ---------|
+1. Discover
+
+The client broadcasts a request to find available DHCP servers.
+
+2. Offer
+
+The DHCP server responds with an available IP address and configuration details.
+
+3. Request
+
+The client requests to use the offered IP address.
+
+4. Acknowledgment (ACK)
+
+DHCP Diagram
++-----------+                      +--------------+
+|   Client  |                      | DHCP Server  |
++-----------+                      +--------------+
+      |                                    |
+      |---- DHCP Discover ---------------->|
+      |<--- DHCP Offer --------------------|
+      |---- DHCP Request ----------------->|
+      |<--- DHCP ACK ----------------------|
+      |                                    |
+
+
+DHCP Lease
+
+A lease is the period for which a client can use an assigned IP address.
+
+After the lease expires, the client requests a renewal from the DHCP server.
+
+Advantages of DHCP
+Automatic IP assignment
+Reduces manual work
+Prevents IP conflicts
+Simplifies network management
+Centralized configuration
+Supports large networks
+
+Disadvantages of DHCP
+Depends on the availability of the DHCP server.
+If the server fails, new devices cannot automatically obtain IP addresses.
+Requires proper configuration to avoid network issues.
+
+Linux Commands
+
+View IP Address
+ip addr
+
+Show Routing Table
+ip route
+
+View DNS Configuration
+cat /etc/resolv.conf
+
+Check DHCP Client Status (Ubuntu with systemd)
+systemctl status NetworkManager
+
+Renew DHCP Lease (depends on distribution)
+sudo dhclient -r
+sudo dhclient
+
+Note: dhclient may not be installed on all Linux distributions. Some distributions use NetworkManager or systemd-networkd instead.
+
+The server confirms the assignment and starts the lease.
+
+Practical Tasks
+
+Display your current IP address:
+ip addr
+
+Display your routing table:
+ip route
+
+View configured DNS servers:
+cat /etc/resolv.conf
+
+If available, renew your DHCP lease:
+sudo dhclient -r
+sudo dhclient
+
+Save screenshots of each command.
+
+
+Interview Questions
+What is DHCP?
+Why is DHCP used?
+What is the DORA process?
+What information does a DHCP server provide?
+What is a DHCP lease?
+What happens if a DHCP server is unavailable?
+What is the difference between static and dynamic IP addressing?
+Which Linux command can be used to renew a DHCP lease?
