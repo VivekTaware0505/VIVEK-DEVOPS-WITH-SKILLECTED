@@ -1,1 +1,135 @@
+NAT (Network Address Translation)
+🎯 Objective
 
+Learn what NAT is, why it is required, how it works, understand different types of NAT, and explore its practical applications in enterprise networks and AWS.
+
+📖 What is NAT?
+
+NAT (Network Address Translation) is a networking technique that translates private IP addresses into public IP addresses (and vice versa). It allows multiple devices on a private network to access the Internet using a single public IP address.
+
+Without NAT, every device would require its own public IP address, which is impractical because IPv4 addresses are limited.
+
+Why Do We Need NAT?
+
+Imagine a company with 500 computers.
+
+Without NAT:
+
+Every computer would need a unique public IP address.
+Public IPv4 addresses would be quickly exhausted.
+Higher operational costs.
+
+With NAT:
+
+All devices use private IP addresses internally.
+Only one or a few public IP addresses are needed to access the Internet.
+
+How NAT Works
+Private Network
+
+Laptop A   → 192.168.1.10
+Laptop B   → 192.168.1.20
+Printer    → 192.168.1.30
+       │
+       ▼
++------------------+
+| Router with NAT  |
+| Public IP:       |
+| 49.36.120.15     |
++------------------+
+       │
+       ▼
+Internet
+
+When Laptop A accesses a website:
+
+The packet leaves with source IP 192.168.1.10.
+The router replaces the source IP with its public IP (49.36.120.15).
+The website responds to the router's public IP.
+The router translates the response back to 192.168.1.10 and forwards it to Laptop A.
+Types of NAT
+1. Static NAT
+One private IP maps to one public IP.
+Commonly used for servers that must always be reachable from the Internet.
+
+Example:
+
+192.168.1.10  ↔  49.36.120.10
+2. Dynamic NAT
+Maps private IPs to a pool of available public IP addresses.
+Public IP assignment changes based on availability.
+3. PAT (Port Address Translation)
+
+Also called NAT Overload.
+
+Many private IP addresses share a single public IP.
+Uses different port numbers to distinguish connections.
+
+This is the most common type of NAT used in homes and small offices.
+
+NAT Workflow Diagram
++-----------+
+| Laptop    |
+|192.168.1.10|
++-----------+
+      │
+      ▼
++----------------------+
+| Router (NAT Enabled) |
+| Public: 49.36.120.15 |
++----------------------+
+      │
+      ▼
++----------------------+
+| Internet             |
++----------------------+
+
+
+
+Advantages of NAT
+Conserves public IPv4 addresses.
+Allows multiple devices to share one public IP.
+Hides internal network addresses from external networks.
+Improves basic network security.
+Simplifies private network management.
+Disadvantages of NAT
+Adds processing overhead on the router.
+Some applications require additional NAT configuration.
+Can complicate troubleshooting.
+NAT in AWS
+
+AWS provides a NAT Gateway to allow instances in private subnets to access the Internet (for updates or downloads) without exposing them to incoming Internet traffic.
+
+Example:
+
+Internet
+     │
+     ▼
+Internet Gateway
+     │
+     ▼
+Public Subnet
+     │
+ NAT Gateway
+     │
+     ▼
+Private Subnet
+     │
+EC2 Instance
+Linux Commands
+
+Show IP Address:
+
+ip addr
+
+Show Routing Table:
+
+ip route
+
+Display Network Interfaces:
+
+ip link
+
+View Active Connections:
+
+ss -tun
