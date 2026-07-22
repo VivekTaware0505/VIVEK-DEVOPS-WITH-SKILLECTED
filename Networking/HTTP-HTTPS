@@ -1,1 +1,168 @@
 
+HTTP & HTTPS
+🎯 Objective
+
+Learn what HTTP and HTTPS are, how they work, their differences, common HTTP methods, status codes, SSL/TLS encryption, and how to test websites using Linux commands.
+
+📖 What is HTTP?
+
+HTTP (HyperText Transfer Protocol) is an application-layer protocol used for communication between a web browser (client) and a web server.
+
+Whenever you open a website, your browser sends an HTTP request, and the server returns an HTTP response.
+
+Example:
+
+Browser  ------------HTTP Request------------>  Web Server
+
+Browser  <-----------HTTP Response------------ Web Server
+Features of HTTP
+Stateless protocol
+Client-server architecture
+Human-readable messages
+Uses TCP
+Default Port: 80
+What is HTTPS?
+
+HTTPS (HyperText Transfer Protocol Secure) is the secure version of HTTP.
+
+It encrypts communication using SSL/TLS, ensuring that data exchanged between the client and server cannot be easily intercepted or modified.
+
+Default Port: 443
+
+
+
+HTTP vs HTTPS
+
+| Feature         | HTTP                        | HTTPS                              |
+| --------------- | --------------------------- | ---------------------------------- |
+| Full Form       | HyperText Transfer Protocol | HyperText Transfer Protocol Secure |
+| Port            | 80                          | 443                                |
+| Encryption      | ❌ No                        | ✅ Yes (SSL/TLS)                    |
+| Security        | Low                         | High                               |
+| Data Privacy    | Not protected               | Encrypted                          |
+| Authentication  | No                          | Uses digital certificates          |
+| SEO             | Less preferred              | Preferred by search engines        |
+| Browser Warning | May show "Not Secure"       | Shows secure connection            |
+
+
+How HTTP Works
++-----------+                     +--------------+
+| Browser   |                     | Web Server   |
++-----------+                     +--------------+
+      |                                  |
+      |------ HTTP Request ------------->|
+      |                                  |
+      |<----- HTTP Response -------------|
+      |                                  |
+
+How HTTPS Works
++-----------+                     +--------------+
+| Browser   |                     | Web Server   |
++-----------+                     +--------------+
+      |                                  |
+      |------ TLS Handshake ------------>|
+      |<----- Certificate ---------------|
+      |------ Encrypted Request -------->|
+      |<----- Encrypted Response --------|
+      |                                  |
+
+
+Common HTTP Methods
+| Method  | Purpose                    |
+| ------- | -------------------------- |
+| GET     | Retrieve data              |
+| POST    | Create new data            |
+| PUT     | Update existing data       |
+| PATCH   | Partially update data      |
+| DELETE  | Remove data                |
+| HEAD    | Retrieve headers only      |
+| OPTIONS | Discover supported methods |
+
+
+
+Common HTTP Status Codes
+| Code | Meaning                    |
+| ---- | -------------------------- |
+| 200  | OK                         |
+| 201  | Created                    |
+| 301  | Moved Permanently          |
+| 302  | Found (Temporary Redirect) |
+| 400  | Bad Request                |
+| 401  | Unauthorized               |
+| 403  | Forbidden                  |
+| 404  | Not Found                  |
+| 500  | Internal Server Error      |
+| 502  | Bad Gateway                |
+| 503  | Service Unavailable        |
+
+
+
+SSL/TLS Certificate
+
+A website uses an SSL/TLS certificate to:
+
+Prove its identity.
+Encrypt data in transit.
+Build user trust.
+
+Without a valid certificate, browsers typically display security warnings.
+
+Real-World Example
+
+When you visit:
+
+https://github.com
+
+Your browser:
+
+Resolves the domain name using DNS.
+Establishes a TCP connection.
+Performs a TLS handshake.
+Sends encrypted HTTP requests.
+Receives encrypted responses.
+
+
+
+Linux Commands
+View HTTP Response Headers
+curl -I https://google.com
+
+Download a Web Page
+curl https://example.com
+
+Test an HTTPS Connection
+curl -v https://google.com
+Show TLS Certificate Details
+openssl s_client -connect google.com:443
+
+Press Ctrl + C to exit after viewing the certificate details.
+
+
+
+Advantages of HTTPS
+Encrypts data.
+Protects usernames and passwords.
+Prevents eavesdropping.
+Verifies server identity.
+Builds user trust.
+Required by many modern web features.
+
+
+Interview Questions
+What is HTTP?
+What is HTTPS?
+What is the difference between HTTP and HTTPS?
+Which ports do HTTP and HTTPS use?
+What is SSL/TLS?
+What happens during the TLS handshake?
+What is the purpose of an SSL certificate?
+Explain common HTTP methods.
+What does HTTP status code 404 mean?
+Why is HTTPS preferred over HTTP?
+
+
+Key Learnings
+Learned the differences between HTTP and HTTPS.
+Understood the role of SSL/TLS.
+Learned common HTTP methods and status codes.
+Practiced testing websites using Linux networking tools.
