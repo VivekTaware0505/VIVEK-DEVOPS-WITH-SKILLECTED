@@ -1,1 +1,152 @@
+SSH (Secure Shell)
+🎯 Objective
 
+Learn what SSH is, why it is used, how it works, understand SSH key authentication, common SSH commands, and how SSH is used in Linux and AWS.
+
+📖 What is SSH?
+
+SSH (Secure Shell) is a network protocol used to securely connect to a remote computer over a network.
+
+It encrypts all communication between the client and the server, making it safe to manage Linux servers remotely.
+
+Default Port: 22
+
+Why Do We Need SSH?
+
+Imagine your Linux server is hosted on AWS in another city or country.
+
+Without SSH:
+
+You would need physical access to the server.
+Remote administration would be impractical.
+
+With SSH:
+
+You can securely log in from anywhere.
+Execute commands remotely.
+Transfer files securely (using SCP or SFTP).
+Manage servers without being physically present.
+How SSH Works
++-----------------+        Internet        +-----------------+
+| SSH Client      | --------------------> | SSH Server      |
+| (Your Laptop)   |                       | (Linux Server)  |
++-----------------+                       +-----------------+
+The client initiates a connection to the server on port 22.
+The server proves its identity.
+Authentication occurs (password or SSH key).
+An encrypted session is established.
+SSH Authentication Methods
+1. Password Authentication
+Username + Password
+Easy to use
+Less secure than keys
+2. SSH Key Authentication (Recommended)
+
+Uses two keys:
+
+Private Key  → Stored securely on your computer
+Public Key   → Stored on the remote server
+
+Only someone with the matching private key can authenticate
+
+
+SSH Key Pair
++------------------+
+| Private Key      |
+| id_rsa           |
++------------------+
+        │
+        │
+        ▼
++------------------+
+| Public Key       |
+| id_rsa.pub       |
++------------------+
+
+
+
+
+Common SSH Commands
+Connect to a Remote Server
+ssh username@server-ip
+
+Example:
+
+ssh ubuntu@192.168.1.100
+Connect Using a Private Key
+ssh -i mykey.pem ubuntu@server-ip
+
+Example for AWS EC2:
+
+ssh -i my-key.pem ubuntu@13.233.xxx.xxx
+Generate an SSH Key Pair
+ssh-keygen
+
+Keys are typically stored in:
+
+~/.ssh/
+Copy Public Key to a Server
+ssh-copy-id username@server-ip
+
+Check the SSH Version
+ssh -V
+
+
+Linux Commands
+
+List your SSH keys:
+
+ls -la ~/.ssh
+
+Display your public key:
+
+cat ~/.ssh/id_rsa.pub
+
+(If your system uses newer defaults, the files may be id_ed25519 and id_ed25519.pub.)
+
+Generate a new key pair:
+
+ssh-keygen -t ed25519
+AWS EC2 Example
+
+When launching an EC2 instance:
+
+Create or select a key pair.
+Download the .pem file.
+Set correct permissions:
+chmod 400 my-key.pem
+Connect to the instance:
+ssh -i my-key.pem ubuntu@EC2-Public-IP
+
+
+
+Practical Tasks
+Check your SSH version:
+ssh -V
+
+Generate a key pair:
+ssh-keygen -t ed25519
+
+List the contents of the .ssh directory:
+ls -la ~/.ssh
+
+View your public key:
+cat ~/.ssh/id_ed25519.pub
+
+
+Interview Questions
+What is SSH?
+Which port does SSH use?
+Why is SSH more secure than Telnet?
+What is the difference between a public key and a private key?
+How do you generate an SSH key pair?
+How do you connect to an AWS EC2 instance using SSH?
+Where are SSH keys stored in Linux?
+Why should the private key never be shared?
+Key Learnings
+Learned the purpose of SSH.
+Understood password and key-based authentication.
+Generated an SSH key pair.
+Learned how to connect to remote Linux servers.
+Understood how SSH is used with AWS EC2
+cat ~/.ssh/id_ed25519.pub
