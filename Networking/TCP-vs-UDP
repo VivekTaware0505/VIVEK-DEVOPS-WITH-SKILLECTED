@@ -1,1 +1,155 @@
+TCP vs UDP
+🎯 Objective
 
+Learn the differences between TCP (Transmission Control Protocol) and UDP (User Datagram Protocol), understand how they work, their advantages, disadvantages, use cases, and how to inspect network connections using Linux.
+
+📖 What is TCP?
+
+TCP (Transmission Control Protocol) is a connection-oriented transport layer protocol that provides reliable, ordered, and error-checked communication between devices.
+
+Before sending data, TCP establishes a connection between the sender and receiver.
+
+Features of TCP
+Connection-oriented
+Reliable data delivery
+Error detection and recovery
+Data arrives in order
+Flow control
+Congestion control
+TCP Three-Way Handshake
+
+Before data transmission, TCP establishes a connection using the Three-Way Handshake.
+
+Client                           Server
+
+  SYN  ------------------------->
+
+       <--------------------- SYN + ACK
+
+  ACK  ------------------------->
+
+After the handshake, data transfer begins.
+
+What is UDP?
+
+UDP (User Datagram Protocol) is a connectionless transport layer protocol.
+
+It sends data without establishing a connection and does not guarantee delivery, ordering, or error recovery.
+
+Features of UDP
+Connectionless
+Faster than TCP
+Low overhead
+No delivery guarantee
+No retransmission
+No congestion control
+
+TCP vs UDP Comparison
+| Feature            | TCP                       | UDP                          |
+| ------------------ | ------------------------- | ---------------------------- |
+| Connection         | Connection-oriented       | Connectionless               |
+| Reliability        | Reliable                  | Best effort                  |
+| Data Order         | Guaranteed                | Not guaranteed               |
+| Error Recovery     | Yes                       | No                           |
+| Speed              | Slower                    | Faster                       |
+| Header Size        | 20–60 bytes               | 8 bytes                      |
+| Flow Control       | Yes                       | No                           |
+| Congestion Control | Yes                       | No                           |
+| Acknowledgments    | Required                  | Not required                 |
+| Typical Use        | Web, Email, File Transfer | Streaming, Gaming, VoIP, DNS |
+
+
+How TCP Works
++---------+        +---------+
+| Client  |        | Server  |
++---------+        +---------+
+      | SYN               |
+      |------------------>|
+      |<------------------|
+      | SYN + ACK         |
+      |------------------>|
+      | ACK               |
+      |==================>|
+      |     DATA          |
+
+
+TCP Applications
+Web browsing (HTTP/HTTPS)
+Email (SMTP, IMAP, POP3)
+File transfer (FTP)
+SSH
+Database connections
+
+UDP Applications
+DNS queries
+Video streaming
+Voice over IP (VoIP)
+Online gaming
+
+
+Advantages of TCP
+Reliable communication
+Error checking
+Ordered delivery
+Suitable for important data
+Advantages of UDP
+Very fast
+Low latency
+Small header
+Ideal for real-time applications
+Disadvantages
+TCP
+Higher overhead
+Slower because of acknowledgments and retransmissions
+UDP
+No reliability
+Packets may be lost or arrive out of order
+Linux Commands
+
+Show listening TCP and UDP ports:
+
+ss -tuln
+
+Show only TCP ports:
+
+ss -tl
+
+Show only UDP ports:
+
+ss -ul
+
+List open files and network sockets (if installed):
+
+sudo lsof -i
+
+If lsof is missing:
+
+sudo apt update
+sudo apt install lsof
+
+
+
+Common Port Numbers
+| Protocol |         Port |
+| -------- | -----------: |
+| HTTP     |           80 |
+| HTTPS    |          443 |
+| SSH      |           22 |
+| FTP      |           21 |
+| DNS      | 53 (TCP/UDP) |
+| SMTP     |           25 |
+| POP3     |          110 |
+| IMAP     |          143 |
+
+
+Interview Questions
+What is TCP?
+What is UDP?
+Explain the TCP Three-Way Handshake.
+Which protocol is faster, TCP or UDP?
+Why does DNS use UDP by default?
+Which applications require TCP?
+Which applications commonly use UDP?
+What is the difference between connection-oriented and connectionless communication?
+
+Live broadcasts
