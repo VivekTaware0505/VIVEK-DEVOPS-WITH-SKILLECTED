@@ -1,1 +1,166 @@
+VLAN (Virtual Local Area Network)
+🎯 Objective
+
+Learn what a VLAN is, why it is used, how it works, different VLAN types, VLAN tagging, trunk ports, access ports, and why VLANs are important in enterprise networks and cloud infrastructure.
+
+📖 What is a VLAN?
+
+A VLAN (Virtual Local Area Network) is a logical way to divide a single physical network into multiple independent networks.
+
+Although all computers may be connected to the same physical switch, VLANs make them behave as if they are on separate networks.
+
+Why Do We Need VLANs?
+
+Imagine a company with three departments:
+
+HR
+Finance
+IT
+
+Without VLANs:
+
+                Switch
+   ┌─────────────────────────┐
+   │ HR  Finance  IT         │
+   │ All in one LAN          │
+   └─────────────────────────┘
+
+Problems:
+
+Everyone shares the same broadcast domain.
+More unnecessary traffic.
+Lower security.
+Difficult management.
+With VLANs
+               Switch
+      ┌───────────────────────┐
+      │ VLAN 10 → HR          │
+      │ VLAN 20 → Finance     │
+      │ VLAN 30 → IT          │
+      └───────────────────────┘
+
+
+
+Each department becomes an independent logical network.
+
+Advantages of VLANs
+Reduces broadcast traffic.
+Improves security.
+Easier network management.
+Better network performance.
+Departments remain isolated.
+Flexible network design.
+Cost-effective compared to separate physical switches.
+
+VLAN IDs
+| VLAN ID | Example Department |
+| ------- | ------------------ |
+| 10      | HR                 |
+| 20      | Finance            |
+| 30      | IT                 |
+| 40      | Sales              |
+
+VLAN Communication
+
+Devices in the same VLAN communicate directly.
+
+PC1 (VLAN 10)  ↔  PC2 (VLAN 10)
+
+Devices in different VLANs cannot communicate directly.
+
+PC1 (VLAN 10)   ✖   PC3 (VLAN 20)
+
+To communicate between VLANs, a router or Layer 3 switch is required. This is called Inter-VLAN Routing.
+
+Access Port vs Trunk Port
+Access Port
+Belongs to a single VLAN.
+Connects end devices such as PCs, printers, and servers.
+
+Example:
+
+PC
+ │
+Access Port
+ │
+Switch
+Trunk Port
+Carries traffic for multiple VLANs.
+Connects switches or a switch to a router.
+
+Example:
+
+Switch A
+     │
+ Trunk Port
+     │
+Switch B
+VLAN Tagging (IEEE 802.1Q)
+
+A VLAN tag is added to Ethernet frames so switches know which VLAN the traffic belongs to.
+
+Example:
+
+Ethernet Frame
++------------------------------------+
+| Destination MAC                    |
+| Source MAC                         |
+| VLAN Tag (802.1Q)                  |
+| Data                               |
++------------------------------------+
+Real-World Example
+
+A company has:
+
+Department	VLAN
+HR	VLAN 10
+Finance	VLAN 20
+IT	VLAN 30
+Sales	VLAN 40
+
+Even if all devices are connected to the same switch, each department is isolated from the others unless routing is configured.
+
+Linux Commands
+
+Show network interfaces:
+
+ip link
+
+Show IP address:
+
+ip addr
+
+Display routing table:
+
+ip route
+
+Show active network connections:
+
+ss -tun
+
+Note: Creating and configuring VLAN interfaces on Linux is an advanced topic. We'll cover practical VLAN configuration later when you start Linux administration.
+
+
+VLAN vs Subnet
+| Feature                            | VLAN                           | Subnet                  |
+| ---------------------------------- | ------------------------------ | ----------------------- |
+| Layer                              | Layer 2                        | Layer 3                 |
+| Purpose                            | Logical separation of LAN      | IP network segmentation |
+| Based On                           | MAC addresses                  | IP addresses            |
+| Requires Router for Communication? | Yes (between VLANs)            | Yes (between subnets)   |
+| Main Benefit                       | Security and traffic isolation | Efficient IP management |
+
+
+
+
+Interview Questions
+What is a VLAN?
+Why are VLANs used?
+What is the difference between an Access Port and a Trunk Port?
+What is VLAN Tagging?
+What is IEEE 802.1Q?
+Can two devices in different VLANs communicate directly?
+What is Inter-VLAN Routing?
+What is the difference between a VLAN and a subnet?
+
 
