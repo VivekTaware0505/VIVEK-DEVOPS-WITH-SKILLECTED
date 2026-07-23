@@ -1,1 +1,214 @@
+Cisco Packet Tracer Labs
+🎯 Objective
 
+Learn how to build, configure, and troubleshoot networks using Cisco Packet Tracer while applying the networking concepts you've already studied.
+
+What is Cisco Packet Tracer?
+
+Cisco Packet Tracer is a network simulation software developed by Cisco.
+
+It allows you to:
+
+Build virtual networks
+Configure routers and switches
+Practice networking commands
+Test routing and switching
+Simulate real-world network environments
+Why Use Packet Tracer?
+
+Instead of only reading networking concepts, Packet Tracer lets you:
+
+Configure IP addresses
+Create VLANs
+Configure routers
+Test connectivity
+Observe packet flow
+Troubleshoot network issues
+Lab 1: Basic Network
+Topology
+PC1 -------- Switch -------- PC2
+Configure
+
+PC1
+
+IP Address : 192.168.1.10
+Subnet Mask: 255.255.255.0
+Gateway    : 192.168.1.1
+
+PC2
+
+IP Address : 192.168.1.20
+Subnet Mask: 255.255.255.0
+Gateway    : 192.168.1.1
+Verify
+ping 192.168.1.20
+
+Expected Result:
+
+Reply from 192.168.1.20
+
+Lab 2: Switching
+PC1
+   \
+    Switch
+   /
+PC2
+
+Objectives:
+
+Learn MAC address table
+Observe switching
+Verify communication
+
+Useful Cisco Command
+
+show mac address-table
+
+Lab 3: VLAN
+PC1 ----\
+          Switch
+PC2 ----/
+
+
+Topology
+PC1 ----\
+          Switch
+PC2 ----/
+
+Create
+
+VLAN 10
+VLAN 20
+
+Assign
+
+PC1 → VLAN10
+
+PC2 → VLAN20
+
+Verify
+
+show vlan brief
+
+Observe that devices in different VLANs cannot communicate without inter-VLAN routing.
+
+Lab 4: Routing
+Topology
+LAN A ---- Router ---- LAN B
+
+Configure
+
+Router interfaces
+Gateway
+IP addresses
+
+Verify
+
+ping
+
+and
+
+traceroute
+Lab 5: DHCP
+
+Router
+
+DHCP Server
+
+Clients
+
+Automatic IP Address
+
+Verify
+
+ipconfig
+
+or
+
+ip addr
+
+
+
+Lab 6: Static Routing
+LAN1
+   |
+Router1
+   |
+Router2
+   |
+LAN2
+
+
+
+
+
+Configure:
+
+Static routes
+Interface IP addresses
+Default gateways
+
+Verify connectivity using:
+
+ping
+Useful Cisco IOS Commands
+
+Display interfaces
+
+show ip interface brief
+
+Display routing table
+
+show ip route
+
+Display VLANs
+
+show vlan brief
+
+Display MAC address table
+
+show mac address-table
+
+Save configuration
+
+copy running-config startup-config
+
+Display running configuration
+
+show running-config
+Troubleshooting Checklist
+
+If a ping fails:
+
+Is the cable connected?
+Are interfaces up?
+Are IP addresses correct?
+Is the subnet mask correct?
+Is the default gateway configured?
+Are VLAN assignments correct?
+Are routes configured?
+Is the switch port active?
+
+
+
+
+
+
+Interview Questions
+What is Cisco Packet Tracer?
+Why is Packet Tracer used?
+How do you configure a switch?
+How do you assign a VLAN?
+What is static routing?
+How do you verify interface status?
+What command displays the routing table?
+How do you save the running configuration?
+
+
+Key Learnings
+Built and tested basic LANs.
+Configured switches and VLANs.
+Performed routing and DHCP configuration.
+Practiced static routing.
+Learned common Cisco IOS verification commands.
+Improved troubleshooting skills.
