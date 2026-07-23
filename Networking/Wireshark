@@ -1,1 +1,235 @@
 
+Wireshark Basics
+🎯 Objective
+
+Learn what Wireshark is, how packet capturing works, understand its interface, analyze packets, use filters, identify common protocols, and perform basic network troubleshooting.
+
+📖 What is Wireshark?
+
+Wireshark is a free and open-source network protocol analyzer.
+
+It captures network packets traveling through your computer or network and allows you to inspect them in detail.
+
+Think of Wireshark as a microscope for network traffic.
+
+Instead of guessing what is happening on the network, Wireshark lets you see the actual packets.
+
+Why Do We Need Wireshark?
+
+Suppose you open a website and it loads very slowly.
+
+Possible reasons include:
+
+DNS problem
+Network congestion
+Packet loss
+TCP retransmissions
+
+How Wireshark Works
+                Internet
+                    │
+                    │
+        +---------------------+
+        |  Network Interface  |
+        +---------------------+
+                    │
+                    ▼
+            Wireshark Capture
+                    │
+                    ▼
+        Analyze Network Packets
+Server issues
+
+
+Packet Capture Process
+Start Capture
+      │
+      ▼
+Collect Packets
+      │
+      ▼
+Apply Filters
+      │
+      ▼
+Analyze Traffic
+      │
+      ▼
+Find Problems
+
+Wireshark Interface
+
+The main window consists of three sections:
+
+1. Packet List
+
+Displays every captured packet.
+
+Information includes:
+
+Packet Number
+Time
+Source IP
+Destination IP
+Protocol
+Packet Length
+Summary
+2. Packet Details
+
+Shows detailed protocol information.
+
+Example:
+
+Ethernet
+IPv4
+TCP
+HTTP
+3. Packet Bytes
+
+Displays the packet in hexadecimal and ASCII format.
+
+Common Protocols You Will See
+Protocol	Purpose
+ARP	Address Resolution
+ICMP	Ping
+TCP	Reliable communication
+UDP	Fast communication
+DNS	Name resolution
+HTTP	Web traffic
+HTTPS	Secure web traffic
+FTP	File transfer
+SSH	Secure remote login
+DHCP	IP assignment
+Display Filters
+
+Display filters help show only the packets you want to analyze.
+
+HTTP Traffic
+http
+DNS Traffic
+dns
+TCP Packets
+tcp
+UDP Packets
+udp
+ICMP (Ping)
+icmp
+HTTPS
+tls
+Specific IP Address
+ip.addr == 192.168.1.10
+Source IP
+ip.src == 192.168.1.10
+Destination IP
+ip.dst == 192.168.1.20
+TCP Port 80
+tcp.port == 80
+TCP Port 443
+tcp.port == 443
+Capture Filters
+
+These filters reduce the traffic captured in the first place.
+
+Examples:
+
+host 192.168.1.10
+port 80
+tcp
+udp
+Example: Opening a Website
+
+Suppose you visit:
+
+https://github.com
+
+Wireshark may capture traffic like:
+
+DNS
+↓
+TCP Handshake
+↓
+TLS Handshake
+↓
+HTTPS Request
+↓
+HTTPS Response
+
+This helps you understand the complete communication process.
+
+Installing Wireshark on Ubuntu
+sudo apt update
+sudo apt install wireshark
+
+During installation, you may be asked whether non-root users should be allowed to capture packets.
+
+Choose Yes if appropriate for your environment.
+
+Launch Wireshark
+wireshark
+Capture Packets
+Select your network interface (such as Wi-Fi or Ethernet).
+Click Start Capturing.
+Generate some traffic (for example, open a website or run ping).
+Stop the capture.
+Analyze the packets.
+Linux Commands
+
+List network interfaces:
+
+ip link
+
+View network connections:
+
+ss -tuln
+
+Generate ICMP traffic:
+
+ping google.com
+
+Capture packets from the command line using tcpdump:
+
+sudo tcpdump -i any
+
+Save captured packets to a file:
+
+sudo tcpdump -i any -w capture.pcap
+Practical Tasks
+Install Wireshark.
+Start a packet capture.
+Open a website in your browser.
+Apply these display filters:
+dns
+tcp
+udp
+icmp
+Run:
+ping google.com
+Observe the ICMP packets in Wireshark.
+Save the capture as a .pcap file.
+Advantages of Wireshark
+Free and open source.
+Supports thousands of protocols.
+Excellent troubleshooting tool.
+Useful for learning networking.
+Used by network engineers and security analysts.
+Limitations
+Cannot decrypt encrypted HTTPS traffic without additional configuration.
+Large captures can consume significant memory and storage.
+Requires permission to capture packets.
+
+
+Interview Questions
+What is Wireshark?
+Why is Wireshark used?
+What is the difference between a capture filter and a display filter?
+Which filter displays only DNS traffic?
+Which protocol is used for ping?
+How do you filter packets for a specific IP address?
+What file extension does Wireshark use for saved captures?
+Can Wireshark automatically decrypt HTTPS traffic?
+
+Key Learnings
+Learned what Wireshark is and why it is important.
+Understood packet capture and packet analysis.
+Learned common display and capture filters.
+Captured and analyzed network traffic.
+Practiced using both Wireshark and tcpdump.
