@@ -1,1 +1,165 @@
 
+FTP (File Transfer Protocol)
+🎯 Objective
+
+Learn what FTP (File Transfer Protocol) is, why it is used, how it works, the different FTP modes, common commands, security considerations, and how it compares with SFTP and SCP.
+
+📖 What is FTP?
+
+FTP (File Transfer Protocol) is an Application Layer protocol used to transfer files between a client and a server over a TCP/IP network.
+
+It allows users to:
+
+Upload files to a server
+Download files from a server
+Rename files
+Delete files
+Create directories
+Manage remote files
+
+FTP has been widely used for website hosting, backups, and file sharing.
+
+Why Do We Need FTP?
+
+Imagine you are a web developer.
+
+You build a website on your laptop and want to upload it to a web hosting server.
+
+FTP allows you to transfer those website files quickly to the remote server.
+
+Example:
+
+Laptop (Client)
+        │
+        │ FTP
+        ▼
+Web Server
+How FTP Works
+
+FTP uses two TCP connections:
+
+1. Control Connection
+Port 21
+Used for sending commands and receiving responses.
+2. Data Connection
+Port 20 (Active Mode) or a negotiated port (Passive Mode).
+Used to transfer files.
+
+
+FTP Workflow
++-------------+                     +----------------+
+| FTP Client  |                     | FTP Server     |
++-------------+                     +----------------+
+       |                                     |
+       |------ Connect (Port 21) ----------->|
+       |<----- Authentication ---------------|
+       |------ File Request ---------------->|
+       |<===== File Transfer ===============>|
+       |------ Disconnect ------------------>|
+
+Active vs Passive FTP
+Active Mode
+Client opens the control connection.
+Server initiates the data connection back to the client.
+Can be blocked by firewalls/NAT.
+Passive Mode
+Client opens both the control and data connections.
+Works better through firewalls and NAT.
+Most modern FTP clients use Passive Mode by default.
+
+
+FTP Commands
+Command	   Purpose
+USER	     Send username
+PASS	     Send password
+LIST	     List files
+PWD	       Show current directory
+CWD	       Change directory
+MKD	       Create directory
+RMD	       Remove directory
+RETR	     Download a file
+STOR	     Upload a file
+DELE	     Delete a file
+QUIT     	 Disconnect
+
+
+Advantages of FTP
+Easy to use.
+Supports large file transfers.
+Allows remote file management.
+Widely supported by many clients and servers.
+Disadvantages of FTP
+No encryption by default.
+Usernames and passwords are sent in plain text.
+Not suitable for transferring sensitive data over untrusted networks.
+Largely replaced by SFTP and SCP for secure environments.
+Linux Commands
+
+Install an FTP client (if needed):
+
+sudo apt update
+sudo apt install ftp
+
+Connect to an FTP server:
+
+ftp ftp.example.com
+
+Common FTP client commands:
+
+ls
+pwd
+cd
+get filename
+put filename
+bye
+Secure Alternatives
+
+Copy a file using SCP:
+
+scp file.txt user@server:/home/user/
+
+Copy an entire directory:
+
+scp -r project/ user@server:/home/user/
+
+Transfer files interactively with SFTP:
+
+sftp user@server
+Windows Options
+
+Common FTP/SFTP clients:
+
+FileZilla
+WinSCP
+Cyberduck
+Practical Tasks
+Install the FTP client (if it is not already installed).
+Check if the FTP command is available:
+ftp
+Check the SSH version:
+sftp -V
+
+(Some systems may not support -V; if so, simply run sftp to verify it is installed.)
+
+Practice copying a file using SCP (if you have access to another Linux machine or an EC2 instance).
+Save screenshots of the commands.
+
+
+Interview Questions
+What is FTP?
+Which port does FTP use?
+What is the difference between the control connection and the data connection?
+Explain Active FTP and Passive FTP.
+Why is FTP considered insecure?
+What is the difference between FTP and SFTP?
+What is SCP?
+Which protocol is recommended today for secure file transfer?
+
+
+
+Key Learnings
+Learned how FTP transfers files.
+Understood the roles of ports 20 and 21.
+Learned the differences between Active and Passive FTP.
+Compared FTP with SFTP and SCP.
+Practiced basic Linux file transfer commands.
