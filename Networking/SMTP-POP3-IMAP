@@ -1,1 +1,227 @@
 
+SMTP, POP3 & IMAP
+🎯 Objective
+
+Learn how email communication works, understand the roles of SMTP, POP3, and IMAP, compare them, learn their default ports, and practice useful Linux networking commands.
+
+📖 What is Email Communication?
+
+When you send an email, different protocols work together:
+
+SMTP → Sends emails.
+POP3 → Downloads emails to a device.
+IMAP → Synchronizes emails across multiple devices.
+
+Think of it like a postal system:
+
+SMTP = Sending a letter.
+POP3 = Taking all letters home from the mailbox.
+IMAP = Reading the same mailbox from different locations while keeping everything synchronized.
+
+Email Architecture
+          Sender
+             │
+             ▼
+      SMTP Client
+             │
+             ▼
+      Mail Server
+             │
+      Internet
+             │
+             ▼
+     Receiver Mail Server
+        │           │
+      POP3        IMAP
+        │           │
+        ▼           ▼
+     Email Client (Outlook, Thunderbird, Mobile App)
+
+
+📨 SMTP (Simple Mail Transfer Protocol)
+
+SMTP is responsible for sending emails.
+
+It is used:
+
+From your email application to the mail server.
+Between mail servers.
+Default SMTP Ports
+Port	Purpose
+25	Server-to-server mail transfer
+587	Secure mail submission (STARTTLS)
+465	SMTP over SSL/TLS
+📥 POP3 (Post Office Protocol Version 3)
+
+POP3 is used to download emails from the mail server to your local device.
+
+After downloading, emails are often removed from the server (depending on client settings).
+
+POP3 Features
+Downloads emails locally.
+Works well without a continuous Internet connection.
+Simple protocol.
+Limited synchronization across multiple devices.
+Default POP3 Ports
+Port	Purpose
+110	Standard POP3
+995	POP3 over SSL/TLS
+📬 IMAP (Internet Message Access Protocol)
+
+IMAP allows email clients to synchronize emails with the server.
+
+Emails remain on the server, making it easy to access the same mailbox from multiple devices.
+
+IMAP Features
+Emails stay on the server.
+Supports multiple devices.
+Synchronizes folders, read/unread status, and message organization.
+Default IMAP Ports
+Port	Purpose
+143	Standard IMAP
+993	IMAP over SSL/TLS
+How Email Travels
+
+
+You Write Email
+       │
+       ▼
+SMTP Client
+       │
+       ▼
+Outgoing Mail Server
+       │
+       ▼
+Internet
+       │
+       ▼
+Recipient Mail Server
+       │
+ ┌─────┴─────┐
+ │           │
+POP3       IMAP
+ │           │
+ ▼           ▼
+Recipient Reads Email
+
+
+SMTP vs POP3 vs IMAP
+Feature	          SMTP	       POP3	            IMAP
+Main Purpose	Send email	  Download email	 Synchronize email
+Direction	     Outgoing     	Incoming    	 Incoming
+Keeps Emails  on Server	    Not applicable	 Usually No	Yes
+Multi-Device  Support	      Not applicable	 Poor	Excellent
+Common Ports	25, 465, 587	  110, 995	     143, 993
+
+
+Real-World Example
+
+Suppose you send an email from Gmail to a colleague.
+
+Your email app sends the message using SMTP.
+The recipient's mail server receives the message.
+The recipient opens the email:
+Using POP3, the email is downloaded to one device.
+Using IMAP, the email stays on the server and appears on the phone, laptop, and tablet.
+
+Linux Commands
+
+Check if an SMTP server responds:
+
+nc smtp.gmail.com 587
+
+If nc (Netcat) is not installed:
+
+sudo apt update
+sudo apt install netcat-openbsd
+
+Test SMTP with Telnet (if installed):
+
+telnet smtp.gmail.com 587
+
+View open TCP connections:
+
+ss -t
+
+Check DNS records (including mail-related records):
+
+dig gmail.com
+
+To query MX records specifically:
+
+dig gmail.com MX
+
+If dig is missing:
+
+sudo apt install dnsutils
+Common Email Ports
+Protocol	Port	Secure Port
+SMTP	25	465 / 587
+POP3	110	995
+IMAP	143	993
+
+
+Advantages & Disadvantages
+SMTP
+
+Advantages
+Reliable message delivery.
+Widely supported.
+Standard for sending email.
+
+Disadvantages
+Cannot retrieve email.
+Requires additional protocols for receiving.
+POP3
+
+Advantages
+Stores emails locally.
+Simple to configure.
+Good for a single-device setup.
+
+Disadvantages
+Poor synchronization.
+Less suitable for modern multi-device use.
+IMAP
+
+Advantages
+Synchronizes across devices.
+Keeps emails on the server.
+Ideal for smartphones, laptops, and tablets.
+
+Disadvantages
+Requires more server storage.
+Depends on network connectivity for the best experience.
+
+
+Practical Tasks
+Check active TCP connections:
+ss -t
+
+Query MX records:
+dig gmail.com MX
+
+Test connectivity to an SMTP server:
+nc smtp.gmail.com 587
+
+Save screenshots of the outputs.
+
+
+
+Interview Questions
+What is SMTP?
+What is POP3?
+What is IMAP?
+What is the difference between POP3 and IMAP?
+Which protocol is used to send emails?
+Which protocol is recommended for accessing email from multiple devices?
+What are the default ports for SMTP, POP3, and IMAP?
+What is an MX record?
+
+
+
+Key Learnings
+Learned the roles of SMTP, POP3, and IMAP.
+Understood the flow of email communication.
+Compared email protocols and their ports.
+Practiced checking network connectivity and DNS mail records using Linux commands.
