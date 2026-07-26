@@ -1,1 +1,13 @@
-
+pwd                     -> Show current directory
+ls /                    -> List root directory
+ls /home                -> List user home directories
+ls /etc                 -> List configuration files
+ls /var                 -> List variable data
+ls /usr                 -> List user programs
+ls /tmp                 -> List temporary files
+cd /                    -> Go to root directory
+cd ~                    -> Go to home directory
+cd ..                   -> Go up one directory
+cd -                    -> Go to previous directory
+cat /proc/cpuinfo       -> Show CPU information
+cat /proc/meminfo       -> Show memory information
