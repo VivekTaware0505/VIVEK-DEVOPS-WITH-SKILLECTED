@@ -1,1 +1,9 @@
-
+cat /etc/os-release -> Display OS details
+uname -r            -> Display kernel version
+hostname            -> Display hostname
+whoami              -> Display current user
+df -h               -> Display disk usage
+free -h             -> Display memory usage
+ip addr             -> Display IP addresses
+sudo apt update     -> Update package information
+sudo apt upgrade    -> Upgrade installed packages
