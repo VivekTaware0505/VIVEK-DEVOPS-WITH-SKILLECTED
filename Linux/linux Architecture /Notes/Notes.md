@@ -257,3 +257,29 @@ uptime
 Display logged-in users:
 
 who
+
+
+
+
+
+Interview Questions
+What is Linux Architecture?
+What is the role of the Kernel?
+What is User Space?
+What is Kernel Space?
+What are System Calls?
+What is the difference between Shell and Kernel?
+What are Device Drivers?
+Explain the Linux boot process.
+What is Process Management?
+What is Memory Management?
+
+
+
+
+Key Learnings
+Learned the internal architecture of Linux.
+Understood the interaction between the user, shell, kernel, and hardware.
+Learned the purpose of system calls.
+Compared User Space and Kernel Space.
+Practiced commands to inspect CPU, memory, storage, and processes.
