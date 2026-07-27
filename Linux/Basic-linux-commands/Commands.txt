@@ -1,1 +1,18 @@
-
+pwd                    -> Show current directory
+ls -la                 -> List all files with details
+cd ~                   -> Go to home directory
+clear                  -> Clear terminal
+history                -> Show command history
+echo "text" > file     -> Write text to file
+touch file.txt         -> Create file
+mkdir Folder           -> Create folder
+mkdir -p A/B/C         -> Create nested folders
+rmdir Folder           -> Remove empty folder
+rm file.txt            -> Delete file
+rm -r Folder           -> Delete directory
+cp file1 file2         -> Copy file
+mv old new             -> Rename or move file
+cat file.txt           -> Display file
+head file.txt          -> First 10 lines
+tail file.txt          -> Last 10 lines
+less file.txt          -> View large file
