@@ -1,0 +1,14 @@
+mkdir Project                 -> Create directory
+mkdir -p A/B/C               -> Create nested directories
+rmdir Folder                 -> Remove empty directory
+find . -name "*.txt"         -> Find text files
+find . -type d               -> Find directories
+find . -type f               -> Find files
+locate passwd                -> Search indexed files
+sudo updatedb                -> Update locate database
+tree                         -> Show directory tree
+file notes.txt               -> Show file type
+stat notes.txt               -> Show detailed file info
+du -sh .                     -> Show folder size
+df -h                        -> Show disk usage
+ls -la                       -> Show hidden files
