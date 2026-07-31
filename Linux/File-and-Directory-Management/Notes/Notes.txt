@@ -1,1 +1,237 @@
+Why is File Management Important?
+
+Almost every Linux task involves files:
+
+Configuration files
+Log files
+Shell scripts
+Application files
+Docker files
+Kubernetes manifests
+Jenkins pipelines
+
+A DevOps engineer spends a large part of the day working with files and directories.
+
+
+
+mkdir – Create Directories
+
+Create a directory:
+
+mkdir Project
+
+Create multiple directories:
+
+mkdir DevOps AWS Docker
+
+Create nested directories:
+
+
+
+
+rmdir – Remove Empty Directories
+rmdir Project
+
+Works only if the directory is empty.
+
+3️⃣ find – Search Files & Directories
+
+Search by name:
+
+find . -name notes.txt
+
+Search from root:
+
+find / -name "*.conf"
+
+Search only directories:
+
+find . -type d
+
+Search only files:
+
+find . -type f
+
+Find files larger than 100 MB:
+
+find / -size +100M
+4️⃣ locate – Fast File Search
+locate passwd
+
+Update the database:
+
+sudo updatedb
+
+locate is faster than find because it searches an indexed database instead of scanning the disk.
+
+5️⃣ tree – Display Directory Structure
+
+Install:
+
+sudo apt install tree
+
+Run:
+
+tree
+
+Example:
+
+Project/
+├── README.md
+├── notes.txt
+└── images
+    └── logo.png
+6️⃣ file – Identify File Type
+file notes.txt
+
+Example Output:
+
+notes.txt: ASCII text
+7️⃣ stat – Detailed File Information
+stat notes.txt
+
+Shows:
+
+File size
+Owner
+Permissions
+Last modified time
+Last accessed time
+Inode number
+8️⃣ du – Disk Usage
+
+Current directory:
+
+du
+
+Human-readable:
+
+du -h
+
+Total size:
+
+du -sh .
+9️⃣ df – Disk Space
+df -h
+
+Shows:
+
+Total disk size
+Used space
+Available space
+Mounted file systems
+🔟 Hidden Files
+
+Hidden files begin with a dot (.).
+
+Example:
+
+.bashrc
+.profile
+.gitignore
+
+Display hidden files:
+
+ls -la
+1️⃣1️⃣ Wildcards
+* (Any Number of Characters)
+ls *.txt
+
+Matches:
+
+notes.txt
+data.txt
+resume.txt
+
+mkdir -p DevOps/Linux/Practice
+
+
+
+
+
+
+
+
+(Single Character)
+ls file?.txt
+
+Matches:
+
+file1.txt
+file2.txt
+
+Does not match:
+
+file10.txt
+[] (Character Set)
+ls file[123].txt
+
+Matches:
+
+file1.txt
+file2.txt
+file3.txt
+
+
+Practical Lab :- 
+mkdir DevOpsPractice
+cd DevOpsPractice
+
+touch file1.txt file2.txt notes.md
+
+mkdir Images Scripts Logs
+
+tree
+
+find . -name "*.txt"
+
+file file1.txt
+
+stat file1.txt
+
+du -sh .
+
+df -h
+
+
+
+
+
+Interview Questions
+What is the difference between find and locate?
+What does tree do?
+How do you check file type?
+What information does stat provide?
+What is the difference between du and df?
+How do you list hidden files?
+What is the purpose of wildcards?
+How do you search only directories?
+Which command finds files larger than a specific size?
+Why is locate usually faster than find?
+
+
+
+
+Key Learnings
+Created and removed directories.
+Searched files efficiently.
+Viewed directory trees.
+Checked file information.
+Monitored disk usage.
+Used wildcards for flexible file matching.
+
+
+
+
+# My Notes
+
+- `find` searches the live file system.
+- `locate` searches an indexed database.
+- `tree` shows directory hierarchy.
+- `stat` provides detailed file metadata.
+- `du` shows directory/file usage.
+- `df` shows available disk space.
+- Hidden files begin with a `.`.
+- Wildcards help match multiple files.
+
 
