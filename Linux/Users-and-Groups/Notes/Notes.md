@@ -194,6 +194,30 @@ Add the deployment user:
 
 sudo usermod -aG developers deploy
 
+
+
+Interview Questions
+What is the difference between a user and a group?
+What is the UID of the root user?
+What is the purpose of /etc/passwd?
+What is stored in /etc/shadow?
+What is the difference between useradd and usermod?
+How do you add a user to a group?
+What does sudo do?
+Why should you avoid logging in as root for daily work?
+What command displays a user's UID and groups?
+What is the difference between a primary group and a supplementary group?
+
+
+
+Key Learnings
+Learned different types of Linux users.
+Understood groups and group management.
+Created users and groups.
+Added users to groups.
+Managed passwords.
+Learned how sudo provides administrative access.
+
 Verify:
 
 id deploy
