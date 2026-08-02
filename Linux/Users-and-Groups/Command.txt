@@ -1,1 +1,63 @@
+Commands ;- 
+
+whoami                           -> Show current user
+id                               -> Show UID, GID, and groups
+groups                           -> Show user groups
+cat /etc/passwd                  -> List users
+cat /etc/group                   -> List groups
+sudo cat /etc/shadow             -> View encrypted passwords
+sudo useradd -m john             -> Create user
+sudo passwd john                 -> Set password
+su john                          -> Switch user
+exit                             -> Return to previous user
+sudo userdel -r john             -> Delete user and home directory
+sudo groupadd developers         -> Create group
+sudo usermod -aG developers john -> Add user to group
+sudo passwd -l john              -> Lock user
+sudo passwd -u john              -> Unlock user
+
+
+
+# My Notes
+
+- Root user has UID 0.
+- `/etc/passwd` stores user account details.
+- `/etc/group` stores group information.
+- `/etc/shadow` stores encrypted passwords.
+- `useradd` creates users.
+- `groupadd` creates groups.
+- `usermod -aG` adds a user to a group.
+- `sudo` allows trusted users to run administrative commands.
+
+
+
+
+
+
+
+
+Interview Questions
+What is the difference between a user and a group?
+What is the UID of the root user?
+What is the purpose of /etc/passwd?
+What is stored in /etc/shadow?
+What is the difference between useradd and usermod?
+How do you add a user to a group?
+What does sudo do?
+Why should you avoid logging in as root for daily work?
+What command displays a user's UID and groups?
+What is the difference between a primary group and a supplementary group?
+
+
+
+
+
+
+Key Learnings
+Learned different types of Linux users.
+Understood groups and group management.
+Created users and groups.
+Added users to groups.
+Managed passwords.
+Learned how sudo provides administrative access.
 
