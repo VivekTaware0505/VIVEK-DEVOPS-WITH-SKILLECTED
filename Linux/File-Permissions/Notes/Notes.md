@@ -170,9 +170,52 @@ chmod 600 id_rsa
 
 SSH will often refuse to use a private key if it's too permissive.
 
+
+
+
+
+
+
+
+
+
 Allow everyone to execute a script
 chmod 755 deploy.sh
 Change ownership of a project
 sudo chown -R vivek:developers Project/
 
 -R means recursive (apply to all files and subdirectories).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+What are Linux file permissions?
+What do r, w, and x represent?
+What is the difference between 644 and 755?
+What does chmod do?
+What does chown do?
+What does chgrp do?
+What is the difference between owner, group, and others?
+Why is chmod 600 used for SSH private keys?
+What does chmod +x do?
+What does the -R option do with chown?
+Key Learnings
+Understood Linux permission model.
+Learned symbolic and numeric permissions.
+Changed file permissions using chmod.
+Changed ownership using chown.
+Changed groups using chgrp.
+Practiced real DevOps permission management.
