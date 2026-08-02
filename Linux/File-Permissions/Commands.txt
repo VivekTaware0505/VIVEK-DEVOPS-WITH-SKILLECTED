@@ -1,1 +1,54 @@
+ls -l                             -> Show permissions
+ls -ld directory                  -> Show directory permissions
+chmod 755 file                    -> Set numeric permissions
+chmod +x script.sh                -> Add execute permission
+chmod u+rwx file                  -> Give owner full access
+chmod g+r file                    -> Give group read permission
+chmod o-x file                    -> Remove execute from others
+sudo chown user file              -> Change owner
+sudo chown user:group file        -> Change owner and group
+sudo chown -R user:group Folder   -> Change recursively
+sudo chgrp group file             -> Change group
+whoami                            -> Show current user
+groups                            -> Show current user's groups
 
+
+
+
+
+# My Notes
+
+- Linux has three permission classes: Owner, Group, Others.
+- r = Read (4)
+- w = Write (2)
+- x = Execute (1)
+- chmod changes permissions.
+- chown changes ownership.
+- chgrp changes group ownership.
+- 755 is commonly used for executable scripts.
+- 644 is commonly used for text files.
+- 600 is commonly used for SSH private keys.
+
+
+
+
+Interview Questions
+What are Linux file permissions?
+What do r, w, and x represent?
+What is the difference between 644 and 755?
+What does chmod do?
+What does chown do?
+What does chgrp do?
+What is the difference between owner, group, and others?
+Why is chmod 600 used for SSH private keys?
+What does chmod +x do?
+What does the -R option do with chown?
+
+
+Key Learnings
+Understood Linux permission model.
+Learned symbolic and numeric permissions.
+Changed file permissions using chmod.
+Changed ownership using chown.
+Changed groups using chgrp.
+Practiced real DevOps permission management.
