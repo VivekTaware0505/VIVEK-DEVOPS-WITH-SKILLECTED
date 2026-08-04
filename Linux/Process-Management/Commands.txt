@@ -1,1 +1,18 @@
-
+ps                     -> Show current processes
+ps -ef                 -> Detailed process list
+ps aux                 -> User-friendly process list
+top                    -> Monitor processes
+htop                   -> Interactive process monitor
+echo $$                -> Show current shell PID
+pgrep process_name     -> Find process PID
+kill PID               -> Terminate process
+kill -9 PID            -> Force terminate process
+killall process_name   -> Kill by process name
+pkill process_name     -> Kill matching processes
+sleep 300 &            -> Run in background
+jobs                   -> Show background jobs
+fg %1                  -> Bring job to foreground
+bg                     -> Resume job in background
+nice -n 10 command     -> Start with lower priority
+renice                 -> Change process priority
+nohup command &        -> Keep running after logout
