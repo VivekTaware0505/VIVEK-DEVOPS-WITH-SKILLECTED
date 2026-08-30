@@ -246,3 +246,45 @@ Important Commands
 | `dpkg -r` | Remove package |
 | `dpkg -l` | List packages |
 | `apt clean` | Clean downloaded package cache |
+
+
+
+
+
+
+
+
+
+# My Notes
+
+## Package Management
+
+- A package contains files required by software.
+- A package manager installs and manages software.
+- Ubuntu mainly uses APT and DPKG.
+- APT is a high-level package manager.
+- DPKG is a low-level Debian package manager.
+
+## Important Commands
+
+- sudo apt update → Update package information.
+- sudo apt upgrade → Upgrade installed packages.
+- sudo apt install <package> → Install software.
+- sudo apt remove <package> → Remove software.
+- sudo apt purge <package> → Remove software and configuration.
+- sudo apt autoremove → Remove unused dependencies.
+- apt search <package> → Search for packages.
+- apt show <package> → Show package information.
+- dpkg -l → List installed packages.
+- dpkg -i package.deb → Install a .deb package.
+
+## Important Difference
+
+apt update ≠ apt upgrade
+
+apt update:
+Updates package information.
+
+apt upgrade:
+Actually upgrades installed packages.
+
