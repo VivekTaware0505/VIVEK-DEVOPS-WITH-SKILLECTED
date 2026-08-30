@@ -1,1 +1,248 @@
+Understand how software is installed, updated, upgraded, searched, and removed in Linux using package managers.
 
+We will mainly work with APT on Ubuntu/Debian systems.
+
+What is a Package?
+
+A package is a collection of files required to install a software application.
+
+For example, installing Git requires various files such as:
+
+Git program
+Configuration files
+Libraries
+Documentation
+Dependencies
+
+Linux package managers handle these files automatically.
+
+What is a Package Manager?
+
+A package manager is a tool that helps you:
+
+Install software
+Remove software
+Update software
+Upgrade software
+Search packages
+Resolve dependencies
+Track installed packages
+
+For Ubuntu, the main package management tools are:
+
+APT
+
+APT vs DPKG
+
+This is an important interview question.
+| APT | DPKG |
+|---|---|
+| High-level package manager | Low-level package manager |
+| Handles dependencies | Doesn't automatically resolve dependencies |
+| Uses repositories | Works directly with `.deb` packages |
+| `apt install nginx` | `dpkg -i package.deb` |
+
+
+APT
+ ↓
+Dependency Management
+ ↓
+DPKG
+ ↓
+Install .deb package
+
+
+Update Package Repository
+Before installing software, update the package index:
+sudo apt update
+Important
+apt update does not upgrade your installed software.
+It downloads the latest package information from configured repositories
+
+5️⃣ Upgrade Installed Packages
+sudo apt upgrade
+This upgrades installed packages to newer available versions.
+A common workflow is:
+sudo apt update
+sudo apt upgrade
+
+6️⃣ Install a Package
+Example: install Git.
+sudo apt install git
+Install Nginx:
+sudo apt install nginx
+Install multiple packages:
+sudo apt install git curl wget
+
+
+
+
+
+Remove a Package
+sudo apt remove nginx
+This removes the package but may leave configuration files.
+
+8️⃣ Completely Remove a Package
+sudo apt purge nginx
+purge removes the package and its configuration files.
+
+9️⃣ Remove Unused Dependencies
+sudo apt autoremove
+Useful for cleaning packages that are no longer required.
+
+🔟 Search for a Package
+apt search nginx
+Example:
+apt search docker
+
+1️⃣1️⃣ Show Package Information
+apt show nginx
+This can show information such as:
+- Package version
+- Description
+- Dependencies
+- Package size
+- Repository
+
+1️⃣2️⃣ Check Whether a Package is Installed
+dpkg -l nginx
+Another useful command:
+apt list --installed
+Search installed packages:
+apt list --installed | grep nginx
+
+1️⃣3️⃣ Check Package Version
+For many commands:
+git --version
+For an installed Debian package:
+
+dpkg -s nginx
+Or:
+apt policy nginx
+
+
+1️⃣4️⃣ DPKG
+dpkg works directly with Debian .deb packages.
+Install a .deb file:
+sudo dpkg -i package.deb
+Remove:
+sudo dpkg -r package-name
+View installed packages:
+dpkg -l
+
+
+1️⃣5️⃣ What is a Repository?
+A repository is a location containing software packages and package metadata.
+Ubuntu can download packages from configured repositories.
+You can inspect repository configuration with:
+cat /etc/apt/sources.list
+On newer Ubuntu releases, repository definitions may also be stored under:
+ls /etc/apt/sources.list.d/
+
+
+1️⃣6️⃣ Package Cache
+APT stores downloaded package information and package files in locations under:
+/var/lib/apt/
+and
+/var/cache/apt/
+You can clean downloaded package files with:
+sudo apt clean
+
+
+1️⃣7️⃣ apt vs apt-get
+You'll commonly see both.
+Modern interactive usage
+sudo apt install git
+Traditional scripting/administration usage
+sudo apt-get install git
+For your daily Ubuntu work, apt is generally easier to use interactively.
+
+
+
+Practical Lab
+Let's install a few harmless utilities.
+Step 1 — Update repository information
+sudo apt update
+
+Step 2 — Install Git
+sudo apt install git
+Check:
+git --version
+
+Step 3 — Install tree
+sudo apt install tree
+Check:
+tree --version
+
+Step 4 — Search for Nginx
+apt search nginx
+
+Step 5 — View package information
+apt show nginx
+
+Step 6 — Check installed packages
+apt list --installed | grep git
+
+Step 7 — Check using DPKG
+dpkg -s git
+
+
+
+Real DevOps Example
+Imagine you receive a new Ubuntu AWS EC2 server.
+You need Git and Nginx.
+You could do:
+sudo apt update
+
+sudo apt install git nginx
+
+git --version
+
+nginx -v
+Then verify Nginx:
+systemctl status nginx
+⚠️ Note: systemctl belongs to our upcoming Systemd & Services topic. For now, we're only using it as a real-world example.
+🛠️ Troubleshooting
+Problem: Unable to locate package
+Example:
+E: Unable to locate package xyz
+Try:
+sudo apt update
+Then:
+sudo apt install xyz
+Problem: Package dependency error
+You may encounter dependency issues when working with manually downloaded .deb packages.
+Check:
+sudo apt --fix-broken install
+Then update:
+sudo apt update
+
+
+🔐 Why sudo?
+Installing system software modifies protected system directories.
+Therefore:
+sudo apt install git
+means:
+Run the package installation command with administrative privileges.
+
+This connects directly with the Users & Groups and File Permissions topics you already studied.
+
+
+
+
+Important Commands
+| Command | Purpose |
+|---|---|
+| `apt update` | Update package index |
+| `apt upgrade` | Upgrade installed packages |
+| `apt install` | Install package |
+| `apt remove` | Remove package |
+| `apt purge` | Remove package + configuration |
+| `apt autoremove` | Remove unnecessary dependencies |
+| `apt search` | Search packages |
+| `apt show` | Show package information |
+| `apt list --installed` | List installed packages |
+| `dpkg -i` | Install `.deb` package |
+| `dpkg -r` | Remove package |
+| `dpkg -l` | List packages |
+| `apt clean` | Clean downloaded package cache |
