@@ -1,1 +1,53 @@
 
+Important Commands
+
+| Command | Purpose |
+|---|---|
+| `apt update` | Update package index |
+| `apt upgrade` | Upgrade installed packages |
+| `apt install` | Install package |
+| `apt remove` | Remove package |
+| `apt purge` | Remove package + configuration |
+| `apt autoremove` | Remove unnecessary dependencies |
+| `apt search` | Search packages |
+| `apt show` | Show package information |
+| `apt list --installed` | List installed packages |
+| `dpkg -i` | Install `.deb` package |
+| `dpkg -r` | Remove package |
+| `dpkg -l` | List packages |
+| `apt clean` | Clean downloaded package cache |
+
+
+
+
+
+
+
+
+
+
+sudo apt update
+sudo apt upgrade
+
+sudo apt install git
+sudo apt install nginx
+
+sudo apt remove nginx
+sudo apt purge nginx
+
+sudo apt autoremove
+
+apt search nginx
+apt show nginx
+
+apt list --installed
+apt list --installed | grep git
+
+dpkg -l
+dpkg -s git
+dpkg -i package.deb
+dpkg -r package-name
+
+sudo apt --fix-broken install
+
+sudo apt clean
