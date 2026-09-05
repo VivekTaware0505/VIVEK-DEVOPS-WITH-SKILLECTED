@@ -1,1 +1,33 @@
+echo $SHELL
+echo $USER
+echo $HOME
+echo $PWD
+echo $PATH
+echo $HOSTNAME
 
+env
+printenv
+
+which bash
+command -v ls
+
+NAME="Vivek"
+echo $NAME
+
+export COURSE="DevOps"
+echo $COURSE
+printenv COURSE
+
+unset COURSE
+
+echo $?
+
+source ~/.bashrc
+
+cat ~/.bashrc
+cat ~/.profile
+
+alias ll='ls -lah'
+alias
+
+nano ~/.bashrc
