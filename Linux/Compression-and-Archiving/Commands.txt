@@ -1,1 +1,19 @@
+tar -cvf backup.tar folder/
+tar -xvf backup.tar
+tar -tvf backup.tar
 
+gzip file.txt
+gunzip file.txt.gz
+
+tar -czvf backup.tar.gz folder/
+tar -xzvf backup.tar.gz
+
+tar -cjvf backup.tar.bz2 folder/
+tar -xjvf backup.tar.bz2
+
+tar -cJvf backup.tar.xz folder/
+tar -xJvf backup.tar.xz
+
+zip -r backup.zip folder/
+unzip backup.zip
+unzip -l backup.zip
