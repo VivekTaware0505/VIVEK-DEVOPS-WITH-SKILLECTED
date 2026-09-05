@@ -1,1 +1,257 @@
+What is a Service?
+A service is a program that runs in the background and provides functionality to the system or other applications.
 
+SSH
+Nginx
+Docker
+Cron
+MySQL
+
+For example:
+User
+  ↓
+Browser
+  ↓
+Nginx
+  ↓
+Application
+
+Nginx runs as a background service and waits for incoming requests.
+
+
+What is systemd?
+systemd is the service and system manager used by modern Linux distributions such as Ubuntu.
+It is responsible for things such as:
+- Starting services
+- Stopping services
+- Starting services during boot
+- Managing dependencies
+- Tracking service status
+- Collecting service-related information
+The main command you'll use is:  systemctl
+
+
+Check systemd
+Run:
+systemctl --version
+You should see the installed systemd version.
+
+
+
+Check Service Status
+Example with SSH:
+systemctl status ssh
+If your system uses sshd instead:
+systemctl status sshd
+You may see:
+Active: active (running)
+This means the service is currently running.
+
+
+Start a Service
+Install Nginx if necessary:
+sudo apt update
+sudo apt install nginx
+
+Start it:
+sudo systemctl start nginx
+
+Check:
+systemctl status nginx
+
+Stop a Service
+sudo systemctl stop nginx
+
+Check:
+systemctl status nginx
+
+Restart a Service
+Restart completely:
+sudo systemctl restart nginx
+This is commonly used after changing configuration
+
+
+Reload a Service
+sudo systemctl reload nginx
+Restart vs Reload
+Restart:
+Stop
+ ↓
+Start
+Reload:
+Reload configuration
+without completely stopping the service
+For services that support reload, this can avoid unnecessary downtime
+
+
+Enable Service at Boot
+Suppose you want Nginx to start automatically whenever the server boots:
+sudo systemctl enable nginx
+Check:
+systemctl is-enabled nginx
+Expected:
+enabled
+
+
+Disable Service at Boot
+sudo systemctl disable nginx
+This prevents automatic startup at boot.
+It does not necessarily stop an already running service.
+
+
+Enable + Start
+You can do both:
+sudo systemctl enable --now nginx
+This:
+1. Enables Nginx for boot.
+2. Starts Nginx immediately.
+
+Check Whether Service is Running
+systemctl is-active nginx
+Possible result:
+active
+
+
+Check Whether Service is Enabled
+systemctl is-enabled nginx
+Possible result:
+enabled
+
+List Running Services
+systemctl list-units --type=service --state=running
+This is extremely useful for checking what's currently running on a server.
+
+
+List Failed Services
+systemctl --failed
+🔥 This is an important troubleshooting command.
+If a service has failed, you'll see it here.
+
+
+
+View Service Logs
+systemd integrates with journald.
+View logs:
+journalctl -u nginx
+View recent logs:
+journalctl -u nginx -n 50
+Follow logs live:
+journalctl -u nginx -f
+This is extremely useful when troubleshooting production services.
+
+
+Logs Since Current Boot
+journalctl -b
+Logs from the previous boot:
+journalctl -b -1
+
+
+Service Unit Files
+Services are commonly defined using unit files.
+Example:
+systemctl cat nginx
+You can inspect where the service is configured and how it starts.
+
+
+Common Unit Types
+systemd manages more than services
+
+
+| Unit | Purpose |
+|---|---|
+| `.service` | Services |
+| `.socket` | Sockets |
+| `.timer` | Scheduled tasks |
+| `.mount` | Mount points |
+| `.target` | Groups of units |
+
+
+
+Practical Lab
+Step 1
+Install Nginx:
+sudo apt update
+sudo apt install nginx
+Step 2
+Check status:
+systemctl status nginx
+Step 3
+Stop it:
+sudo systemctl stop nginx
+Check:
+systemctl is-active nginx
+Step 4
+Start it again:
+sudo systemctl start nginx
+Step 5
+Restart:
+sudo systemctl restart nginx
+Step 6
+Enable at boot:
+sudo systemctl enable nginx
+Step 7
+Check:
+systemctl is-enabled nginx
+Step 8
+View logs:
+journalctl -u nginx -n 30
+Step 9
+Check failed services:
+systemctl --failed
+
+
+Command Cheat Sheet
+
+
+| Command | Purpose |
+|---|---|
+| `systemctl status nginx` | Check status |
+| `systemctl start nginx` | Start |
+| `systemctl stop nginx` | Stop |
+| `systemctl restart nginx` | Restart |
+| `systemctl reload nginx` | Reload configuration |
+| `systemctl enable nginx` | Enable at boot |
+| `systemctl disable nginx` | Disable at boot |
+| `systemctl is-active nginx` | Check active state |
+| `systemctl is-enabled nginx` | Check boot state |
+| `systemctl --failed` | Show failed units |
+| `journalctl -u nginx` | View service logs |
+| `journalctl -u nginx -f` | Follow logs |
+| `systemctl cat nginx` | Show unit configuration |
+
+
+# My Notes
+
+## Systemd
+
+- systemd is the system and service manager used by modern Linux.
+- systemctl is used to control systemd services.
+- Services run in the background and provide functionality.
+
+## Important Commands
+
+systemctl status <service>
+systemctl start <service>
+systemctl stop <service>
+systemctl restart <service>
+systemctl reload <service>
+
+systemctl enable <service>
+systemctl disable <service>
+
+systemctl is-active <service>
+systemctl is-enabled <service>
+
+systemctl --failed
+
+journalctl -u <service>
+journalctl -u <service> -f
+
+## Important Difference
+
+start = start now
+stop = stop now
+restart = stop and start
+reload = reload configuration
+enable = automatically start during boot
+disable = don't automatically start during boot
