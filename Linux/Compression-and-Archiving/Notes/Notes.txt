@@ -1,1 +1,312 @@
+Compression vs Archiving
+These are not the same thing.
+📦 Archiving
+Combines multiple files/directories into one file.
+file1
+file2
+file3
+   ↓
+archive.tar
+🗜️ Compression
+Reduces the size of data.
+large-file
+   ↓
+compressed-file
+Together
+Multiple files
+      ↓
+   tar archive
+      ↓
+  compression
+      ↓
+archive.tar.gz
+2️⃣ tar
+tar is primarily used for archiving files.
+Create an archive:
+tar -cvf backup.tar myfolder/
+Meaning:
+Option	Meaning
+c	Create
+v	Verbose
+f	File
 
+
+3️⃣ Extract a .tar
+tar -xvf backup.tar
+Meaning:
+x → extract
+v → verbose
+f → file
+4️⃣ List Archive Contents
+You don't need to extract an archive just to inspect it.
+tar -tvf backup.tar
+This is very useful when working with backups.
+5️⃣ Gzip Compression
+gzip compresses files.
+Example:
+gzip file.txt
+It produces:
+file.txt.gz
+Check:
+ls -lh
+6️⃣ Decompress Gzip
+gunzip file.txt.gz
+This returns:
+file.txt
+7️⃣ Create .tar.gz
+This is one of the most important commands to remember.
+tar -czvf backup.tar.gz myfolder/
+Options:
+c → create
+z → gzip compression
+v → verbose
+f → filename
+Result:
+myfolder/
+    ↓
+backup.tar.gz
+8️⃣ Extract .tar.gz
+tar -xzvf backup.tar.gz
+Here:
+x → extract
+z → gzip
+v → verbose
+f → filename
+9️⃣ List .tar.gz
+tar -tzvf backup.tar.gz
+🔟 Bzip2
+Another compression format is bzip2.
+Create:
+tar -cjvf backup.tar.bz2 myfolder/
+Extract:
+tar -xjvf backup.tar.bz2
+Here:
+j → bzip2
+1️⃣1️⃣ XZ Compression
+Create:
+tar -cJvf backup.tar.xz myfolder/
+Extract:
+tar -xJvf backup.tar.xz
+Here:
+J → xz
+1️⃣2️⃣ ZIP
+ZIP is also commonly used, especially when exchanging files with Windows users.
+Install if necessary:
+sudo apt install zip unzip
+Create:
+zip -r backup.zip myfolder/
+Extract:
+unzip backup.zip
+1️⃣3️⃣ View ZIP Contents
+unzip -l backup.zip
+This lists files without extracting them.
+📊 Compression Formats
+Format	Command/Tool	Example
+.tar	tar	backup.tar
+.gz	gzip	file.gz
+.tar.gz	tar + gzip	backup.tar.gz
+.bz2	bzip2	file.bz2
+.tar.bz2	tar + bzip2	backup.tar.bz2
+.xz	xz	file.xz
+.tar.xz	tar + xz	backup.tar.xz
+.zip	zip	backup.zip
+
+
+🔥 Important Concept
+Remember:
+tar
+=
+Archive
+
+gzip
+=
+Compression
+Therefore:
+tar.gz
+=
+Archive + gzip compression
+This is a very common interview question.
+🧪 Practical Lab
+Let's create your own backup.
+Step 1 — Create a test directory
+mkdir linux-backup
+Create files:
+cd linux-backup
+touch file1.txt file2.txt file3.txt
+Add some content:
+echo "Linux DevOps Learning" > file1.txt
+echo "Networking" > file2.txt
+echo "AWS" > file3.txt
+Check:
+ls -l
+Step 2 — Create TAR archive
+Go one directory back:
+cd ..
+Run:
+tar -cvf linux-backup.tar linux-backup/
+Check:
+ls -lh linux-backup.tar
+Step 3 — List the archive
+tar -tvf linux-backup.tar
+Step 4 — Extract it
+Create a test extraction directory:
+mkdir extracted
+Extract:
+tar -xvf linux-backup.tar -C extracted/
+Check:
+ls extracted/
+🗜️ Step 5 — Create .tar.gz
+tar -czvf linux-backup.tar.gz linux-backup/
+Check:
+ls -lh linux-backup.tar.gz
+Step 6 — Extract .tar.gz
+mkdir extracted-gzip
+Then:
+tar -xzvf linux-backup.tar.gz -C extracted-gzip/
+📦 Step 7 — ZIP
+zip -r linux-backup.zip linux-backup/
+Check:
+ls -lh linux-backup.zip
+Extract:
+mkdir extracted-zip
+unzip linux-backup.zip -d extracted-zip/
+🧹 Step 8 — Clean Practice Files
+After you've finished:
+rm -rf linux-backup extracted extracted-gzip extracted-zip
+rm -f linux-backup.tar linux-backup.tar.gz linux-backup.zip
+⚠️ Be careful with rm -rf. Always verify the path before executing it.
+🔥 Real DevOps Example 1 — Application Backup
+Suppose your application is stored in:
+/var/www/myapp
+You could create a compressed archive:
+sudo tar -czvf myapp-backup.tar.gz /var/www/myapp/
+Now you have:
+myapp-backup.tar.gz
+which can be stored as a backup.
+🔥 Real DevOps Example 2 — Log Archiving
+Suppose your application generates large logs.
+You can archive older logs:
+tar -czvf application-logs.tar.gz /var/log/myapp/
+This can reduce storage usage and make log files easier to transfer or retain.
+In production, however, logrotate is generally used for automated log rotation rather than manually creating archives every time.
+🔥 Real DevOps Example 3 — Deployment
+You may receive:
+application.tar.gz
+Extract it:
+tar -xzvf application.tar.gz
+Then deploy the extracted application.
+A common workflow:
+Developer
+    ↓
+Build application
+    ↓
+Create archive
+    ↓
+application.tar.gz
+    ↓
+Transfer to server
+    ↓
+Extract
+    ↓
+Deploy
+🔥 Real DevOps Example 4 — Backup + Restore
+Backup
+tar -czvf website-backup.tar.gz /var/www/html/
+Restore
+tar -xzvf website-backup.tar.gz -C /
+⚠️ Always understand the archive's paths before extracting an archive as root. A careless extraction can overwrite files.
+A safer approach is to inspect first:
+tar -tzvf website-backup.tar.gz
+🧠 Important tar Cheat Sheet
+Create .tar
+tar -cvf archive.tar folder/
+Extract .tar
+tar -xvf archive.tar
+Create .tar.gz
+tar -czvf archive.tar.gz folder/
+Extract .tar.gz
+tar -xzvf archive.tar.gz
+Create .tar.bz2
+tar -cjvf archive.tar.bz2 folder/
+Extract .tar.bz2
+tar -xjvf archive.tar.bz2
+Create .tar.xz
+tar -cJvf archive.tar.xz folder/
+Extract .tar.xz
+tar -xJvf archive.tar.xz
+Create ZIP
+zip -r archive.zip folder/
+Extract ZIP
+unzip archive.zip
+List archive
+tar -tvf archive.tar
+📄 notes/notes.md
+# Linux Compression & Archiving
+
+## Archiving
+
+Archiving combines multiple files/directories into one archive.
+
+Example:
+
+tar -cvf backup.tar folder/
+
+## Compression
+
+Compression reduces file size.
+
+gzip file.txt
+
+## Important Difference
+
+tar = archiving
+gzip = compression
+
+tar.gz = archiving + gzip compression
+
+## TAR Commands
+
+Create:
+tar -cvf archive.tar folder/
+
+Extract:
+tar -xvf archive.tar
+
+Create gzip:
+tar -czvf archive.tar.gz folder/
+
+Extract gzip:
+tar -xzvf archive.tar.gz
+
+Create bzip2:
+tar -cjvf archive.tar.bz2 folder/
+
+Extract bzip2:
+tar -xjvf archive.tar.bz2
+
+Create xz:
+tar -cJvf archive.tar.xz folder/
+
+Extract xz:
+tar -xJvf archive.tar.xz
+
+## ZIP
+
+Create:
+zip -r archive.zip folder/
+
+Extract:
+unzip archive.zip
+
+List:
+unzip -l archive.zip
+
+## DevOps Usage
+
+Compression and archiving are commonly used for:
+
+- Backups
+- Application deployment
+- Log management
+- File transfer
+- Release packages
