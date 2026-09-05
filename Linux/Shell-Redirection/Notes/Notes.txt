@@ -1,1 +1,406 @@
+What is a Shell?
+A shell is a program that allows you to communicate with the operating system using commands.
+Example:
+You
+ ↓
+Terminal
+ ↓
+Shell
+ ↓
+Linux Kernel
+ ↓
+Hardware
+Common Linux shells:
+- Bash
+- Zsh
+- Fish
+- Dash
+Ubuntu commonly uses Bash.
+Check:
+echo $SHELL
+You may see:
+/bin/bash
+2️⃣ Terminal vs Shell
+These are different.
+Terminal
+The application/window where you type commands.
+Examples:
+Ubuntu Terminal
+GNOME Terminal
+Windows Terminal
+Shell
+The program interpreting your commands.
+Example:
+bash
+So:
+Terminal = interface
+Shell = command interpreter
+3️⃣ What is an Environment Variable?
+An environment variable is a named value available to processes running in your shell environment.
+Example:
+NAME=Vivek
+You can access it using:
+echo $NAME
+Output:
+Vivek
+4️⃣ Check Existing Environment Variables
+Run:
+env
+This displays many environment variables.
+Another command:
+printenv
+5️⃣ Important Environment Variables
+$USER
+echo $USER
+Shows the current username.
+$HOME
+echo $HOME
+Shows your home directory.
+Example:
+/home/vivek
+$PWD
+echo $PWD
+Shows your current working directory.
+$SHELL
+echo $SHELL
+Shows your default shell.
+$PATH
+echo $PATH
+This is one of the most important environment variables.
+6️⃣ Understanding $PATH
+Suppose you type:
+python
+How does Linux know where the python program is?
+Linux searches directories listed in $PATH.
+Example:
+/usr/local/bin
+/usr/bin
+/bin
+Conceptually:
+python
+  ↓
+Search PATH
+  ↓
+/usr/bin/python
+  ↓
+Execute
+Check:
+echo $PATH
+Find a command:
+which python
+or:
+command -v python
+7️⃣ Why $PATH Is Important in DevOps
+Suppose you install:
+Java
+Maven
+Docker
+Node.js
+AWS CLI
+and then run:
+java
+mvn
+docker
+aws
+The shell needs to locate those executables.
+That's why $PATH matters.
+A common problem:
+command not found
+can occur because the executable isn't available through the current PATH.
+8️⃣ Create a Shell Variable
+Run:
+NAME="Vivek"
+Then:
+echo $NAME
+Output:
+Vivek
+Notice:
+NAME="Vivek"
+There should be no spaces around =.
+❌ Wrong:
+NAME = "Vivek"
+✅ Correct:
+NAME="Vivek"
+9️⃣ Shell Variable vs Environment Variable
+This distinction is important.
+Create:
+NAME="Vivek"
+This is a shell variable.
+To export it:
+export NAME
+Now it becomes available to child processes.
+You can also do:
+export CITY="Pune"
+Check:
+echo $CITY
+🔟 Child Processes
+Think of it like:
+Parent Shell
+     │
+     ├── Process A
+     ├── Process B
+     └── Process C
+An exported environment variable can be inherited by child processes.
+Example:
+export APP_ENV="production"
+Then applications launched from that environment can access APP_ENV.
+1️⃣1️⃣ Remove an Environment Variable
+unset APP_ENV
+Check:
+echo $APP_ENV
+It should now be empty.
+1️⃣2️⃣ Temporary vs Persistent Variables
+This is extremely important.
+If you run:
+export APP_ENV="production"
+it generally applies to the current shell session and processes launched from it.
+After opening a new shell, it may disappear.
+To make configuration persistent for Bash, you can put appropriate settings in:
+~/.bashrc
+1️⃣3️⃣ .bashrc
+Check it:
+cat ~/.bashrc
+.bashrc is commonly used for Bash interactive-shell configuration.
+You can add:
+export PROJECT_NAME="LinuxDevOps"
+Then reload:
+source ~/.bashrc
+Now:
+echo $PROJECT_NAME
+Output:
+LinuxDevOps
+1️⃣4️⃣ source
+The source command executes commands from a file in the current shell.
+Example:
+source ~/.bashrc
+Short form:
+. ~/.bashrc
+This is useful after modifying shell configuration.
+1️⃣5️⃣ .profile
+Another important configuration file:
+~/.profile
+Check:
+cat ~/.profile
+It's commonly used for login-shell environment configuration.
+For your learning:
+~/.bashrc
+→ Bash interactive configuration
 
+~/.profile
+→ Login/session environment configuration
+The exact startup behavior depends on how the shell/session is launched.
+1️⃣6️⃣ Aliases
+An alias gives a command a shortcut.
+Example:
+alias ll='ls -lah'
+Now:
+ll
+runs:
+ls -lah
+Check aliases:
+alias
+1️⃣7️⃣ Permanent Alias
+Put this in:
+~/.bashrc
+Example:
+alias ll='ls -lah'
+alias c='clear'
+Reload:
+source ~/.bashrc
+Now:
+ll
+works in new Bash sessions as well.
+1️⃣8️⃣ Special Variables
+Some useful Bash variables:
+Variable	Meaning
+$USER	Current username
+$HOME	Home directory
+$PWD	Current directory
+$OLDPWD	Previous directory
+$SHELL	Default shell
+$PATH	Command search paths
+$HOSTNAME	Hostname
+$?	Exit status of previous command
+$$	Current shell PID
+
+
+🔥 1️⃣9️⃣ Exit Status $?
+This is very important for scripting and DevOps.
+Run:
+ls
+Then:
+echo $?
+Usually:
+0
+means the previous command succeeded.
+Try:
+ls /does-not-exist
+Then:
+echo $?
+You'll get a non-zero status.
+Concept:
+0
+↓
+Success
+
+Non-zero
+↓
+Failure/error
+CI/CD pipelines use exit codes to determine whether commands succeeded or failed.
+🔥 2️⃣0️⃣ Real DevOps Example — Application Configuration
+Suppose your Spring Boot application needs:
+DATABASE_URL
+DATABASE_USERNAME
+DATABASE_PASSWORD
+Instead of putting configuration directly into source code, you can provide values through the environment.
+For example:
+export DATABASE_URL="jdbc:mysql://localhost:3306/mydb"
+export DATABASE_USERNAME="appuser"
+Your application can read these values from the environment.
+⚠️ Important
+Don't commit real passwords, API keys, AWS secret keys, or other credentials to GitHub.
+For real deployments, use appropriate secret/configuration management such as AWS Secrets Manager, SSM Parameter Store, or CI/CD secret stores.
+🔥 2️⃣1️⃣ Real DevOps Example — Environment
+You can define:
+export APP_ENV="production"
+Then an application can behave differently based on:
+development
+testing
+production
+For example:
+APP_ENV=development
+        ↓
+Development configuration
+
+APP_ENV=production
+        ↓
+Production configuration
+🔥 2️⃣2️⃣ Real AWS Example
+On an EC2 server, you might have:
+export APP_ENV="production"
+and your application might use:
+APP_ENV
+DATABASE_URL
+PORT
+LOG_LEVEL
+The important concept is:
+AWS EC2
+   ↓
+Linux
+   ↓
+Environment Variables
+   ↓
+Application
+Later, we'll connect this with AWS IAM, Secrets Manager, SSM, Docker, and CI/CD.
+🧪 Practical Lab
+Run these commands one by one.
+Check shell
+echo $SHELL
+Check username
+echo $USER
+Check home
+echo $HOME
+Check current directory
+echo $PWD
+Check PATH
+echo $PATH
+Check hostname
+echo $HOSTNAME
+View environment
+env
+Find Bash
+which bash
+Find a command
+command -v ls
+🧪 Variable Exercise
+Run:
+NAME="Vivek"
+Then:
+echo $NAME
+Now:
+export COURSE="DevOps"
+Check:
+echo $COURSE
+Check:
+printenv COURSE
+Remove it:
+unset COURSE
+Then:
+echo $COURSE
+🧪 PATH Exercise
+Run:
+echo $PATH
+Then:
+command -v ls
+Then:
+command -v bash
+Then:
+command -v python
+If Python isn't installed or the command is named differently on your Ubuntu system, that's okay.
+🧪 .bashrc Lab
+Open:
+nano ~/.bashrc
+At the bottom add:
+export MY_PROJECT="Linux-DevOps"
+alias ll='ls -lah'
+Save and exit.
+Then:
+source ~/.bashrc
+Test:
+echo $MY_PROJECT
+and:
+ll
+You should see your project variable and the ll alias working.
+
+
+
+
+
+
+
+# 🐚 Linux Environment Variables & Shell
+
+## Objective
+
+Learn Linux shells, environment variables, shell variables,
+PATH, Bash configuration, aliases, and environment-based
+application configuration.
+
+## Topics Covered
+
+- Shell
+- Terminal vs Shell
+- Environment Variables
+- Shell Variables
+- PATH
+- HOME
+- USER
+- PWD
+- SHELL
+- export
+- unset
+- env
+- printenv
+- source
+- .bashrc
+- .profile
+- aliases
+- exit status
+
+## DevOps Applications
+
+Environment variables are commonly used for:
+
+- Application configuration
+- Database configuration
+- Deployment environments
+- CI/CD pipelines
+- Docker
+- AWS
+- Spring Boot applications
+- Secret/configuration management
+
+## Important Security Rule
+
+Never commit passwords, API keys, AWS secret keys,
+or other credentials to GitHub.
