@@ -1,1 +1,444 @@
+What Is Bash Scripting?
+Instead of running:
+mkdir backup
+cp file.txt backup/
+tar -czvf backup.tar.gz backup/
+one command at a time, you can put them into a script:
+backup.sh
+    ↓
+Run once
+    ↓
+Multiple commands execute automatically
+That's automation.
+2️⃣ Create Your First Script
+Create a directory:
+mkdir bash-scripting
+cd bash-scripting
+Create the script:
+nano hello.sh
+Write:
+#!/bin/bash
 
+echo "Hello, DevOps!"
+echo "Welcome to Bash scripting"
+Save it.
+3️⃣ What Is #!/bin/bash?
+This first line is called the shebang.
+#!/bin/bash
+It tells the system which interpreter should execute the script.
+For Bash:
+#!/bin/bash
+4️⃣ Make the Script Executable
+Check permissions:
+ls -l hello.sh
+You may see:
+-rw-r--r-- hello.sh
+Add execute permission:
+chmod +x hello.sh
+Now:
+ls -l hello.sh
+You should see an x in the permissions.
+Run:
+./hello.sh
+Output:
+Hello, DevOps!
+Welcome to Bash scripting
+5️⃣ Run Without Execute Permission
+You can also execute it using Bash:
+bash hello.sh
+So:
+./hello.sh
+requires executable permission.
+While:
+bash hello.sh
+explicitly tells Bash to execute the file.
+6️⃣ Variables
+Create:
+nano variables.sh
+#!/bin/bash
+
+name="Vivek"
+course="DevOps"
+
+echo "Name: $name"
+echo "Course: $course"
+Run:
+chmod +x variables.sh
+./variables.sh
+Output:
+Name: Vivek
+Course: DevOps
+Important
+Correct:
+name="Vivek"
+Incorrect:
+name = "Vivek"
+7️⃣ User Input
+Use read.
+#!/bin/bash
+
+echo "Enter your name:"
+read name
+
+echo "Hello $name"
+Run:
+./input.sh
+It will wait for you to enter something.
+Example:
+Enter your name:
+Vivek
+Hello Vivek
+8️⃣ read -p
+You can make it shorter:
+#!/bin/bash
+
+read -p "Enter your name: " name
+
+echo "Hello $name"
+9️⃣ Arithmetic
+Bash can perform arithmetic.
+#!/bin/bash
+
+a=10
+b=5
+
+sum=$((a + b))
+
+echo "Sum = $sum"
+Output:
+Sum = 15
+Other operators:
++ addition
+- subtraction
+* multiplication
+/ division
+% remainder
+Example:
+result=$((10 * 5))
+🔟 if Statement
+Example:
+#!/bin/bash
+
+age=24
+
+if [ $age -ge 18 ]
+then
+    echo "Adult"
+else
+    echo "Minor"
+fi
+Output:
+Adult
+1️⃣1️⃣ Comparison Operators
+Operator	Meaning
+-eq	Equal
+-ne	Not equal
+-gt	Greater than
+-lt	Less than
+-ge	Greater/equal
+-le	Less/equal
+
+
+Example:
+if [ $age -ge 18 ]
+means:
+Is age greater than or equal to 18?
+
+1️⃣2️⃣ Check Whether a File Exists
+Very useful for DevOps.
+#!/bin/bash
+
+if [ -f "/etc/hosts" ]
+then
+    echo "File exists"
+else
+    echo "File does not exist"
+fi
+Useful tests:
+-f → regular file
+-d → directory
+-e → exists
+-r → readable
+-w → writable
+-x → executable
+1️⃣3️⃣ for Loop
+Example:
+#!/bin/bash
+
+for i in 1 2 3 4 5
+do
+    echo "Number: $i"
+done
+Output:
+Number: 1
+Number: 2
+Number: 3
+Number: 4
+Number: 5
+1️⃣4️⃣ Loop Through Files
+#!/bin/bash
+
+for file in *.txt
+do
+    echo "Found: $file"
+done
+This is useful for processing multiple files automatically.
+1️⃣5️⃣ while Loop
+#!/bin/bash
+
+count=1
+
+while [ $count -le 5 ]
+do
+    echo "Count: $count"
+    count=$((count + 1))
+done
+1️⃣6️⃣ Functions
+Functions allow you to reuse commands.
+#!/bin/bash
+
+greet() {
+    echo "Welcome to DevOps"
+}
+
+greet
+Output:
+Welcome to DevOps
+With parameters:
+greet() {
+    echo "Hello $1"
+}
+
+greet "Vivek"
+Output:
+Hello Vivek
+1️⃣7️⃣ Script Arguments
+You can pass values when executing a script.
+Create:
+#!/bin/bash
+
+echo "Script name: $0"
+echo "First argument: $1"
+echo "Second argument: $2"
+Run:
+./args.sh Vivek DevOps
+Output:
+Script name: ./args.sh
+First argument: Vivek
+Second argument: DevOps
+Important variables:
+Variable	Meaning
+$0	Script name
+$1	First argument
+$2	Second argument
+$#	Number of arguments
+$@	All arguments
+
+
+1️⃣8️⃣ Command Substitution
+You can store command output in a variable.
+#!/bin/bash
+
+current_date=$(date)
+
+echo "Date: $current_date"
+Another example:
+hostname=$(hostname)
+
+echo "Server: $hostname"
+This is very common in automation.
+1️⃣9️⃣ Exit Codes
+Remember Topic 15?
+echo $?
+A successful command usually returns:
+0
+A failure returns a non-zero value.
+Example:
+#!/bin/bash
+
+echo "Starting script"
+
+ls /some-invalid-directory
+
+echo "Exit code: $?"
+🔥 2️⃣0️⃣ set -e
+For automation, you may want the script to stop when a command fails:
+#!/bin/bash
+
+set -e
+
+echo "Starting"
+ls /does-not-exist
+echo "This may not execute"
+set -e changes how Bash reacts to certain command failures, but it has edge cases. For production scripts, don't assume it catches every possible failure.
+🔥 2️⃣1️⃣ Real DevOps Project — Server Information Script
+Create:
+nano server-info.sh
+Put:
+#!/bin/bash
+
+echo "=============================="
+echo "       SERVER INFORMATION"
+echo "=============================="
+
+echo "Hostname: $(hostname)"
+echo "User: $USER"
+echo "Date: $(date)"
+echo "Uptime:"
+uptime
+
+echo
+echo "Disk Usage:"
+df -h
+
+echo
+echo "Memory:"
+free -h
+
+echo
+echo "IP Address:"
+ip a
+Make executable:
+chmod +x server-info.sh
+Run:
+./server-info.sh
+🎯 This is a real DevOps-style utility script.
+It gathers information about a Linux server automatically.
+🔥 2️⃣2️⃣ Real DevOps Project — Disk Monitoring
+Create:
+nano disk-check.sh
+#!/bin/bash
+
+usage=$(df / | awk 'NR==2 {print $5}' | tr -d '%')
+
+echo "Root disk usage: $usage%"
+
+if [ "$usage" -ge 80 ]
+then
+    echo "WARNING: Disk usage is high!"
+else
+    echo "Disk usage is normal."
+fi
+Run:
+chmod +x disk-check.sh
+./disk-check.sh
+Concept:
+Linux Server
+     ↓
+Check /
+     ↓
+Get disk usage
+     ↓
+If >= 80%
+     ↓
+WARNING
+This is much closer to the type of automation you'll use in DevOps.
+🧪 Practical Lab
+Create:
+bash-lab/
+├── hello.sh
+├── variables.sh
+├── input.sh
+├── condition.sh
+├── loops.sh
+├── functions.sh
+├── args.sh
+├── server-info.sh
+└── disk-check.sh
+Practice each concept.
+🏆 Challenge
+Create:
+backup.sh
+It should:
+1. Create a backup directory.
+2. Check whether /etc exists.
+3. Create a compressed backup of /etc.
+4. Display the backup filename.
+5. Display the size of the backup.
+6. Return a useful success/failure message.
+Hint:
+mkdir
+if
+tar
+ls -lh
+$?
+Try writing it yourself before looking for a solution.
+
+
+
+
+
+
+
+
+# Bash Scripting
+
+## Shebang
+
+#!/bin/bash
+
+Specifies Bash as the script interpreter.
+
+## Variables
+
+name="Vivek"
+
+echo $name
+
+## User Input
+
+read name
+
+read -p "Enter name: " name
+
+## Conditions
+
+if [ condition ]
+then
+    command
+else
+    command
+fi
+
+## Loops
+
+for i in 1 2 3
+do
+    echo $i
+done
+
+while [ condition ]
+do
+    command
+done
+
+## Functions
+
+function_name() {
+    commands
+}
+
+## Script Arguments
+
+$0 = script name
+$1 = first argument
+$2 = second argument
+$# = number of arguments
+$@ = all arguments
+
+## Command Substitution
+
+result=$(command)
+
+## Exit Code
+
+$?
+
+0 = success
+non-zero = failure
+
+## Important Commands
+
+chmod +x script.sh
+./script.sh
+bash script.sh
