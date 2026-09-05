@@ -1,1 +1,437 @@
+What is Disk Storage?
+Think of your Linux server like this:
+Physical Disk
+     ↓
+Partition
+     ↓
+Filesystem
+     ↓
+Directories & Files
+For example:
+/dev/sda
+   │
+   ├── /dev/sda1
+   └── /dev/sda2
+A disk can contain one or more partitions.
+
+
+What is a Partition?
+A partition is a logical section of a disk.
+Example:
+/dev/sda
+│
+├── /dev/sda1
+├── /dev/sda2
+└── /dev/sda3
+On a cloud server, you may see devices such as:
+/dev/nvme0n1
+/dev/nvme0n1p1
+
+What is a Filesystem?
+A filesystem determines how files and directories are stored and organized on a partition.
+Common Linux filesystems:
+- ext4
+- XFS
+- Btrfs
+Ubuntu commonly uses ext4.
+Check your filesystem:
+Don't worry if your Ubuntu system shows different names. That's normal.
+
+df -T
+
+
+
+Check Disk Space with df
+The most important command:
+df
+Human-readable:
+df -h
+Example:
+Filesystem      Size  Used Avail Use%
+/dev/sda1        50G   20G   28G  42%
+Meaning:
+Column	Meaning
+Filesystem	Storage device
+Size	Total space
+Used	Space currently used
+Avail	Available space
+Use%	Percentage used
+
+
+⭐ Remember
+df -h
+= How much filesystem space is available?
+
+
+
+Check Filesystem Type
+df -Th
+Example:
+Filesystem     Type  Size  Used Avail Use%
+/dev/sda1      ext4   50G   20G   28G  42%
+Here:
+ext4 = filesystem type
+
+
+Find Which Directory Uses Space
+Use:
+du -h
+For a specific directory:
+du -h /var
+Human-readable summary:
+du -sh /var
+Important difference
+df -h
+checks filesystem usage.
+du -sh
+checks directory/file usage.
+
+
+Find Largest Directories
+Try:
+sudo du -sh /* 2>/dev/null
+You might see:
+2.5G    /var
+8.0G    /home
+15G     /usr
+Now investigate a large directory:
+sudo du -sh /var/*
+
+
+lsblk
+lsblk shows block devices.
+lsblk
+Example:
+NAME        SIZE TYPE MOUNTPOINTS
+sda          50G disk
+└─sda1       50G part /
+Human-readable:
+lsblk -f
+This can show:
+- Device
+- Filesystem
+- UUID
+- Mount point
+
+
+blkid
+Show filesystem information:
+sudo blkid
+Example:
+/dev/sda1: UUID="xxxx-xxxx" TYPE="ext4"
+The UUID is important when configuring persistent mounts.
+
+
+Mount
+A filesystem must be mounted to a directory before you normally access its files through that directory.
+Check current mounts:
+mount
+More readable:
+findmnt
+Example concept:
+Disk
+ ↓
+Partition
+ ↓
+Filesystem
+ ↓
+/data
+
+
+
+Create a Mount Point
+A mount point is simply a directory where you want the filesystem to appear.
+Example:
+sudo mkdir /data
+Later, a filesystem can be mounted there.
+
+
+Mount a Filesystem
+General syntax:
+sudo mount <device> <mount-point>
+Example:
+sudo mount /dev/sdb1 /data
+Then:
+df -h
+You should see the mounted filesystem.
+⚠️ Don't execute the example with /dev/sdb1 unless you have confirmed that device exists and contains the filesystem you intend to mount.
+
+
+
+Unmount
+To unmount:
+sudo umount /data
+Notice:
+umount
+not:
+unmount
+
+
+Why Does umount Sometimes Fail?
+You might get:
+target is busy
+This usually means something is still using that mount point.
+Find what's using it:
+sudo lsof +D /data
+Or:
+sudo fuser -m /data
+Then investigate the process before terminating anything.
+
+
+
+/etc/fstab
+One of the most important Linux storage files:
+cat /etc/fstab
+fstab contains information about filesystems that should be mounted automatically.
+Conceptually:
+UUID
+  ↓
+Filesystem
+  ↓
+Mount Point
+  ↓
+Options
+For example:
+UUID=xxxx-xxxx  /data  ext4  defaults  0  2
+Why is this useful?
+Suppose you attach an additional disk to an AWS EC2 server.
+You don't want to manually mount it after every reboot.
+You can configure persistent mounting through /etc/fstab.
+
+
+
+Inodes
+This is an important Linux concept.
+An inode stores metadata about a file.
+It contains information such as:
+- File permissions
+- Owner
+- Group
+- File size
+- Timestamps
+- Pointers to file data
+Check inode usage:
+df -i
+Human-readable:
+df -ih
+⚠️ Disk Space vs Inodes
+A server can have:
+Disk space available
+but:
+Inodes = 100% used
+In that situation, you can still have problems creating new files.
+This can happen when there are huge numbers of tiny files.
+
+
+
+Check Disk Usage
+df -h
+If you see:
+Use% = 95%
+you should investigate.
+Find large directories:
+sudo du -sh /* 2>/dev/null
+Then drill down:
+sudo du -sh /var/*
+
+
+
+
+
+
+
+
+
+
+
+Real DevOps Troubleshooting Scenario
+Imagine your application on an AWS EC2 server suddenly stops working.
+You check the logs:
+df -h
+and discover:
+/dev/nvme0n1p1   20G   20G     0G  100% /
+🚨 Root filesystem is full.
+Step 1 — Find large directories
+sudo du -sh /* 2>/dev/null
+Suppose:
+12G /var
+5G  /home
+Investigate:
+sudo du -sh /var/*
+Maybe logs are consuming space.
+Then investigate the specific log directory.
+The important DevOps process is:
+Disk full
+   ↓
+df -h
+   ↓
+Find large directory
+   ↓
+du
+   ↓
+Find large files/logs
+   ↓
+Investigate safely
+   ↓
+Clean/rotate/expand storage
+Never blindly delete system files just because they're large.
+☁️ AWS Connection — EBS
+This topic connects directly to AWS.
+An EC2 instance can use EBS volumes for persistent block storage.
+Conceptually:
+AWS
+ │
+ └── EC2
+      │
+      └── EBS Volume
+             ↓
+         Linux Disk
+             ↓
+        Partition
+             ↓
+        Filesystem
+             ↓
+           /data
+For example, you might attach an additional EBS volume and eventually make it available at:
+/data
+This is a very common cloud administration task.
+🧪 Practical Lab
+Run these commands on your Ubuntu system.
+Step 1
+df -h
+Step 2
+df -Th
+Step 3
+lsblk
+Step 4
+lsblk -f
+Step 5
+sudo blkid
+Step 6
+du -sh ~
+Step 7
+sudo du -sh /var
+Step 8
+findmnt
+Step 9
+df -i
+Step 10
+cat /etc/fstab
+🧪 Safe Practice: Create Your Own Test Storage
+You don't need a second physical disk to understand mounting.
+Create a 100 MB disk image:
+dd if=/dev/zero of=storage.img bs=1M count=100
+Create a filesystem:
+mkfs.ext4 storage.img
+Create mount point:
+sudo mkdir /mnt/testdisk
+Mount it:
+sudo mount -o loop storage.img /mnt/testdisk
+Check:
+df -h /mnt/testdisk
+Create a file:
+sudo touch /mnt/testdisk/test.txt
+Check:
+ls -l /mnt/testdisk
+Unmount:
+sudo umount /mnt/testdisk
+Then remove the test files:
+rm storage.img
+This is a great way to practice without modifying your real partitions.
+
+
+
+comman cheat sheet 
+
+| Command | Purpose |
+|---|---|
+| `df -h` | Filesystem disk usage |
+| `df -Th` | Disk usage + filesystem type |
+| `df -i` | Inode usage |
+| `du -sh` | Directory size |
+| `lsblk` | List block devices |
+| `lsblk -f` | Devices + filesystem information |
+| `blkid` | UUID/filesystem information |
+| `mount` | Show mounted filesystems |
+| `findmnt` | Show mount information |
+| `mount` | Mount filesystem |
+| `umount` | Unmount filesystem |
+| `cat /etc/fstab` | View persistent mount configuration |
+| `lsof` | Find files/process usage |
+| `fuser` | Identify processes using resources |
+
+
+
+
+
+
+
+
+
+# Linux Disk & Storage Management
+
+## Important Concepts
+
+Disk
+→ Physical/block storage device.
+
+Partition
+→ Logical section of a disk.
+
+Filesystem
+→ Structure used to organize files on storage.
+
+Mount Point
+→ Directory where a filesystem is made accessible.
+
+## Commands
+
+df -h
+→ Show filesystem disk usage.
+
+df -Th
+→ Show disk usage and filesystem type.
+
+df -i
+→ Show inode usage.
+
+du -sh <directory>
+→ Show directory size.
+
+lsblk
+→ Show block devices.
+
+lsblk -f
+→ Show filesystem information.
+
+blkid
+→ Show UUID and filesystem information.
+
+findmnt
+→ Show mounted filesystems.
+
+mount
+→ Mount a filesystem.
+
+umount
+→ Unmount a filesystem.
+
+cat /etc/fstab
+→ Show persistent filesystem configuration.
+
+## Important Difference
+
+df → Filesystem usage
+
+du → Directory/file usage
+
+## DevOps
+
+If a server's disk reaches 100%:
+
+1. Run df -h
+2. Find the full filesystem
+3. Use du to find large directories
+4. Investigate large files/logs
+5. Clean safely, rotate logs, or expand storage
 
