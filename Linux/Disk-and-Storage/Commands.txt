@@ -1,1 +1,34 @@
+df
+df -h
+df -Th
+df -i
+df -ih
 
+du -h
+du -sh /var
+du -sh ~
+
+lsblk
+lsblk -f
+
+sudo blkid
+
+mount
+findmnt
+
+sudo mkdir /data
+sudo mount /dev/sdb1 /data
+sudo umount /data
+
+cat /etc/fstab
+
+sudo lsof +D /data
+sudo fuser -m /data
+
+dd if=/dev/zero of=storage.img bs=1M count=100
+mkfs.ext4 storage.img
+sudo mkdir /mnt/testdisk
+sudo mount -o loop storage.img /mnt/testdisk
+df -h /mnt/testdisk
+sudo umount /mnt/testdisk
+rm storage.img
