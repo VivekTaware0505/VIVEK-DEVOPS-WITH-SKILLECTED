@@ -1,1 +1,290 @@
+What is LVM?
+LVM = Logical Volume Management
+It allows you to manage disk storage more flexibly than traditional fixed disk partitions.
+Without LVM:
+Disk
+│
+├── /dev/sda1 → 20 GB
+├── /dev/sda2 → 30 GB
+└── /dev/sda3 → 50 GB
+If /dev/sda2 becomes full, increasing its size can be difficult depending on the partition layout.
+With LVM:
+Physical Disk
+      ↓
+Physical Volume (PV)
+      ↓
+Volume Group (VG)
+      ↓
+Logical Volume (LV)
+      ↓
+Filesystem
+      ↓
+Mount Point
+You can generally resize logical volumes much more flexibly.
+2. The 3 Most Important LVM Concepts
+Remember these:
+PV → VG → LV
+PV — Physical Volume
+The actual disk or partition prepared for LVM.
+Example:
+/dev/sdb
+or:
+/dev/sdb1
+VG — Volume Group
+A storage pool created from one or more physical volumes.
+PV1 ──┐
+      ├──→ Volume Group
+PV2 ──┘
+Example:
+PV1 = 50 GB
+PV2 = 50 GB
 
+VG = 100 GB
+LV — Logical Volume
+A virtual storage volume created from the volume group.
+VG = 100 GB
+
+├── LV1 = 40 GB
+├── LV2 = 30 GB
+└── Free = 30 GB
+That free space can later be allocated.
+3. Easy Real-Life Example
+Imagine a water tank:
+Physical Volumes
+     ↓
+   Tank
+     ↓
+Volume Group
+     ↓
+Separate buckets
+     ↓
+Logical Volumes
+So:
+PV = Storage disks
+VG = Storage pool
+LV = Virtual partitions
+4. Check Existing Disks
+Start with:
+lsblk
+Example:
+NAME   SIZE TYPE
+sda    100G disk
+├─sda1  20G part
+└─sda2  80G part
+sdb     50G disk
+Another useful command:
+sudo fdisk -l
+5. Check Existing Physical Volumes
+sudo pvs
+More detailed:
+sudo pvdisplay
+Example:
+PV         VG       Fmt
+/dev/sdb   vgdata   lvm2
+6. Check Volume Groups
+sudo vgs
+Detailed:
+sudo vgdisplay
+Example:
+VG      VSize   VFree
+vgdata  50.00g  20.00g
+This means the volume group has:
+Total = 50 GB
+Free  = 20 GB
+Used  = 30 GB
+7. Check Logical Volumes
+sudo lvs
+Detailed:
+sudo lvdisplay
+Example:
+LV      VG      Attr       LSize
+data    vgdata  -wi-a----- 30.00g
+8. Create a Physical Volume
+⚠️ This is a storage operation. Do not run this against a disk containing important data.
+Suppose a new empty disk is:
+/dev/sdb
+Create a physical volume:
+sudo pvcreate /dev/sdb
+Check:
+sudo pvs
+9. Create a Volume Group
+Create:
+vgdata
+using /dev/sdb:
+sudo vgcreate vgdata /dev/sdb
+Check:
+sudo vgs
+10. Create a Logical Volume
+Suppose you want a 20 GB logical volume:
+sudo lvcreate -L 20G -n lvdata vgdata
+Check:
+sudo lvs
+You should have:
+VG      LV
+vgdata  lvdata
+11. Find the LV Device
+You can see it using:
+lsblk
+Usually it appears as:
+/dev/vgdata/lvdata
+or:
+/dev/mapper/vgdata-lvdata
+12. Create a Filesystem
+A logical volume is not automatically a usable filesystem.
+For example, create an ext4 filesystem:
+sudo mkfs.ext4 /dev/vgdata/lvdata
+⚠️ mkfs formats the target and can destroy existing data.
+13. Create a Mount Point
+sudo mkdir /data
+Mount the LV:
+sudo mount /dev/vgdata/lvdata /data
+Check:
+df -h
+You should see /data.
+14. Test the Storage
+Create a file:
+sudo touch /data/test.txt
+Check:
+ls -l /data
+Write something:
+echo "LVM test" | sudo tee /data/test.txt
+Read it:
+cat /data/test.txt
+15. Increase LV Size
+This is one of LVM's biggest advantages.
+Suppose:
+LV = 20 GB
+You want to add 5 GB:
+sudo lvextend -L +5G /dev/vgdata/lvdata
+Check:
+sudo lvs
+But there's an important point:
+Increasing the LV does not necessarily mean the filesystem automatically uses the new space.
+
+For an ext4 filesystem:
+sudo resize2fs /dev/vgdata/lvdata
+Then:
+df -h
+16. Easier Way — -r
+You can often resize the filesystem together with the LV:
+sudo lvextend -r -L +5G /dev/vgdata/lvdata
+-r tells LVM to resize the filesystem as well when supported.
+17. Reduce an LV
+This is much more dangerous.
+For example:
+sudo lvreduce
+⚠️ Never blindly reduce a filesystem/LV.
+Reducing it incorrectly can cause data loss.
+For ext4, the general process is:
+Filesystem check
+       ↓
+Unmount
+       ↓
+Shrink filesystem
+       ↓
+Reduce LV
+       ↓
+Mount again
+For learning, focus mainly on extending LVs.
+18. Add Another Disk to a Volume Group
+Suppose you have:
+/dev/sdb → PV
+and later add:
+/dev/sdc
+Create PV:
+sudo pvcreate /dev/sdc
+Add it to the existing VG:
+sudo vgextend vgdata /dev/sdc
+Now:
+/dev/sdb ──┐
+           ├──→ vgdata
+/dev/sdc ──┘
+The volume group has more storage available.
+19. LVM Architecture
+This is the diagram you should remember for interviews:
+             Physical Disks
+             ┌────────────┐
+             │ /dev/sdb   │
+             │ /dev/sdc   │
+             └─────┬──────┘
+                   ↓
+            Physical Volumes
+              ┌──────────┐
+              │ PV1  PV2 │
+              └────┬─────┘
+                   ↓
+             Volume Group
+              ┌──────────┐
+              │  vgdata  │
+              └────┬─────┘
+                   ↓
+           Logical Volumes
+          ┌────────┴────────┐
+          ↓                 ↓
+       lvdata            lvbackup
+          ↓                 ↓
+      Filesystem        Filesystem
+          ↓                 ↓
+         /data           /backup
+20. LVM vs Traditional Partitioning
+Feature	Traditional Partition	LVM
+Flexible storage	Limited	✅
+Easy expansion	Sometimes difficult	✅
+Multiple disks	Limited	✅
+Storage pooling	❌	✅
+Resize flexibility	Limited	✅
+Server environments	Used	⭐ Very common
+
+
+21. LVM in DevOps
+Imagine an application server:
+Ubuntu Server
+│
+├── /          → OS
+├── /var       → Logs
+├── /data      → Application data
+└── /backup    → Backups
+Your application generates lots of data:
+/data = 90%
+Instead of rebuilding the server, you can add storage and extend the LVM setup.
+This is why LVM is useful for Linux server administration and DevOps.
+🧪 Practical Lab
+Don't perform this on a disk containing important data.
+If you have a spare empty disk such as /dev/sdb, the learning workflow is:
+# 1. Check disks
+lsblk
+
+# 2. Create physical volume
+sudo pvcreate /dev/sdb
+
+# 3. Create volume group
+sudo vgcreate vgdata /dev/sdb
+
+# 4. Create 10 GB logical volume
+sudo lvcreate -L 10G -n lvdata vgdata
+
+# 5. Check
+sudo lvs
+
+# 6. Create filesystem
+sudo mkfs.ext4 /dev/vgdata/lvdata
+
+# 7. Create mount point
+sudo mkdir /data
+
+# 8. Mount
+sudo mount /dev/vgdata/lvdata /data
+
+# 9. Check storage
+df -h
+
+# 10. Test
+echo "LVM Lab" | sudo tee /data/test.txt
+
+# 11. Read
+cat /data/test.txt
+Expansion test
+If your VG has free space:
+sudo lvextend -r -L +2G /dev/vgdata/lvdata
+Then:
+df -h /data
