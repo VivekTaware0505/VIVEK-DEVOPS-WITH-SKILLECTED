@@ -1,1 +1,85 @@
 
+# ==========================================
+# LINUX PIPES & FILTERS
+# ==========================================
+
+# PIPE
+command1 | command2
+
+# GREP
+grep "error" file.txt
+grep -i "error" file.txt
+grep -n "error" file.txt
+grep -r "error" /var/log
+
+# PIPE + GREP
+ps aux | grep nginx
+ss -tuln | grep 8080
+systemctl list-units | grep ssh
+
+# HEAD
+head file.txt
+head -n 5 file.txt
+ps aux | head
+
+# TAIL
+tail file.txt
+tail -n 20 file.txt
+tail -f /var/log/syslog
+
+# TAIL + GREP
+tail -f /var/log/syslog | grep "error"
+
+# SORT
+sort file.txt
+sort -n numbers.txt
+sort -r file.txt
+
+# UNIQ
+uniq file.txt
+sort file.txt | uniq
+sort file.txt | uniq -c
+sort file.txt | uniq -c | sort -nr
+
+# WC
+wc file.txt
+wc -l file.txt
+wc -w file.txt
+wc -c file.txt
+
+# CUT
+cut -d ":" -f 1 file.txt
+cut -d ":" -f 2 file.txt
+
+# TR
+echo "hello" | tr 'a-z' 'A-Z'
+echo "Linux DevOps" | tr ' ' '_'
+
+# AWK
+awk '{print $1}' file.txt
+awk '{print $2}' file.txt
+awk '{print $1, $3}' file.txt
+
+# SED
+sed 's/old/new/g' file.txt
+echo "Hello Linux" | sed 's/Linux/DevOps/'
+
+# REDIRECTION
+command > file.txt
+command >> file.txt
+command < file.txt
+
+# MULTIPLE PIPES
+ps aux | grep nginx | wc -l
+
+# LOG ANALYSIS
+grep -i "error" /var/log/syslog | tail -20
+
+# TOP IPs FROM WEB LOG
+awk '{print $1}' access.log | sort | uniq -c | sort -nr | head
+
+# FIND JAVA PROCESSES
+ps aux | grep '[j]ava'
+
+# FIND PORT
+sudo ss -tulpn | grep 8080
