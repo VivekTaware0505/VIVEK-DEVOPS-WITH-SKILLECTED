@@ -1,1 +1,111 @@
+# ==========================================
+# SAMBA COMMANDS
+# ==========================================
+
+# Update packages
+sudo apt update
+
+# Install Samba
+sudo apt install samba
+
+# Check Samba service
+sudo systemctl status smbd
+
+# Start Samba
+sudo systemctl start smbd
+
+# Enable Samba at boot
+sudo systemctl enable smbd
+
+# Enable + start
+sudo systemctl enable --now smbd
+
+# Create shared directory
+sudo mkdir -p /srv/samba/shared
+
+# Create test file
+echo "Hello from Samba Server" | sudo tee /srv/samba/shared/test.txt
+
+# Install Samba client
+sudo apt install smbclient
+
+# Validate Samba configuration
+sudo testparm
+
+# Restart Samba
+sudo systemctl restart smbd
+
+# List Samba shares
+smbclient -L localhost -N
+
+# Connect to share
+smbclient //localhost/shared -N
+
+# Create Samba user
+sudo adduser sambauser
+
+# Add Samba password
+sudo smbpasswd -a sambauser
+
+# Enable Samba user
+sudo smbpasswd -e sambauser
+
+# Check SMB port
+sudo ss -tulpn | grep 445
+
+# View Samba logs
+journalctl -u smbd
+
+# Check firewall
+sudo ufw status
+
+# Check Samba firewall profile
+sudo ufw app list | grep -i samba
+
+# Allow Samba if profile exists
+sudo ufw allow Samba
+
+# Allow SMB from local network
+sudo ufw allow from 192.168.1.0/24 to any port 445 proto tcp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is Samba?
+   → Software that provides SMB/CIFS file and printer sharing, commonly between Linux and Windows.
+2. What protocol does Samba use?
+   → SMB/CIFS.
+3. What is smbd?
+   → Samba daemon responsible for SMB file/printer sharing.
+4. Where is Samba's main configuration file?
+   → /etc/samba/smb.conf
+5. What does smbpasswd do?
+   → Manages Samba user passwords.
+6. What does testparm do?
+   → Checks Samba configuration for errors.
+7. Samba vs NFS?
+   → Samba is commonly used for Windows/Linux interoperability; NFS is commonly used in Linux/Unix environments.
+8. Which port does modern SMB primarily use?
+   → TCP 445.
+9. How does Windows access a Samba share?
+\\SERVER_IP\SHARE_NAME
+10. Should Samba be exposed to the Internet?
+       → No. Restrict it to trusted networks and use proper authentication/firewall rules.
+
+
 
