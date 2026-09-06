@@ -1,1 +1,359 @@
+What is Linux Security?
+Linux security means protecting a Linux system from:
+- Unauthorized users
+- Unauthorized access to files
+- Malicious processes
+- Unwanted network connections
+- Weak passwords
+- Misconfigured permissions
+- Unnecessary services
+- Security vulnerabilities
+Think of a Linux server like a house:
+Linux	Real life
+User	Person
+Password	Key
+Permissions	Room access
+sudo	Master permission
+Firewall	Security gate
+Logs	CCTV records
+Updates	Security repairs
 
+
+2. Main Linux Security Principles
+🔐 Authentication
+Who are you?
+Example:
+ssh user@server
+The system needs to authenticate the user.
+🔑 Authorization
+What are you allowed to do?
+Example:
+A normal user may read a file but may not modify /etc/ configuration files.
+👑 Least Privilege
+Give users/processes only the permissions they actually need.
+This is extremely important in DevOps.
+Don't use root when normal user permissions are enough.
+
+🛡️ Defense in Depth
+Don't depend on one security mechanism.
+Example:
+Strong passwords
+      ↓
+File permissions
+      ↓
+Firewall
+      ↓
+Updates
+      ↓
+Security logs
+      ↓
+Service hardening
+3. Root User vs Normal User
+Linux has a special administrative account:
+root
+Root has extremely powerful permissions.
+Check current user:
+whoami
+Example:
+vivek
+Check user information:
+id
+Example:
+uid=1000(vivek) gid=1000(vivek) groups=1000(vivek),27(sudo)
+Check groups:
+groups
+4. sudo
+sudo allows an authorized normal user to execute a command with elevated privileges.
+Example:
+sudo apt update
+Instead of logging in directly as root, you normally use:
+sudo command
+Check sudo access
+sudo -l
+This shows commands the current user may run through sudo.
+Important
+Be careful with commands like:
+sudo rm -rf
+A wrong command with sudo can damage the entire system.
+5. Sudo Configuration
+Sudo permissions are controlled through:
+/etc/sudoers
+Never casually edit it with a normal text editor.
+Use:
+sudo visudo
+visudo checks the syntax before saving, helping prevent a broken sudo configuration.
+6. File Permissions = Security
+You already learned permissions in Topic 7. Now understand them from a security perspective.
+Check:
+ls -l
+Example:
+-rwxr-xr-- 1 vivek developers 1200 script.sh
+Breakdown:
+- rwx r-x r--
+  │   │   │
+  │   │   └── Others
+  │   └────── Group
+  └────────── Owner
+Permissions:
+r = read
+w = write
+x = execute
+Numeric permissions
+r = 4
+w = 2
+x = 1
+Therefore:
+7 = rwx
+6 = rw-
+5 = r-x
+4 = r--
+0 = ---
+Example:
+chmod 750 script.sh
+Means:
+Owner  = rwx
+Group  = r-x
+Others = ---
+This is much safer than giving everyone write access.
+7. Ownership
+Check ownership:
+ls -l
+Change owner:
+sudo chown vivek file.txt
+Change group:
+sudo chgrp developers file.txt
+Or both:
+sudo chown vivek:developers file.txt
+Security example
+Suppose:
+application.log
+should only be writable by the application user.
+You might use:
+sudo chown appuser:appgroup application.log
+sudo chmod 640 application.log
+8. umask
+umask controls the default permissions of newly created files/directories.
+Check:
+umask
+Example:
+0022
+You can temporarily test it:
+umask 027
+Then create:
+touch test.txt
+mkdir testdir
+Check:
+ls -ld testdir
+ls -l test.txt
+Why is this useful?
+In production environments, you don't want newly created files to automatically become writable by everyone.
+9. Special Permissions
+Linux has three important special permissions:
+SUID
+SGID
+Sticky Bit
+SUID
+A program executes with the permissions of its owner.
+Find SUID files:
+find / -perm -4000 -type f 2>/dev/null
+Don't modify system SUID files unless you understand exactly why.
+SGID
+SGID on a directory causes newly created files to inherit the directory's group.
+Example:
+chmod g+s shared/
+Sticky Bit
+Commonly used on shared directories.
+Example:
+chmod +t shared/
+Classic example:
+/tmp
+It prevents users from deleting files belonging to other users in the shared directory.
+10. Password Security
+Linux stores account information in:
+/etc/passwd
+Password hashes are stored separately in:
+/etc/shadow
+The shadow file is highly protected.
+Check:
+ls -l /etc/shadow
+Change your password:
+passwd
+An administrator can change another user's password:
+sudo passwd username
+Security best practices
+Use:
+- Strong passwords
+- Unique passwords
+- No passwords inside scripts
+- No passwords committed to GitHub
+- Environment variables/secrets management for applications
+- Proper file permissions
+Never upload secrets like passwords, API keys, AWS keys, or private keys to GitHub.
+11. User Account Security
+List users:
+cat /etc/passwd
+List users with UID information:
+cut -d: -f1,3 /etc/passwd
+Check account information:
+id username
+Lock an account:
+sudo passwd -l username
+Unlock:
+sudo passwd -u username
+Check password/account aging:
+sudo chage -l username
+12. UFW Firewall 🔥
+Ubuntu commonly uses UFW — Uncomplicated Firewall.
+Check status:
+sudo ufw status
+More detailed:
+sudo ufw status verbose
+Enable firewall:
+sudo ufw enable
+Allow HTTP:
+sudo ufw allow 80/tcp
+Allow HTTPS:
+sudo ufw allow 443/tcp
+Deny a port:
+sudo ufw deny 8080/tcp
+Delete a rule:
+sudo ufw delete deny 8080/tcp
+Show numbered rules:
+sudo ufw status numbered
+⚠️ Important Firewall Warning
+If you're connected to a remote server, don't enable UFW blindly.
+You can accidentally block your own administrative access.
+For example, if you need SSH access, ensure the appropriate SSH rule is allowed before enabling the firewall.
+This is one reason we're keeping SSH Administration as Topic 20.
+13. Check Listening Ports
+A very useful security command:
+ss -tuln
+Example:
+Netid  Local Address    State
+tcp    0.0.0.0:22       LISTEN
+tcp    0.0.0.0:80       LISTEN
+This tells you which network ports are listening.
+You can investigate an unexpected port instead of leaving unnecessary services exposed.
+14. Check Running Services
+List running services:
+systemctl --type=service --state=running
+Check a particular service:
+systemctl status nginx
+If a service is unnecessary, investigate it before disabling it.
+For example:
+sudo systemctl disable service-name
+The security principle is:
+If you don't need a service, don't expose it unnecessarily.
+
+15. Keep Linux Updated
+Security vulnerabilities are frequently fixed through updates.
+Ubuntu:
+sudo apt update
+Then:
+sudo apt upgrade
+Check available updates:
+apt list --upgradable
+In production, updates should be handled through a planned patching process rather than blindly upgrading critical systems.
+16. Security Logs
+You already learned Linux logs in Topic 18.
+Security-related logs are especially important.
+Ubuntu commonly has:
+/var/log/auth.log
+View:
+sudo less /var/log/auth.log
+Search authentication events:
+sudo grep "Failed" /var/log/auth.log
+Using systemd journal:
+sudo journalctl
+For authentication-related events:
+sudo journalctl | grep -i "authentication"
+This helps administrators investigate suspicious activity.
+17. Basic Linux Hardening Checklist
+For a Linux server, think:
+☑ Use normal user account
+☑ Use sudo when required
+☑ Apply least privilege
+☑ Correct file permissions
+☑ Correct ownership
+☑ Strong authentication
+☑ Keep system updated
+☑ Configure firewall
+☑ Remove unnecessary services
+☑ Monitor logs
+☑ Protect secrets
+☑ Avoid hard-coded credentials
+☑ Regularly review users
+☑ Regularly review listening ports
+This is a very useful DevOps interview checklist.
+🧪 Practical Lab — Linux Security
+Let's make a small security lab.
+Step 1 — Create a test group
+sudo groupadd securitylab
+Step 2 — Create a test user
+sudo useradd -m securityuser
+Set password:
+sudo passwd securityuser
+Add user to group:
+sudo usermod -aG securitylab securityuser
+Verify:
+id securityuser
+Step 3 — Create secure directory
+sudo mkdir /opt/securitylab
+Change ownership:
+sudo chown securityuser:securitylab /opt/securitylab
+Set permissions:
+sudo chmod 750 /opt/securitylab
+Check:
+ls -ld /opt/securitylab
+You should understand why 750 was selected.
+Step 4 — Test umask
+umask
+Temporarily change:
+umask 027
+Create:
+touch security-test.txt
+mkdir security-test-dir
+Check:
+ls -l security-test.txt
+ls -ld security-test-dir
+Step 5 — Check firewall
+sudo ufw status verbose
+If this is your local Ubuntu machine, you can practice rules.
+sudo ufw allow 80/tcp
+Then:
+sudo ufw status numbered
+Remove the test rule afterward if you don't need it.
+Step 6 — Check listening ports
+ss -tuln
+Ask yourself:
+Which services are listening, and do I actually need them?
+
+That's a real administrator/security mindset.
+
+
+
+
+# Linux Security
+
+Topics Covered:
+- Root vs Normal User
+- sudo
+- File Permissions
+- Ownership
+- umask
+- SUID
+- SGID
+- Sticky Bit
+- Password Security
+- UFW Firewall
+- Listening Ports
+- Service Security
+- Linux Hardening
+- Security Logs
+
+Practical Labs:
+- User and Group Security
+- Permission Management
+- umask
+- UFW
+- Port Inspection
