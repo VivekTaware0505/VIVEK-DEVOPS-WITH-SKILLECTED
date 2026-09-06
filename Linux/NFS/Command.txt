@@ -1,1 +1,152 @@
+# ==========================================
+# NFS - SERVER COMMANDS
+# ==========================================
 
+# Update packages
+sudo apt update
+
+# Install NFS server
+sudo apt install nfs-kernel-server
+
+# Start NFS service
+sudo systemctl start nfs-kernel-server
+
+# Enable NFS at boot
+sudo systemctl enable nfs-kernel-server
+
+# Check NFS service
+sudo systemctl status nfs-kernel-server
+
+# Create shared directory
+sudo mkdir -p /data/shared
+
+# Create test file
+echo "NFS Server Test" | sudo tee /data/shared/test.txt
+
+# Edit exports
+sudo nano /etc/exports
+
+# Apply exports
+sudo exportfs -a
+
+# Show exports
+sudo exportfs -v
+
+# Show exported filesystems
+sudo exportfs -s
+
+
+# ==========================================
+# NFS - CLIENT COMMANDS
+# ==========================================
+
+# Install NFS client
+sudo apt update
+sudo apt install nfs-common
+
+# Show server exports
+showmount -e SERVER_IP
+
+# Create mount point
+sudo mkdir -p /mnt/shared
+
+# Mount NFS share
+sudo mount SERVER_IP:/data/shared /mnt/shared
+
+# Check mounted filesystem
+df -h
+
+# Check NFS mounts
+mount | grep nfs
+
+# List files
+ls -l /mnt/shared
+
+# Unmount
+sudo umount /mnt/shared
+
+
+# ==========================================
+# PERMANENT MOUNT
+# ==========================================
+
+# Edit fstab
+sudo nano /etc/fstab
+
+# Example:
+# SERVER_IP:/data/shared /mnt/shared nfs defaults,_netdev 0 0
+
+# Test fstab
+sudo mount -a
+
+
+# ==========================================
+# PERMISSIONS
+# ==========================================
+
+# Check permissions
+ls -ld /data/shared
+
+# Change ownership
+sudo chown user:user /data/shared
+
+# Change permissions
+sudo chmod 755 /data/shared
+
+
+# ==========================================
+# TROUBLESHOOTING
+# ==========================================
+
+# Check NFS service
+sudo systemctl status nfs-kernel-server
+
+# Check exports
+sudo exportfs -v
+
+# Check network
+ping SERVER_IP
+
+# Check mounted filesystems
+df -h
+
+# Check NFS mounts
+mount | grep nfs
+
+# Check logs
+sudo journalctl -u nfs-kernel-server
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is NFS?
+NFS is a network filesystem that allows a client to access directories shared by another server over a network.
+2. What is an NFS server?
+The machine that exports/shares directories.
+3. What is an NFS client?
+The machine that mounts and accesses the shared directory.
+4. Which file configures NFS exports?
+/etc/exports
+5. Which command applies export configuration?
+sudo exportfs -a
+6. How do you see NFS exports?
+sudo exportfs -v
+or from the client:
+showmount -e SERVER_IP
+7. How do you mount an NFS share?
+sudo mount SERVER_IP:/data/shared /mnt/shared
+8. How do you make an NFS mount permanent?
+Add it to:
+/etc/fstab
+9. NFS vs Samba?
+NFS is commonly used for Unix/Linux file sharing, while Samba implements SMB/CIFS and is commonly used for Windows/Linux interoperability.
