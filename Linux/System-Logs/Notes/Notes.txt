@@ -1,1 +1,450 @@
+What Is a Log?
+A log is a record of events that happened on a system.
+For example:
+Server started
+User logged in
+Application started
+Database connection failed
+Disk almost full
+Service stopped
+Conceptually:
+Linux Server
+     ↓
+Applications / Services
+     ↓
+      Logs
+     ↓
+Troubleshooting
+2️⃣ Where Are Linux Logs?
+A very important directory is:
+/var/log
+Check it:
+ls -lah /var/log
+You may see files/directories such as:
+auth.log
+syslog
+kern.log
+apt/
+journal/
+The exact files vary by Ubuntu version and logging configuration.
+3️⃣ /var/log/syslog
+On Ubuntu systems that use traditional syslog logging, you may have:
+/var/log/syslog
+View it:
+sudo less /var/log/syslog
+Search for something:
+sudo grep "error" /var/log/syslog
+4️⃣ Authentication Logs
+On many Ubuntu installations:
+/var/log/auth.log
+contains authentication-related events.
+View:
+sudo less /var/log/auth.log
+Search:
+sudo grep "Failed" /var/log/auth.log
+This can help investigate authentication failures.
+5️⃣ journalctl ⭐
+Modern Linux systems using systemd commonly use the system journal.
+The main command is:
+journalctl
+Try:
+journalctl
+It may contain a lot of output.
+Use:
+journalctl -n 20
+to see recent entries.
+6️⃣ View Logs in Real Time
+This is extremely useful.
+journalctl -f
+-f means follow.
+It continuously displays new log entries.
+Stop it with:
+Ctrl + C
+7️⃣ Service-Specific Logs
+Suppose you want to inspect the SSH service:
+journalctl -u ssh
+On some Ubuntu systems the service may be named ssh.service.
+You can check:
+systemctl status ssh
+Then:
+journalctl -u ssh
+8️⃣ Recent Service Logs
+journalctl -u ssh -n 50
+This shows approximately the latest 50 entries for that service.
+Follow them:
+journalctl -u ssh -f
+9️⃣ Logs Since a Specific Time
+For example:
+journalctl --since "1 hour ago"
+Or:
+journalctl --since today
+You can combine it with a service:
+journalctl -u ssh --since today
+🔟 Logs Between Two Times
+Example:
+journalctl --since "2026-09-06 10:00:00" --until "2026-09-06 12:00:00"
+This is useful when troubleshooting:
+"The application stopped working around 11 AM. What happened?"
 
+1️⃣1️⃣ Kernel Logs
+You can inspect kernel-related messages with:
+journalctl -k
+Or:
+dmesg
+Recent kernel messages:
+dmesg | tail
+Some systems require elevated privileges for certain dmesg output.
+1️⃣2️⃣ cat
+For smaller log files:
+cat file.log
+Example:
+cat /var/log/auth.log
+But large logs can produce huge output.
+That's why tools like less are often better.
+1️⃣3️⃣ less
+sudo less /var/log/syslog
+Useful keys:
+↑ ↓       Move
+Space     Next page
+b         Previous page
+/word     Search
+q         Quit
+Example:
+Inside less, type:
+/error
+to search for "error".
+1️⃣4️⃣ head
+Show the beginning of a file:
+head file.log
+Show first 20 lines:
+head -n 20 file.log
+1️⃣5️⃣ tail
+Show the end of a file:
+tail file.log
+Last 50 lines:
+tail -n 50 file.log
+🔥 1️⃣6️⃣ tail -f
+One of the most useful DevOps commands:
+tail -f application.log
+It continuously displays new lines added to the file.
+Imagine your application is running:
+Application
+     ↓
+application.log
+     ↓
+tail -f
+     ↓
+Your terminal
+You can watch events as they happen.
+Stop:
+Ctrl + C
+1️⃣7️⃣ grep
+grep searches text.
+Example:
+grep "error" application.log
+Case-insensitive:
+grep -i "error" application.log
+Search multiple patterns:
+grep -E "error|failed|warning" application.log
+1️⃣8️⃣ Combine tail + grep
+Very useful:
+tail -f application.log | grep -i "error"
+Now you'll mainly see newly arriving lines containing error.
+1️⃣9️⃣ Count Errors
+grep -i "error" application.log | wc -l
+Concept:
+grep
+ ↓
+Find errors
+
+wc -l
+ ↓
+Count lines
+🔥 2️⃣0️⃣ Real DevOps Troubleshooting
+Imagine your application suddenly becomes unavailable.
+Your workflow could be:
+Application not working
+        ↓
+Check service
+        ↓
+systemctl status
+        ↓
+Check logs
+        ↓
+journalctl -u service
+        ↓
+Search error
+        ↓
+grep
+        ↓
+Identify problem
+        ↓
+Fix
+        ↓
+Restart/test
+For example:
+systemctl status nginx
+Then:
+journalctl -u nginx
+Then search:
+journalctl -u nginx | grep -i error
+If the service has a traditional log file, you might also inspect it with:
+sudo tail -n 100 /var/log/nginx/error.log
+2️⃣1️⃣ Log Levels
+Applications commonly use levels such as:
+DEBUG
+INFO
+WARNING
+ERROR
+CRITICAL
+Conceptually:
+DEBUG
+  ↓
+INFO
+  ↓
+WARNING
+  ↓
+ERROR
+  ↓
+CRITICAL
+DEBUG
+Detailed information useful during development/troubleshooting.
+INFO
+Normal application events.
+WARNING
+Something unexpected but not necessarily a failure.
+ERROR
+Something failed.
+CRITICAL
+A serious failure requiring immediate attention.
+Exact names and behavior depend on the application/framework.
+🔥 2️⃣2️⃣ Log Rotation
+Imagine:
+application.log
+grows every day.
+Eventually it could consume a huge amount of disk space.
+Log rotation helps manage this.
+Ubuntu commonly uses:
+logrotate
+Check whether it is installed:
+which logrotate
+Configuration is commonly found under:
+/etc/logrotate.conf
+/etc/logrotate.d/
+Check:
+cat /etc/logrotate.conf
+2️⃣3️⃣ Why Log Rotation Matters
+Without rotation:
+Day 1 → 100 MB
+Day 10 → 1 GB
+Day 100 → 10 GB
+       ↓
+Disk fills
+       ↓
+Applications may fail
+With rotation:
+application.log
+application.log.1
+application.log.2.gz
+...
+Old logs can be compressed and eventually removed according to the configured retention policy.
+2️⃣4️⃣ Journald
+systemd-journald collects system and service logs.
+You can inspect:
+journalctl
+Check journal disk usage:
+journalctl --disk-usage
+This is useful when investigating whether logs themselves are consuming significant disk space.
+2️⃣5️⃣ Real DevOps Example — SSH Troubleshooting
+Suppose SSH isn't behaving as expected.
+First:
+systemctl status ssh
+Then:
+journalctl -u ssh -n 50
+Search errors:
+journalctl -u ssh | grep -i "error"
+Check authentication-related events:
+sudo grep -i "failed" /var/log/auth.log
+This gives you a structured troubleshooting approach instead of guessing.
+🧪 Practical Lab
+Let's create your own application log.
+Step 1
+mkdir -p ~/log-lab
+cd ~/log-lab
+Create:
+nano application.log
+Add:
+INFO Application started
+INFO Loading configuration
+WARNING Disk usage is getting high
+ERROR Database connection failed
+INFO Retrying database connection
+ERROR Database connection failed again
+INFO Application stopped
+Step 2 — Read It
+cat application.log
+Step 3 — Search Errors
+grep "ERROR" application.log
+Step 4 — Case-Insensitive Search
+grep -i "error" application.log
+Step 5 — Count Errors
+grep -i "error" application.log | wc -l
+You should get:
+2
+Step 6 — Monitor in Real Time
+Run:
+tail -f application.log
+Keep it running.
+Open another terminal.
+Run:
+cd ~/log-lab
+echo "INFO New request received" >> application.log
+echo "ERROR API request failed" >> application.log
+Look at the first terminal.
+You should see the new lines appear automatically. 🔥
+Stop:
+Ctrl + C
+🧪 Practical Lab 2 — System Logs
+Run:
+journalctl -n 20
+Then:
+journalctl --since "30 minutes ago"
+Then:
+journalctl --disk-usage
+Check your SSH service:
+systemctl status ssh
+Then:
+journalctl -u ssh -n 20
+If your service is named differently, use the service name shown by systemctl.
+🧪 Practical Lab 3 — Create a Monitoring Script
+Create:
+nano log-monitor.sh
+Put:
+#!/bin/bash
+
+LOG_FILE="$HOME/log-lab/application.log"
+
+echo "===== LOG MONITOR ====="
+echo "Time: $(date)"
+echo
+
+echo "Total errors:"
+grep -i "error" "$LOG_FILE" | wc -l
+
+echo
+echo "Latest errors:"
+grep -i "error" "$LOG_FILE" | tail -n 5
+Make executable:
+chmod +x log-monitor.sh
+Run:
+./log-monitor.sh
+🎯 You've now combined:
+Bash scripting
+     +
+Variables
+     +
+grep
+     +
+tail
+     +
+Log analysis
+This is exactly the kind of combination that becomes useful in DevOps automation.
+
+
+
+
+
+
+
+
+
+
+
+# Linux Logs & Log Management
+
+## Important Directory
+
+/var/log
+
+## Important Commands
+
+View journal:
+
+journalctl
+
+Recent logs:
+
+journalctl -n 20
+
+Follow logs:
+
+journalctl -f
+
+Service logs:
+
+journalctl -u service-name
+
+Recent service logs:
+
+journalctl -u service-name -n 50
+
+Logs since today:
+
+journalctl --since today
+
+Kernel logs:
+
+journalctl -k
+
+View log file:
+
+cat file.log
+
+View large log:
+
+less file.log
+
+Beginning:
+
+head file.log
+
+End:
+
+tail file.log
+
+Follow:
+
+tail -f file.log
+
+Search:
+
+grep "error" file.log
+
+Case-insensitive:
+
+grep -i "error" file.log
+
+Count:
+
+grep -i "error" file.log | wc -l
+
+## Log Rotation
+
+logrotate is used to manage growing log files.
+
+Important locations:
+
+/etc/logrotate.conf
+/etc/logrotate.d/
+
+## DevOps Usage
+
+Logs are used for:
+
+- Troubleshooting
+- Monitoring
+- Security investigation
+- Application debugging
+- Service troubleshooting
+- Performance investigation
+- Incident response
