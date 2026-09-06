@@ -1,1 +1,147 @@
+# ==========================================
+# LINUX PERFORMANCE TUNING
+# ==========================================
 
+# CPU INFORMATION
+nproc
+lscpu
+
+# CPU/load
+uptime
+top
+htop
+
+# CPU-heavy processes
+ps aux --sort=-%cpu | head
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head
+
+# Memory
+free -h
+cat /proc/meminfo
+
+# Memory-heavy processes
+ps aux --sort=-%mem | head
+
+# Swap
+swapon --show
+
+
+# ==========================================
+# DISK PERFORMANCE
+# ==========================================
+
+# Filesystem usage
+df -h
+
+# Directory usage
+du -sh /var/* 2>/dev/null
+
+# Current directory usage
+du -sh ./* 2>/dev/null
+
+# Find large files
+sudo find / -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+
+# Disk I/O
+iostat -xz 1
+
+# General virtual memory/system statistics
+vmstat 1 5
+
+
+# ==========================================
+# NETWORK PERFORMANCE
+# ==========================================
+
+# Interface statistics
+ip -s link
+
+# Socket summary
+ss -s
+
+# Detailed listening connections
+sudo ss -tulpn
+
+# Network statistics
+sar -n DEV 1
+
+
+# ==========================================
+# PROCESSES
+# ==========================================
+
+# List processes
+ps aux
+
+# Find process
+pgrep nginx
+
+# Process details
+ps -fp PID
+
+# Open file descriptors
+ls /proc/PID/fd | wc -l
+
+
+# ==========================================
+# PROCESS PRIORITY
+# ==========================================
+
+# Show nice values
+ps -eo pid,ni,comm
+
+# Start process with lower priority
+nice -n 10 command
+
+# Change priority
+sudo renice 10 -p PID
+
+
+# ==========================================
+# SERVICES
+# ==========================================
+
+# Running services
+systemctl --type=service --state=running
+
+# Service status
+systemctl status SERVICE
+
+# Kernel information
+uname -a
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. How do you troubleshoot a slow Linux server?
+A good answer:
+I first identify the bottleneck by checking CPU/load, memory and swap, disk capacity and I/O, network statistics, processes, services, and finally the application itself. I measure before and after making changes.
+
+2. Which command shows memory usage?
+free -h
+3. Which command shows CPU-consuming processes?
+top
+or:
+ps aux --sort=-%cpu | head
+4. What does load average represent?
+It represents the average number of tasks waiting for or using CPU and, depending on the workload/state, tasks waiting on uninterruptible activity such as I/O, over 1, 5, and 15 minutes.
+5. What is swap?
+Disk space used by Linux as additional virtual memory when needed.
+6. Difference between df and du?
+df → filesystem capacity
+du → directory/file space usage
+7. Which tool is useful for disk I/O?
+iostat
+8. Which command shows CPU architecture and cores?
+lscpu
+9. What is nice?
+It controls the scheduling priority of a process through its nice value.
