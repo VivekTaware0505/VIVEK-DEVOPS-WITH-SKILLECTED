@@ -83,3 +83,49 @@ ps aux | grep '[j]ava'
 
 # FIND PORT
 sudo ss -tulpn | grep 8080
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is a pipe?
+The | operator sends the output of one command as input to another command.
+2. What is a filter?
+A command that processes input and produces output, such as grep, sort, awk, or sed.
+3. Difference between > and >>?
+>  → overwrite
+>> → append
+4. What does this do?
+ps aux | grep nginx
+It displays processes whose output matches nginx.
+5. What does this do?
+sort file.txt | uniq -c
+It sorts the lines and counts occurrences of identical adjacent lines.
+6. How do you count lines?
+wc -l file.txt
+7. What does tail -f do?
+It continuously displays new lines appended to a file, commonly used for monitoring logs.
+8. What is awk used for?
+Processing and extracting fields from structured text.
+9. What is sed used for?
+Text transformation, especially searching and replacing text.
