@@ -1,1 +1,331 @@
+What is a Firewall?
+A firewall is a security system that controls network traffic entering or leaving your computer/server.
+Think of it like a security guard:
+Internet
+   │
+   │ Network Traffic
+   ▼
+┌──────────────┐
+│   FIREWALL   │
+│              │
+│ Allow  ✅    │
+│ Deny   ❌    │
+└──────┬───────┘
+       │
+       ▼
+    Linux Server
+For example, your Linux server might have:
+SSH       → Port 22
+HTTP      → Port 80
+HTTPS     → Port 443
+Spring    → Port 8080
+MySQL     → Port 3306
+You can tell the firewall:
+Allow SSH, HTTP and HTTPS, but don't allow port 3306 from the Internet.
 
+2. Why Do We Need a Firewall?
+Without proper firewall rules, services listening on your server could potentially be reachable by unwanted network traffic.
+For example:
+Internet
+   │
+   ├── Port 22   → SSH
+   ├── Port 80   → Web Server
+   ├── Port 443  → HTTPS
+   ├── Port 8080 → Application
+   └── Port 3306 → MySQL
+You may only want:
+22   ✅
+80   ✅
+443  ✅
+8080 ❌
+3306 ❌
+The firewall helps enforce this.
+3. Important Firewall Concepts
+INPUT
+Traffic coming into your Linux machine.
+Internet → Linux
+Example:
+Someone → SSH port 22
+OUTPUT
+Traffic leaving your Linux machine.
+Linux → Internet
+Example:
+Linux → Download package
+FORWARD
+Traffic passing through a Linux machine acting as a router/firewall.
+Machine A
+    │
+    ▼
+Linux Firewall
+    │
+    ▼
+Machine B
+For normal Ubuntu server administration, INPUT and OUTPUT are the most important initially.
+4. What Does a Firewall Look At?
+A firewall can make decisions based on things such as:
+Parameter	Example
+Source IP	192.168.1.10
+Destination IP	192.168.1.20
+Source port	50000
+Destination port	22
+Protocol	TCP / UDP
+Direction	INPUT / OUTPUT
+Action	ALLOW / DENY
+
+
+Example:
+Source:      10.0.0.5
+Destination: Linux Server
+Protocol:    TCP
+Port:        22
+Action:      ALLOW
+5. Firewall vs Port
+This is VERY important.
+A firewall does not create a service.
+Suppose your Spring Boot application runs on:
+Port 8080
+First check:
+ss -tuln
+You might see:
+LISTEN 0 128 0.0.0.0:8080
+This means an application is listening on port 8080.
+But the firewall could still block access:
+Application
+    ↓
+Port 8080
+    ↓
+Firewall
+    ↓
+❌ BLOCKED
+So remember:
+Service listening ≠ Service accessible
+
+6. Ubuntu's UFW
+Since you're learning Ubuntu, we'll primarily use UFW.
+UFW means:
+Uncomplicated Firewall
+
+It provides an easier interface for managing Linux firewall rules.
+7. Check UFW
+Run:
+sudo ufw status
+Possible output:
+Status: inactive
+Or:
+Status: active
+For more details:
+sudo ufw status verbose
+8. Check Firewall Rules
+sudo ufw status numbered
+Example:
+Status: active
+
+     To                         Action      From
+     --                         ------      ----
+[ 1] 22/tcp                     ALLOW       Anywhere
+[ 2] 80/tcp                     ALLOW       Anywhere
+[ 3] 443/tcp                    ALLOW       Anywhere
+The numbers are useful when you want to delete a rule.
+9. Allow SSH
+SSH normally uses:
+TCP 22
+You can allow it with:
+sudo ufw allow 22/tcp
+Then:
+sudo ufw status
+You may see:
+22/tcp ALLOW Anywhere
+Important ⚠️
+If you are connected to a remote Ubuntu server through SSH, allow SSH before enabling UFW.
+Otherwise:
+SSH connection
+      ↓
+Firewall
+      ↓
+❌ BLOCKED
+      ↓
+You may lose access
+10. Allow HTTP
+Web servers commonly use:
+Port 80
+Command:
+sudo ufw allow 80/tcp
+11. Allow HTTPS
+HTTPS normally uses:
+Port 443
+Command:
+sudo ufw allow 443/tcp
+12. Allow a Custom Port
+Suppose your Spring Boot application runs on:
+8080
+Allow it:
+sudo ufw allow 8080/tcp
+But don't automatically expose application ports to the public Internet in production. Often you'll put the application behind Nginx/load balancing and expose only the required public ports.
+13. Deny a Port
+For example:
+sudo ufw deny 3306/tcp
+This can block incoming MySQL traffic on port 3306.
+14. Delete a Rule
+First:
+sudo ufw status numbered
+Example:
+[1] 22/tcp
+[2] 80/tcp
+[3] 8080/tcp
+Delete rule 3:
+sudo ufw delete 3
+You can also delete using the rule itself:
+sudo ufw delete allow 8080/tcp
+15. Enable Firewall
+After configuring required rules:
+sudo ufw enable
+Check:
+sudo ufw status verbose
+16. Disable Firewall
+sudo ufw disable
+Don't leave a production server firewall disabled unnecessarily.
+17. Reset UFW
+sudo ufw reset
+⚠️ Be careful.
+This removes existing UFW rules.
+Don't use this on a production server unless you understand exactly what you're changing.
+18. Application Profiles
+UFW can have application profiles.
+Check:
+sudo ufw app list
+Example:
+Available applications:
+  OpenSSH
+  Nginx Full
+Then you can use:
+sudo ufw allow OpenSSH
+For Nginx:
+sudo ufw allow 'Nginx Full'
+19. Allow Specific IP
+Suppose only:
+192.168.1.50
+should be allowed to access SSH.
+You can use:
+sudo ufw allow from 192.168.1.50 to any port 22 proto tcp
+This is much more restrictive than:
+sudo ufw allow 22/tcp
+20. Allow a Network
+For example:
+192.168.1.0/24
+Allow SSH from that network:
+sudo ufw allow from 192.168.1.0/24 to any port 22 proto tcp
+21. Deny Specific IP
+Example:
+sudo ufw deny from 192.168.1.100
+This blocks incoming traffic from that IP.
+22. UFW Logging
+Enable logging:
+sudo ufw logging on
+Check status:
+sudo ufw status verbose
+Disable:
+sudo ufw logging off
+Logs can help when troubleshooting blocked traffic.
+23. iptables
+You may also hear about:
+iptables
+
+It is a lower-level Linux firewall administration tool.
+Check rules:
+sudo iptables -L -n -v
+Check NAT rules:
+sudo iptables -t nat -L -n -v
+For your current learning stage:
+UFW
+ ↓
+Easy to understand/manage
+
+iptables
+ ↓
+Lower-level firewall rules
+
+nftables
+ ↓
+Modern Linux packet-filtering framework
+You don't need to become an iptables expert before learning DevOps. Understand what it is and how to inspect it first.
+24. UFW vs iptables vs nftables
+Feature	UFW	iptables	nftables
+Difficulty	Easy	Medium/Hard	Medium
+Level	High-level	Low-level	Low-level
+Ubuntu beginner	⭐⭐⭐⭐⭐	⭐⭐⭐	⭐⭐⭐
+Automation	Good	Excellent	Excellent
+Modern Linux	Used	Legacy/common	Modern
+Best for learning	✅	Later	Later
+
+
+25. Firewall Troubleshooting
+Suppose your application isn't reachable.
+Don't immediately blame the firewall.
+Check step-by-step.
+Step 1 — Is application running?
+systemctl status nginx
+or:
+systemctl status ssh
+Step 2 — Is the port listening?
+ss -tuln
+Example:
+LISTEN 0 128 0.0.0.0:8080
+Step 3 — Is UFW allowing it?
+sudo ufw status
+Step 4 — Test locally
+curl http://localhost:8080
+Step 5 — Test the port
+nc -zv localhost 8080
+This gives you a systematic troubleshooting approach.
+26. Firewall in DevOps
+Imagine an AWS EC2 server:
+             Internet
+                 │
+                 ▼
+       AWS Security Group
+                 │
+                 ▼
+          EC2 Ubuntu
+                 │
+                 ▼
+            UFW Firewall
+                 │
+                 ▼
+          Nginx / App
+There can be multiple security layers.
+For example:
+AWS Security Group
+       ↓
+Allow TCP 80
+       ↓
+UFW
+       ↓
+Allow TCP 80
+       ↓
+Nginx
+       ↓
+Port 80
+If either security layer blocks the traffic, the request can fail.
+This is a very important DevOps concept.
+🧪 Practical Lab — Your First Firewall Lab
+On your Ubuntu machine:
+1. Check UFW
+sudo ufw status verbose
+2. Check listening ports
+ss -tuln
+3. Check available UFW applications
+sudo ufw app list
+4. Allow SSH
+sudo ufw allow 22/tcp
+5. Allow HTTP
+sudo ufw allow 80/tcp
+6. Allow HTTPS
+sudo ufw allow 443/tcp
+7. Check rules
+sudo ufw status numbered
+8. Enable UFW
+sudo ufw enable
+9. Verify
+sudo ufw status verbose
+10. Enable logging
+sudo ufw logging on
