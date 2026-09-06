@@ -1,1 +1,224 @@
+What is Software Compilation?
+Normally, you install software like:
+sudo apt install nginx
+Here Ubuntu downloads an already-built package.
+With software compilation, you start with source code and build the executable yourself.
+Source Code
+    ↓
+Configure
+    ↓
+Compile
+    ↓
+Build
+    ↓
+Install
+    ↓
+Run
+Example:
+hello.c
+  ↓
+gcc
+  ↓
+hello
+  ↓
+./hello
+2. Source Code vs Binary
+Source code
+Human-readable code:
+#include <stdio.h>
 
+int main() {
+    printf("Hello Linux\n");
+    return 0;
+}
+Binary
+Machine-executable program:
+hello
+The compiler converts:
+Source Code → Machine Code
+3. Important Tools
+Tool	Purpose
+gcc	C compiler
+g++	C++ compiler
+make	Automates compilation
+makefile	Contains build instructions
+./configure	Checks system/build requirements in Autotools projects
+cmake	Generates build configuration for many projects
+pkg-config	Helps locate compiler/linker flags for libraries
+
+
+For DevOps, you should understand at least:
+gcc
+make
+Makefile
+./configure
+make install
+4. Install Compilation Tools
+Ubuntu provides a package called build-essential.
+sudo apt update
+sudo apt install build-essential
+Check GCC:
+gcc --version
+Check Make:
+make --version
+5. Your First Compilation
+Create a directory:
+mkdir ~/compile-lab
+cd ~/compile-lab
+Create a C program:
+nano hello.c
+Put:
+#include <stdio.h>
+
+int main() {
+    printf("Hello from Linux compilation!\n");
+    return 0;
+}
+Compile:
+gcc hello.c -o hello
+Check:
+ls -l
+You should have:
+hello.c
+hello
+Run:
+./hello
+Output:
+Hello from Linux compilation!
+🎯 You just compiled a Linux program from source.
+6. Understanding gcc
+This:
+gcc hello.c -o hello
+means:
+gcc       → compiler
+hello.c   → source file
+-o        → output option
+hello     → output executable
+You can also compile without specifying the output:
+gcc hello.c
+This normally creates:
+a.out
+Run:
+./a.out
+7. Compilation with Warnings
+A better command is:
+gcc -Wall -Wextra hello.c -o hello
+Where:
+- -Wall → enables many useful warnings
+- -Wextra → enables additional warnings
+This is useful when developing software.
+8. What is make?
+Imagine a large project contains:
+main.c
+server.c
+network.c
+database.c
+You don't want to manually compile every file.
+That's where Make helps.
+Source Files
+     ↓
+   Makefile
+     ↓
+    make
+     ↓
+Executable
+9. Create a Makefile
+Inside your lab:
+nano Makefile
+Add:
+hello: hello.c
+	gcc hello.c -o hello
+
+clean:
+	rm -f hello
+⚠️ The indentation before gcc must be a TAB, not spaces.
+Now run:
+make
+You should get:
+gcc hello.c -o hello
+Run:
+./hello
+10. make clean
+To remove the compiled program:
+make clean
+Check:
+ls
+You should see:
+hello.c
+Makefile
+11. What is ./configure?
+Many older/Autotools-based Linux projects use:
+./configure
+It checks things such as:
+- compiler availability
+- required libraries
+- system features
+- installation paths
+Typical process:
+./configure
+make
+sudo make install
+Not every modern project uses ./configure.
+Some use:
+CMake
+Meson
+Ninja
+Cargo
+npm
+Gradle
+So don't assume every source project has ./configure.
+12. What Does make install Do?
+After:
+make
+the software is generally built.
+Then:
+sudo make install
+installs it into the system according to the project's installation configuration.
+Typical locations can include:
+/usr/local/bin
+/usr/local/lib
+/usr/local/share
+Check:
+which program-name
+13. ⚠️ Important Production Point
+You might see:
+sudo make install
+but don't blindly use it.
+Installing software from source can make package management and future updates harder.
+Prefer:
+apt
+when a trusted Ubuntu package is available.
+Use source compilation when you need things such as:
+- a newer version
+- custom build options
+- software unavailable in repositories
+- specific features
+- development/testing
+🧪 Practical Lab
+Let's do a complete mini project.
+Step 1 — Create directory
+mkdir ~/software-compilation-lab
+cd ~/software-compilation-lab
+Step 2 — Create source
+nano system_info.c
+Use:
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    printf("Linux Software Compilation Lab\n");
+    printf("User: %s\n", getenv("USER"));
+    printf("Home: %s\n", getenv("HOME"));
+
+    return 0;
+}
+Step 3 — Compile
+gcc -Wall -Wextra system_info.c -o system_info
+Step 4 — Run
+./system_info
+Step 5 — Check executable
+file system_info
+You should see information indicating it is a Linux executable.
+Step 6 — Check dependencies
+ldd system_info
+This shows shared libraries used by the executable.
