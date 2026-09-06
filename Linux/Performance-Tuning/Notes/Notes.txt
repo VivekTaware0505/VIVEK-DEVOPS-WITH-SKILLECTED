@@ -1,1 +1,363 @@
+⚡ Topic 25 — Linux Performance Tuning
+Now we move into Linux Performance Tuning, a very important DevOps and system-administration skill.
+The main goal is:
+Find why a Linux server is slow, identify the bottleneck, and improve it safely.
 
+1. What is Performance Tuning?
+Imagine your Linux server is slow.
+You shouldn't immediately restart everything.
+First ask:
+Why is it slow?
+     │
+     ├── CPU?
+     ├── RAM?
+     ├── Disk?
+     ├── Network?
+     └── Application?
+Performance tuning is the process of:
+Monitor
+   ↓
+Identify bottleneck
+   ↓
+Analyze
+   ↓
+Optimize
+   ↓
+Monitor again
+2. The 4 Main Resources
+Remember:
+CPU
+RAM
+DISK
+NETWORK
+These are the first things you investigate.
+3. CPU Performance
+Check CPU usage
+top
+You'll see something similar to:
+%Cpu(s): 12.5 us, 3.2 sy, 0.0 ni, 82.8 id
+Important values:
+Value	Meaning
+us	User processes
+sy	System/kernel processes
+id	CPU idle
+wa	Waiting for I/O
+st	Stolen CPU, important in VMs
+
+
+Example
+CPU idle = 95%
+CPU isn't your bottleneck.
+But:
+CPU idle = 2%
+means the CPU is heavily utilized.
+4. htop
+A more user-friendly alternative:
+htop
+If not installed:
+sudo apt install htop
+Then:
+htop
+You'll get a visual process monitor.
+You can see:
+CPU
+Memory
+Swap
+Processes
+5. Find CPU-Hungry Processes
+ps aux --sort=-%cpu | head
+Example:
+USER   PID   %CPU   COMMAND
+root   1234  85.4   java
+This tells you that Java is consuming significant CPU.
+Another useful command:
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head
+6. Load Average
+You may see:
+load average: 1.20, 0.80, 0.50
+These represent approximately:
+1 minute
+5 minutes
+15 minutes
+Check with:
+uptime
+or:
+cat /proc/loadavg
+Important
+Don't judge load average using a fixed number alone.
+For example:
+4 CPU cores
+load = 1
+is very different from:
+1 CPU core
+load = 1
+You should compare load with the number of CPU cores and determine whether processes are waiting for CPU or I/O.
+Check CPU count:
+nproc
+7. RAM Performance
+Check memory:
+free -h
+Example:
+               total   used   free
+Mem:            7.7G    3.2G   1.1G
+Swap:           2.0G    0.0G   2.0G
+Important:
+Don't assume Linux having low free memory means RAM is exhausted.
+
+Linux uses memory for filesystem cache.
+Pay attention to available memory.
+8. Find Memory-Hungry Processes
+ps aux --sort=-%mem | head
+Example:
+USER   PID   %MEM   COMMAND
+root   1234  35.2   java
+Java is consuming a significant amount of memory.
+9. Swap
+Swap is disk space used as an extension of memory when needed.
+Check:
+free -h
+Check swap devices:
+swapon --show
+Example:
+NAME      TYPE SIZE USED PRIO
+/swapfile file   2G  0B   -2
+Important
+Swap is much slower than RAM.
+Heavy swapping can cause performance problems.
+10. Check Disk Usage
+There are two different concepts you must understand:
+Disk capacity
+df -h
+Shows filesystem usage.
+Example:
+Filesystem      Size  Used Avail Use%
+/dev/sda2        50G   45G  5G   90%
+Directory size
+du -sh /var/*
+This helps identify where the disk space is being consumed.
+11. Find Large Files
+sudo find / -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+This searches for files larger than 500 MB.
+Use carefully on large production systems because scanning / can take time.
+12. Disk I/O Performance
+A server can have:
+CPU = 20%
+RAM = 40%
+and still be slow because of disk I/O.
+Useful command:
+iostat
+If unavailable:
+sudo apt install sysstat
+Then:
+iostat -xz 1
+This provides detailed I/O statistics.
+13. vmstat
+Another important performance command:
+vmstat 1
+It reports information about:
+Processes
+Memory
+Swap
+I/O
+System
+CPU
+Example:
+procs  memory  swap  io  system  cpu
+It's a great command for quickly getting a broad picture of system health.
+14. Network Performance
+Check network interfaces:
+ip -s link
+You'll see:
+RX
+TX
+errors
+dropped
+Check active connections:
+ss -s
+Check network traffic with:
+sar -n DEV 1
+If sar isn't available:
+sudo apt install sysstat
+15. Check Network Errors
+ip -s link
+Look for:
+errors
+dropped
+overruns
+High network errors/drops can indicate:
+- network problems
+- driver issues
+- congestion
+- configuration problems
+- infrastructure problems
+16. Process Performance
+List processes:
+ps aux
+Find a specific process:
+pgrep nginx
+
+Detailed information:
+ps -fp PID
+Replace PID with the actual process ID.
+17. Check Open Files
+Linux processes use file descriptors.
+Check system-wide limits:
+cat /proc/sys/fs/file-max
+Check a process:
+ls /proc/PID/fd | wc -l
+Example:
+ls /proc/1234/fd | wc -l
+This can help investigate applications running out of file descriptors.
+18. Check Running Services
+systemctl --type=service --state=running
+You can identify services you don't need.
+Check a particular service:
+systemctl status nginx
+Disable unnecessary services only after confirming they aren't required.
+19. nice and Process Priority
+Linux processes have priorities.
+Check:
+ps -eo pid,ni,comm
+NI means nice value.
+Change priority when starting a process:
+nice -n 10 command
+Example:
+nice -n 10 ./backup.sh
+A higher nice value generally means the process gets lower CPU scheduling priority.
+20. renice
+Change the nice value of an existing process:
+sudo renice 10 -p PID
+Example:
+sudo renice 10 -p 1234
+Be careful when changing priorities of production applications.
+21. CPU Information
+lscpu
+Useful information includes:
+CPU architecture
+CPU(s)
+Threads
+Cores
+Sockets
+Virtualization
+Quick CPU count:
+nproc
+22. Memory Information
+cat /proc/meminfo
+Or:
+vmstat
+For a quick human-readable summary:
+free -h
+23. Kernel Information
+uname -a
+Example:
+Linux ubuntu 6.x.x-generic x86_64
+This can help when investigating kernel-related issues.
+24. Performance Investigation Workflow
+This is extremely useful for interviews and real DevOps work.
+Suppose someone says:
+"The server is slow."
+
+Don't randomly restart services.
+Use:
+             SERVER SLOW
+                  │
+                  ▼
+             Check uptime
+                  │
+                  ▼
+            Check CPU/load
+                  │
+                  ▼
+             Check RAM
+                  │
+                  ▼
+             Check Swap
+                  │
+                  ▼
+             Check Disk
+                  │
+                  ▼
+            Check Disk I/O
+                  │
+                  ▼
+             Check Network
+                  │
+                  ▼
+          Check Processes
+                  │
+                  ▼
+          Check Application
+25. A Simple Troubleshooting Example
+Suppose:
+uptime
+shows:
+load average: 8.5, 8.2, 7.9
+You have:
+nproc
+Output:
+4
+That's a sign you need to investigate further.
+Check CPU:
+top
+You discover:
+java → 380% CPU
+On a 4-core system, a process using ~380% CPU is consuming almost four cores.
+Now investigate the Java application instead of blindly rebooting the server.
+That's performance troubleshooting.
+26. Performance Tuning Principles
+Remember:
+1. Measure first
+Don't guess.
+2. Find the bottleneck
+CPU?
+RAM?
+Disk?
+Network?
+Application?
+3. Change one thing at a time
+Otherwise you won't know what fixed the problem.
+4. Measure again
+Before → Change → After
+27. Linux Performance Tools Cheat Sheet
+Tool	Purpose
+top	CPU/process monitoring
+htop	Interactive process monitoring
+free	RAM/swap
+uptime	Load average
+vmstat	CPU/memory/I/O overview
+iostat	Disk I/O
+sar	Historical/system performance statistics
+ps	Process information
+df	Filesystem capacity
+du	Directory/file usage
+ss	Network sockets
+ip -s link	Network statistics
+lscpu	CPU information
+nproc	CPU count
+
+
+🧪 Practical Lab
+Run these commands on your Ubuntu machine:
+CPU
+nproc
+uptime
+top
+Memory
+free -h
+swapon --show
+Processes
+ps aux --sort=-%cpu | head
+ps aux --sort=-%mem | head
+Disk
+df -h
+du -sh ~/ 2>/dev/null
+Network
+ip -s link
+ss -s
+Hardware/system
+lscpu
+uname -a
+Overall performance
+vmstat 1 5
+If you installed sysstat:
+iostat -xz 1 3
