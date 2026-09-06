@@ -1,1 +1,284 @@
 
+System monitoring means continuously checking the health and performance of a Linux server.
+As a DevOps engineer, you need to answer questions like:
+- Is the CPU overloaded?
+- Is RAM running out?
+- Is disk space full?
+- Which process is consuming resources?
+- Is network traffic normal?
+- Is the server becoming slow?
+Think:
+             Linux Server
+                  │
+       ┌──────────┼──────────┐
+       ▼          ▼          ▼
+      CPU        RAM        Disk
+       │          │          │
+       └──────────┼──────────┘
+                  ▼
+               Network
+                  │
+                  ▼
+             Monitoring
+1. CPU Monitoring
+top
+One of the most important Linux commands:
+top
+You'll see something like:
+PID   USER   %CPU   %MEM   COMMAND
+1234  root   85.2    2.1   java
+2345  vivek  12.4    4.5   python
+Important fields:
+PID     → Process ID
+%CPU    → CPU usage
+%MEM    → Memory usage
+COMMAND → Process name
+Exit:
+q
+2. htop
+A more user-friendly alternative:
+sudo apt install htop
+Run:
+htop
+It provides a visual view of:
+CPU
+RAM
+Swap
+Processes
+Load
+Exit:
+F10
+3. Find CPU-Hungry Processes
+ps aux --sort=-%cpu | head
+This sorts processes by CPU usage.
+Another useful command:
+ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head
+4. Check CPU Information
+Number of CPU cores:
+nproc
+Detailed information:
+lscpu
+Example:
+CPU(s): 4
+This means the system has 4 logical CPUs.
+5. Load Average
+Check:
+uptime
+Example:
+load average: 0.45, 0.60, 0.72
+These represent approximately:
+1 minute
+5 minutes
+15 minutes
+You can also use:
+cat /proc/loadavg
+Important interview point
+Don't simply say:
+Load above 1 = bad.
+
+That's incorrect.
+You should compare load with the number of CPUs and the workload.
+For example, a load of 2 means something very different on a 2-CPU machine versus a 16-CPU machine.
+6. Memory Monitoring
+The most important command:
+free -h
+Example:
+              total    used    free
+Mem:           8Gi     4Gi     1Gi
+Swap:          2Gi     0Gi     2Gi
+-h means human-readable.
+7. Check Memory-Hungry Processes
+ps aux --sort=-%mem | head
+This helps find processes consuming the most RAM.
+8. Check Swap
+swapon --show
+Also:
+free -h
+If a system is heavily swapping, it may indicate memory pressure, although the exact cause needs investigation.
+9. Disk Monitoring
+Check filesystem usage:
+df -h
+Example:
+Filesystem      Size  Used Avail Use%
+/dev/sda2        50G   42G    8G  84%
+Important
+df tells you about filesystem space.
+10. Find Large Directories
+du -sh /var/*
+Current directory:
+du -sh ./*
+Find large files:
+sudo find / -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+⚠️ Searching the entire filesystem can take time.
+11. Disk I/O Monitoring
+Install sysstat:
+sudo apt install sysstat
+Then:
+iostat
+Detailed statistics:
+iostat -xz 1
+Here:
+-x → extended statistics
+-z → omit inactive devices
+1  → refresh every 1 second
+This is useful when a server is slow because of disk I/O rather than CPU.
+12. vmstat
+Check CPU, memory, processes and I/O:
+vmstat
+Continuous monitoring:
+vmstat 1
+Five samples:
+vmstat 1 5
+This means:
+every 1 second
+5 times
+13. Network Monitoring
+Check network interfaces:
+ip -s link
+You'll see:
+RX
+TX
+errors
+dropped packets
+14. Network Connections
+ss -s
+Detailed listening ports:
+sudo ss -tulpn
+Example:
+LISTEN
+0.0.0.0:22
+0.0.0.0:80
+0.0.0.0:443
+15. Monitor Network Traffic
+If available:
+sar -n DEV 1
+This can show network interface activity over time.
+16. Process Monitoring
+List processes:
+ps aux
+Find a specific process:
+pgrep nginx
+Get process details:
+ps -fp PID
+Example:
+ps -fp 1234
+17. Monitor Services
+List running services:
+systemctl --type=service --state=running
+Check a service:
+systemctl status nginx
+Check whether it's running:
+systemctl is-active nginx
+Check whether it starts at boot:
+systemctl is-enabled nginx
+18. Monitor Logs
+System logs are extremely important.
+View recent system messages:
+journalctl -n 50
+Follow logs:
+journalctl -f
+Follow a particular service:
+journalctl -u nginx -f
+View today's logs:
+journalctl --since today
+19. A Simple Monitoring Strategy
+When a server becomes slow:
+Step 1 — CPU
+top
+Step 2 — RAM
+free -h
+Step 3 — Disk
+df -h
+Step 4 — Disk I/O
+iostat -xz 1
+Step 5 — Network
+ss -s
+ip -s link
+Step 6 — Processes
+ps aux --sort=-%cpu | head
+ps aux --sort=-%mem | head
+Step 7 — Logs
+journalctl -n 100
+This gives you a basic troubleshooting workflow:
+             Server Slow
+                  │
+        ┌─────────┼─────────┐
+        ▼         ▼         ▼
+       CPU       RAM       Disk
+        │         │         │
+        └─────────┼─────────┘
+                  ▼
+               Network
+                  │
+                  ▼
+                Logs
+🧪 Practical Monitoring Lab
+Let's simulate monitoring a Linux machine.
+Step 1 — Check system uptime
+uptime
+Step 2 — Check CPU
+top
+Step 3 — Check CPU count
+nproc
+Step 4 — Check RAM
+free -h
+Step 5 — Check disk
+df -h
+Step 6 — Find large directories
+du -sh ~/.* 2>/dev/null | sort -h | tail
+Step 7 — Check network
+ip -s link
+Step 8 — Check listening ports
+sudo ss -tulpn
+Step 9 — Check processes
+ps aux --sort=-%cpu | head
+Step 10 — Check system logs
+journalctl -n 50
+🔥 Create a Simple Monitoring Script
+Create:
+nano system-monitor.sh
+Add:
+#!/bin/bash
+
+echo "================================="
+echo " Linux System Monitoring"
+echo "================================="
+
+echo
+echo "Hostname:"
+hostname
+
+echo
+echo "Uptime:"
+uptime
+
+echo
+echo "CPU Cores:"
+nproc
+
+echo
+echo "Memory:"
+free -h
+
+echo
+echo "Disk:"
+df -h
+
+echo
+echo "Top CPU Processes:"
+ps aux --sort=-%cpu | head -6
+
+echo
+echo "Top Memory Processes:"
+ps aux --sort=-%mem | head -6
+
+echo
+echo "Listening Ports:"
+sudo ss -tulpn
+
+echo
+echo "================================="
+Make executable:
+chmod +x system-monitor.sh
+Run:
+./system-monitor.sh
