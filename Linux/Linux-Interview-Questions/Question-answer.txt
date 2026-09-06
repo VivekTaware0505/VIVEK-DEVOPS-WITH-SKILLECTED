@@ -1,1 +1,477 @@
 
+🐧 Topic 32 — Linux Interview Questions & Final Revision
+Congratulations 🎯 You have reached the final topic of your current Linux roadmap.
+This topic is different from the previous ones: instead of learning a new Linux feature, we're going to connect everything you learned into interview-ready knowledge.
+1. Linux Fundamentals
+Q1. What is Linux?
+Linux is an open-source, Unix-like operating system kernel. Linux distributions combine the kernel with utilities, libraries, package managers, and other software.
+Examples:
+Ubuntu
+Debian
+Fedora
+Rocky Linux
+Amazon Linux
+
+Q2. What is a Linux distribution?
+A distribution packages the Linux kernel with system tools, libraries, package management, and applications.
+Example:
+Ubuntu = Linux kernel + GNU/tools + packages + configuration
+
+Q3. What is the Linux kernel?
+The kernel is the core of the operating system.
+It manages:
+CPU
+RAM
+Processes
+Devices
+Networking
+Filesystems
+
+2. Linux Architecture
+A simple model:
+Applications
+     ↓
+Shell / Libraries
+     ↓
+System Calls
+     ↓
+Linux Kernel
+     ↓
+Hardware
+
+Q4. What does the kernel do?
+It acts as the main interface between software and hardware.
+Q5. What is a shell?
+A shell provides an interface for interacting with the operating system.
+Examples:
+bash
+zsh
+fish
+
+Check your shell:
+echo $SHELL
+
+3. File System
+Q6. What does / mean?
+/ is the root of the Linux filesystem hierarchy.
+Common directories:
+/etc      → configuration
+/home     → user home directories
+/var      → variable data/logs
+/tmp      → temporary files
+/usr      → applications and libraries
+/opt      → optional software
+/dev      → device files
+/proc     → process/kernel information
+
+Q7. Difference between absolute and relative paths?
+Absolute:
+/home/vivek/file.txt
+
+Relative:
+./file.txt
+
+4. Essential Commands
+Q8. How do you list files?
+ls
+
+Detailed:
+ls -l
+
+Including hidden files:
+ls -la
+
+Q9. How do you find your current directory?
+pwd
+
+Q10. How do you find a file?
+find /home -name "file.txt"
+
+Q11. How do you search inside files?
+grep "error" file.txt
+
+Recursive:
+grep -r "error" /var/log
+
+5. File Permissions 🔐
+Linux permissions are:
+r → read
+w → write
+x → execute
+
+Example:
+-rwxr-xr--
+
+Conceptually:
+Owner    Group    Others
+rwx      r-x      r--
+
+Q12. What does chmod do?
+Changes permissions.
+chmod 755 script.sh
+
+Meaning:
+Owner  → rwx = 7
+Group  → r-x = 5
+Others → r-x = 5
+
+Q13. What does chown do?
+Changes ownership.
+sudo chown vivek file.txt
+
+Owner + group:
+sudo chown vivek:developers file.txt
+
+6. Users & Groups
+Q14. Create a user
+sudo adduser username
+
+Q15. Create a group
+sudo groupadd developers
+
+Q16. Add user to group
+sudo usermod -aG developers username
+
+Important:
+-a → append
+-G → supplementary group
+
+7. Processes
+Q17. What is a process?
+A running instance of a program.
+Check:
+ps aux
+
+Interactive monitoring:
+top
+
+Find a process:
+pgrep nginx
+
+Q18. How do you terminate a process?
+Normally:
+kill PID
+
+Forcefully:
+kill -9 PID
+
+⚠️ SIGKILL cannot be caught or handled by the target process, so use it only when necessary.
+8. Package Management 📦
+Ubuntu uses APT.
+Update package information:
+sudo apt update
+
+Install:
+sudo apt install nginx
+
+Remove:
+sudo apt remove nginx
+
+Upgrade:
+sudo apt upgrade
+
+Search:
+apt search nginx
+
+9. Systemd & Services
+Check service:
+systemctl status nginx
+
+Start:
+sudo systemctl start nginx
+
+Stop:
+sudo systemctl stop nginx
+
+Restart:
+sudo systemctl restart nginx
+
+Enable at boot:
+sudo systemctl enable nginx
+
+Modern combined command:
+sudo systemctl enable --now nginx
+
+10. Networking 🌐
+Check IP:
+ip a
+
+Check routes:
+ip route
+
+Check connectivity:
+ping 8.8.8.8
+
+Check DNS:
+nslookup google.com
+
+or:
+dig google.com
+
+Check listening ports:
+sudo ss -tulpn
+
+11. DNS Troubleshooting
+Suppose:
+ping 8.8.8.8
+
+works, but:
+ping google.com
+
+fails.
+That suggests you should investigate DNS resolution.
+Useful:
+resolvectl status
+
+and:
+dig google.com
+
+12. SSH Administration 🔑
+Connect to a remote server:
+ssh user@SERVER_IP
+
+Copy a file:
+scp file.txt user@SERVER_IP:/tmp/
+
+Copy a directory:
+scp -r mydir user@SERVER_IP:/tmp/
+
+Better for larger/synchronized transfers:
+rsync -av mydir/ user@SERVER_IP:/tmp/mydir/
+
+13. Firewall
+Ubuntu commonly uses UFW as a simpler firewall interface.
+Check:
+sudo ufw status
+
+Allow SSH:
+sudo ufw allow 22/tcp
+
+Allow HTTP:
+sudo ufw allow 80/tcp
+
+Enable:
+sudo ufw enable
+
+⚠️ If you're connected remotely over SSH, ensure SSH access is allowed before enabling the firewall.
+14. Disk Management 💽
+Check disks:
+lsblk
+
+Check filesystem usage:
+df -h
+
+Check directory size:
+du -sh /var/*
+
+Find large files:
+sudo find / -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+
+15. LVM
+Remember the architecture:
+Physical Volume
+      ↓
+Volume Group
+      ↓
+Logical Volume
+      ↓
+Filesystem
+      ↓
+Mount Point
+Commands:
+sudo pvs
+sudo vgs
+sudo lvs
+16. Compression & Archiving
+Create compressed archive:
+tar -czvf backup.tar.gz /data
+Extract:
+tar -xzvf backup.tar.gz
+List contents:
+tar -tzvf backup.tar.gz
+Remember:
+tar → archive
+gzip → compression
+17. Pipes & Filters 🔥
+This is extremely important for Linux and DevOps.
+command1 | command2
+Example:
+ps aux | grep nginx
+More advanced:
+ps aux | sort -k3 -nr | head
+Log analysis:
+grep -i "error" application.log | tail -20
+Common tools:
+grep
+awk
+sed
+cut
+sort
+uniq
+head
+tail
+wc
+tr
+
+18. Bash Scripting
+Basic script:
+#!/bin/bash
+
+echo "Hello Linux"
+
+Make executable:
+chmod +x script.sh
+
+Run:
+./script.sh
+
+Variables:
+NAME="Vivek"
+echo "$NAME"
+
+Condition:
+if [ "$NAME" = "Vivek" ]; then
+    echo "Welcome"
+fi
+Loop:
+for i in 1 2 3
+do
+    echo "$i"
+done
+19. Cron
+Edit scheduled jobs:
+crontab -e
+Example:
+0 2 * * * /home/vivek/backup.sh
+Meaning:
+Every day at 02:00
+List:
+crontab -l
+20. Logs
+View recent system logs:
+journalctl -n 50
+Follow logs:
+journalctl -f
+Service logs:
+journalctl -u nginx
+Follow service logs:
+journalctl -u nginx -f
+21. System Monitoring 📊
+CPU:
+top
+RAM:
+free -h
+Disk:
+df -h
+Disk I/O:
+iostat -xz 1
+Memory/process/I/O:
+vmstat 1
+Network:
+ip -s link
+Processes:
+ps aux
+22. Environment Variables
+View:
+env
+Specific variable:
+echo $HOME
+Create:
+export APP_ENV="production"
+Check:
+printenv APP_ENV
+PATH:
+echo $PATH
+Reload Bash configuration:
+source ~/.bashrc
+23. Samba
+Samba provides SMB/CIFS-based file sharing.
+Configuration:
+/etc/samba/smb.conf
+Validate:
+sudo testparm
+Check service:
+sudo systemctl status smbd
+List shares:
+smbclient -L localhost -N
+Windows access:
+\\SERVER_IP\shared
+24. NFS
+NFS is commonly used for network file sharing in Linux/Unix environments.
+Server configuration:
+/etc/exports
+Check exports:
+sudo exportfs -v
+Client:
+showmount -e SERVER_IP
+Mount:
+sudo mount SERVER_IP:/data/shared /mnt/shared
+25. Performance Troubleshooting
+Imagine your production server is slow.
+Don't randomly restart everything.
+Use:
+              Server Slow
+                   ↓
+              Check CPU
+                   ↓
+              Check RAM
+                   ↓
+            Check Disk Space
+                   ↓
+             Check Disk I/O
+                   ↓
+             Check Network
+                   ↓
+             Check Processes
+                   ↓
+                Check Logs
+Commands:
+top
+free -h
+df -h
+iostat -xz 1
+ss -s
+ps aux --sort=-%cpu | head
+journalctl -n 100
+🔥 26. Real DevOps Scenario
+Interviewer:
+Your Linux web server is not responding. What will you check?
+
+Strong answer:
+Step 1 — Check server connectivity
+ping SERVER_IP
+Step 2 — Check web service
+systemctl status nginx
+Step 3 — Check listening ports
+sudo ss -tulpn
+Step 4 — Check firewall
+sudo ufw status
+Step 5 — Check CPU/RAM
+top
+free -h
+Step 6 — Check disk
+df -h
+Step 7 — Check logs
+journalctl -u nginx -n 100
+Step 8 — Test locally
+curl http://localhost
+This demonstrates structured troubleshooting, which is much better than randomly restarting the server.
+🔥 27. Another Interview Scenario
+Problem:
+Your application works using localhost, but users cannot access it.
+
+Check:
+sudo ss -tulpn
+Then:
+ip a
+Then:
+sudo ufw status
+Then:
+curl http://localhost:8080
+Potential causes:
+Application only listening on 127.0.0.1
+Firewall blocking port
+Wrong IP/route
+Application not running
+Cloud Security Group blocking traffic
+This last point is particularly important when you move from Linux to AWS.
