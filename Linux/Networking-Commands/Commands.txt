@@ -1,1 +1,22 @@
-
+ip a
+ip addr
+ip link
+ip route
+ip route get
+hostname
+hostname -I
+hostnamectl
+ping
+curl
+wget
+ss
+nc
+dig
+nslookup
+getent hosts
+traceroute
+tracepath
+nmcli
+resolvectl
+systemctl
+ufw
