@@ -1,1 +1,331 @@
 
+🌱 Topic 31 — Environment Variables & Shell Environment
+Environment variables are named values that Linux programs and shell scripts can use.
+They are extremely important in Linux, Bash, DevOps, Docker, CI/CD, AWS and application deployment.
+Think of them as:
+VARIABLE_NAME = VALUE
+
+Example:
+NAME="Vivek"
+
+1. What Is an Environment Variable?
+Linux already provides many variables:
+echo $HOME
+echo $USER
+echo $SHELL
+echo $PATH
+
+For example:
+HOME  → /home/vivek
+USER  → vivek
+SHELL → /bin/bash
+
+The $ means:
+Give me the value stored in this variable.
+
+2. View Environment Variables
+env
+env
+
+Displays environment variables available to your process.
+printenv
+printenv
+
+You can check a specific variable:
+printenv HOME
+
+or:
+echo $HOME
+
+3. Important Linux Variables
+Variable	Meaning
+$HOME	User's home directory
+$USER	Current username
+$SHELL	Current/default shell
+$PATH	Directories searched for commands
+$PWD	Current working directory
+$OLDPWD	Previous working directory
+$HOSTNAME	System hostname
+$LANG	Language/locale
+$TERM	Terminal type
+
+
+Try:
+echo $HOME
+echo $USER
+echo $SHELL
+echo $PATH
+echo $PWD
+echo $HOSTNAME
+
+4. The Most Important Variable: PATH
+Check it:
+echo $PATH
+
+You might see:
+/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin
+
+These are directories separated by :.
+When you type:
+python3
+
+Linux searches directories in $PATH to find the executable.
+Conceptually:
+python3
+   ↓
+Search PATH
+   ↓
+/usr/local/bin
+   ↓
+/usr/bin
+   ↓
+/bin
+   ↓
+Found!
+
+That's why you can type:
+ls
+
+instead of:
+/usr/bin/ls
+
+5. which and PATH
+Find where a command comes from:
+which ls
+
+Example:
+/usr/bin/ls
+
+Also useful:
+type ls
+
+6. Create Your Own Shell Variable
+NAME="Vivek"
+
+Read it:
+echo $NAME
+
+Output:
+Vivek
+
+Another example:
+PROJECT="Linux"
+echo $PROJECT
+
+7. Important: Shell Variable vs Environment Variable
+This distinction is important.
+If you do:
+NAME="Vivek"
+
+you created a shell variable.
+To export it to child processes:
+export NAME
+
+Now it becomes an environment variable.
+Or directly:
+export NAME="Vivek"
+
+Check:
+printenv NAME
+
+8. Why export Matters
+Consider:
+Parent Shell
+     │
+     └── Child Process
+
+A normal shell variable isn't automatically part of the child's environment.
+An exported variable is passed to child processes.
+Example:
+export PROJECT="Linux"
+bash
+
+Inside the new shell:
+echo $PROJECT
+
+Output:
+Linux
+
+This is the basic idea behind environment variables used by applications.
+9. Temporary Environment Variables
+If you run:
+export APP_ENV="development"
+
+it exists for the current shell session and processes launched from it.
+Close the terminal and generally it will disappear.
+Check:
+echo $APP_ENV
+
+10. Permanent Environment Variables
+If you want a variable automatically available whenever Bash starts, you can put it in a shell startup file.
+For a user-specific Bash configuration:
+nano ~/.bashrc
+Add:
+export APP_ENV="development"
+Then reload:
+source ~/.bashrc
+Check:
+echo $APP_ENV
+Output:
+development
+11. What Is .bashrc?
+~/.bashrc
+is a Bash configuration file commonly used for interactive, non-login Bash shells.
+It can contain:
+aliases
+functions
+environment variables
+PATH modifications
+shell settings
+Example:
+export JAVA_HOME="/path/to/java"
+export APP_ENV="development"
+12. .profile
+Another important file is:
+~/.profile
+It is commonly used for login-session environment setup.
+For basic learning:
+.bashrc
+   ↓
+Interactive Bash configuration
+
+.profile
+   ↓
+Login-session configuration
+The exact startup behavior can depend on how the shell/session is launched.
+13. source
+Suppose you modify .bashrc:
+nano ~/.bashrc
+You can reload it without closing the terminal:
+source ~/.bashrc
+Short form:
+. ~/.bashrc
+14. Environment Variables in Bash Scripts 🐚
+Create:
+nano app.sh
+Add:
+#!/bin/bash
+
+echo "User: $USER"
+echo "Home: $HOME"
+echo "Shell: $SHELL"
+echo "Environment: $APP_ENV"
+Make executable:
+chmod +x app.sh
+Set variable:
+export APP_ENV="production"
+Run:
+./app.sh
+You'll get something like:
+User: vivek
+Home: /home/vivek
+Shell: /bin/bash
+Environment: production
+15. Why DevOps Engineers Use Environment Variables
+Imagine your application needs a database configuration.
+Instead of putting configuration directly in code:
+database_password = "mypassword"
+you can use:
+export DB_PASSWORD="..."
+Application:
+Application
+    ↓
+DB_HOST
+DB_PORT
+DB_USER
+DB_PASSWORD
+    ↓
+Database
+This makes configuration easier to change between:
+Development
+Testing
+Production
+without changing application source code.
+⚠️ Don't commit real passwords, API keys, or tokens into GitHub.
+16. Environment Variables in Docker
+A common DevOps example:
+docker run -e APP_ENV=production myapp
+Here:
+-e
+sets an environment variable inside the container.
+Inside the container:
+echo $APP_ENV
+returns:
+production
+This is one reason environment variables are so important in DevOps.
+17. Add a Directory to PATH
+Suppose you have your own scripts:
+/home/vivek/scripts
+Temporarily:
+export PATH="$PATH:$HOME/scripts"
+Check:
+echo $PATH
+Now commands inside that directory can be executed without specifying the full path.
+For example:
+/home/vivek/scripts/backup.sh
+could potentially be run as:
+backup.sh
+if the directory is in PATH and the script is executable.
+18. ⚠️ Don't Destroy Your PATH
+Never casually do:
+export PATH="/my/path"
+because you can remove the standard directories.
+Prefer:
+export PATH="$PATH:/my/path"
+or prepend deliberately:
+export PATH="/my/path:$PATH"
+🧪 Practical Lab
+Let's create a small DevOps-style configuration.
+Step 1
+Create:
+mkdir -p ~/env-lab
+cd ~/env-lab
+Step 2 — Create variables
+export APP_NAME="LinuxMonitor"
+export APP_ENV="development"
+export APP_PORT="8080"
+Step 3 — Check
+echo $APP_NAME
+echo $APP_ENV
+echo $APP_PORT
+Step 4 — Create script
+nano app-config.sh
+Add:
+#!/bin/bash
+
+echo "=========================="
+echo " Application Configuration"
+echo "=========================="
+
+echo "Application : $APP_NAME"
+echo "Environment : $APP_ENV"
+echo "Port        : $APP_PORT"
+echo "User        : $USER"
+echo "Home        : $HOME"
+echo "Hostname    : $HOSTNAME"
+Step 5
+chmod +x app-config.sh
+Step 6
+./app-config.sh
+Expected:
+==========================
+ Application Configuration
+==========================
+Application : LinuxMonitor
+Environment : development
+Port        : 8080
+User        : vivek
+Home        : /home/vivek
+Hostname    : your-hostname
+🔥 Practical DevOps Example
+Imagine the same application is deployed in three environments.
+Development
+export APP_ENV="development"
+export DB_HOST="localhost"
+Testing
+export APP_ENV="testing"
+export DB_HOST="test-db"
+Production
+export APP_ENV="production"
+export DB_HOST="production-db"
+The application can use the same code while its configuration changes through the environment.
