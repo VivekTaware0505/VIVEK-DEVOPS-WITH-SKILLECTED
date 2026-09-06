@@ -104,3 +104,59 @@ journalctl -u nginx -f
 
 # Today's logs
 journalctl --since today
+
+
+
+
+
+
+
+
+
+
+.
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is system monitoring?
+Monitoring CPU, memory, disk, network, processes and services to determine system health.
+2. top vs htop?
+Both monitor processes and system resources. htop provides a more interactive interface.
+3. What does free -h show?
+Memory and swap usage in human-readable form.
+4. What does df -h show?
+Filesystem disk-space usage.
+5. df vs du?
+df → filesystem available/used space
+du → space consumed by files/directories
+6. What does iostat monitor?
+CPU and disk I/O statistics.
+7. What does vmstat monitor?
+Processes, memory, paging, block I/O, interrupts and CPU statistics.
+8. What does ss do?
+Displays socket/network connection information.
+9. How do you monitor a service's logs?
+journalctl -u service-name -f
+10. How would you troubleshoot a slow Linux server?
+A good basic sequence is:
+CPU
+ ↓
+Memory
+ ↓
+Disk space
+ ↓
+Disk I/O
+ ↓
+Network
+ ↓
+Processes
+ ↓
+Logs
