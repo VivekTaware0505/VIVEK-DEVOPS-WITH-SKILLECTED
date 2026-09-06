@@ -1,1 +1,226 @@
 
+Basic Backup Concept
+Think of it like:
+Production Server
+       │
+       │ Backup
+       ▼
+ Backup Storage
+       │
+       │ Restore
+       ▼
+Recovered Data
+Example:
+/var/www/
+        ↓
+backup.tar.gz
+If /var/www/ is accidentally deleted:
+backup.tar.gz
+        ↓
+     restore
+        ↓
+/var/www/
+2. Types of Backup
+Full Backup
+Copies everything.
+Day 1 → Full Backup
+Incremental Backup
+Copies changes since the previous backup.
+Full → Change → Change → Change
+Differential Backup
+Copies changes since the last full backup.
+Full → Changes
+     → More Changes
+     → More Changes
+For beginners, remember:
+Backup	Copies
+Full	Everything
+Incremental	Changes since last backup
+Differential	Changes since last full backup
+
+
+3. tar — One of the Most Important Backup Tools
+tar is commonly used to create archives.
+Create an archive:
+tar -cvf backup.tar /home/vivek/data
+Options:
+-c → create
+-v → verbose
+-f → filename
+4. Create Compressed Backup
+Using gzip:
+tar -czvf backup.tar.gz /home/vivek/data
+Options:
+-c → create
+-z → gzip compression
+-v → verbose
+-f → filename
+Check:
+ls -lh backup.tar.gz
+5. Extract Backup
+tar -xzvf backup.tar.gz
+Options:
+-x → extract
+-z → gzip
+-v → verbose
+-f → file
+Extract to a specific directory:
+tar -xzvf backup.tar.gz -C /tmp/restore
+Create the directory first:
+mkdir -p /tmp/restore
+6. View Contents Without Extracting
+Very useful:
+tar -tzvf backup.tar.gz
+This lets you inspect the backup before restoring it.
+7. rsync — Extremely Important for DevOps
+rsync synchronizes files between locations.
+Install:
+sudo apt install rsync
+Basic:
+rsync -av source/ destination/
+Example:
+rsync -av /home/vivek/data/ /backup/data/
+Important
+Notice the / after data/.
+/data/
+and
+/data
+can produce different directory behavior with rsync.
+8. Useful rsync Options
+-a → archive mode
+-v → verbose
+-h → human-readable
+-z → compress data during transfer
+--delete → delete destination files that no longer exist in source
+Example:
+rsync -avh /home/vivek/data/ /backup/data/
+⚠️ Be careful with:
+--delete
+It can delete files from the destination.
+9. Backup to Another Server
+Suppose:
+Source Server = 192.168.1.10
+Backup Server = 192.168.1.20
+You can use:
+rsync -av /home/vivek/data/ user@192.168.1.20:/backup/data/
+This uses SSH for the transfer.
+Architecture:
+Linux Server
+192.168.1.10
+      │
+      │ rsync + SSH
+      ▼
+Backup Server
+192.168.1.20
+This is a very common DevOps administration pattern.
+10. Backup Important Directories
+Common Linux locations:
+/etc
+/home
+/var/www
+/opt
+/var/log
+But don't blindly back up the entire filesystem.
+For example:
+sudo tar -czvf etc-backup.tar.gz /etc
+For a website:
+sudo tar -czvf website-backup.tar.gz /var/www
+11. Database Backup
+A filesystem backup alone may not be enough for databases.
+For MySQL/MariaDB, a common logical backup tool is:
+mysqldump
+Example:
+mysqldump -u root -p database_name > database_backup.sql
+Restore:
+mysql -u root -p database_name < database_backup.sql
+The exact backup strategy should depend on the database and production requirements.
+12. Backup Script 🐚
+Now let's combine Bash + tar.
+Create:
+nano backup.sh
+Put:
+#!/bin/bash
+
+SOURCE="/home/vivek/data"
+BACKUP_DIR="/home/vivek/backups"
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+
+mkdir -p "$BACKUP_DIR"
+
+tar -czf "$BACKUP_DIR/data_$DATE.tar.gz" "$SOURCE"
+
+echo "Backup completed: $BACKUP_DIR/data_$DATE.tar.gz"
+Make executable:
+chmod +x backup.sh
+Run:
+./backup.sh
+Check:
+ls -lh ~/backups
+You should get something similar to:
+data_2026-09-06_21-20-00.tar.gz
+13. Automate Backup with Cron
+You already learned Cron, so now we combine the topics.
+Edit cron:
+crontab -e
+Example: run backup every day at 2 AM:
+0 2 * * * /home/vivek/backup.sh
+Meaning:
+0   → minute
+2   → hour
+*   → every day
+*   → every month
+*   → every weekday
+So:
+02:00 every day
+14. The Most Important Rule: 3-2-1 Backup
+Remember this for interviews and real systems:
+3 copies of data
+Original
+Backup 1
+Backup 2
+2 different storage/media types
+For example:
+Local Disk
+Cloud/Object Storage
+1 copy off-site
+For example:
+Production Server → Cloud Backup
+Why?
+Because if the server and its local backup disk are both destroyed, you still have an off-site copy.
+15. Backup vs Snapshot
+These are not exactly the same.
+Backup
+A separate copy of data.
+Server → Backup Storage
+Snapshot
+A point-in-time representation of a system/storage volume.
+Disk
+ ↓
+Snapshot
+Snapshots can be very fast, but you shouldn't automatically treat them as your only backup.
+🧪 Practical Lab
+Let's build a complete backup system.
+Step 1 — Create test data
+mkdir -p ~/backup-lab/data
+Create files:
+echo "Linux Backup Test" > ~/backup-lab/data/test1.txt
+echo "DevOps Backup Lab" > ~/backup-lab/data/test2.txt
+Check:
+ls -l ~/backup-lab/data
+Step 2 — Create backup directory
+mkdir -p ~/backup-lab/backups
+Step 3 — Create backup
+tar -czvf ~/backup-lab/backups/data-backup.tar.gz ~/backup-lab/data
+Step 4 — Inspect backup
+tar -tzvf ~/backup-lab/backups/data-backup.tar.gz
+Step 5 — Simulate data loss
+rm ~/backup-lab/data/test1.txt
+Check:
+ls ~/backup-lab/data
+Step 6 — Restore
+Create restore directory:
+mkdir -p ~/backup-lab/restore
+Extract:
+tar -xzvf ~/backup-lab/backups/data-backup.tar.gz -C ~/backup-lab/restore
+Check:
+find ~/backup-lab/restore -type f
