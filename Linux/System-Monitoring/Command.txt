@@ -1,1 +1,106 @@
 
+# ==========================================
+# LINUX SYSTEM MONITORING
+# ==========================================
+
+# CPU monitoring
+top
+
+# Install htop
+sudo apt install htop
+
+# Run htop
+htop
+
+# CPU information
+nproc
+lscpu
+
+# Load average
+uptime
+cat /proc/loadavg
+
+# Top CPU processes
+ps aux --sort=-%cpu | head
+
+# Top memory processes
+ps aux --sort=-%mem | head
+
+# Memory usage
+free -h
+
+# Memory information
+cat /proc/meminfo
+
+# Swap information
+swapon --show
+
+# Disk usage
+df -h
+
+# Directory sizes
+du -sh /var/*
+du -sh ./*
+
+# Find large files
+sudo find / -type f -size +500M -exec ls -lh {} \; 2>/dev/null
+
+# Install sysstat
+sudo apt install sysstat
+
+# Disk I/O
+iostat
+
+# Detailed disk I/O
+iostat -xz 1
+
+# Virtual memory statistics
+vmstat
+
+# Continuous vmstat
+vmstat 1
+
+# Network statistics
+ip -s link
+
+# Socket statistics
+ss -s
+
+# Listening ports
+sudo ss -tulpn
+
+# Network activity
+sar -n DEV 1
+
+# List processes
+ps aux
+
+# Find process
+pgrep nginx
+
+# Process details
+ps -fp PID
+
+# Running services
+systemctl --type=service --state=running
+
+# Service status
+systemctl status nginx
+
+# Check service
+systemctl is-active nginx
+
+# Check boot status
+systemctl is-enabled nginx
+
+# System logs
+journalctl -n 50
+
+# Follow logs
+journalctl -f
+
+# Follow service logs
+journalctl -u nginx -f
+
+# Today's logs
+journalctl --since today
