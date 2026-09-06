@@ -1,1 +1,63 @@
+# ==========================================
+# LINUX SOFTWARE COMPILATION
+# ==========================================
 
+# Update packages
+sudo apt update
+
+# Install compilation tools
+sudo apt install build-essential
+
+# Check GCC
+gcc --version
+
+# Check Make
+make --version
+
+# Create working directory
+mkdir ~/compile-lab
+
+# Enter directory
+cd ~/compile-lab
+
+# Compile C source
+gcc hello.c -o hello
+
+# Compile with warnings
+gcc -Wall -Wextra hello.c -o hello
+
+# Run executable
+./hello
+
+# Compile using default output
+gcc hello.c
+
+# Run default executable
+./a.out
+
+# Build using Makefile
+make
+
+# Clean build
+make clean
+
+# Configure Autotools project
+./configure
+
+# Build source
+make
+
+# Install compiled software
+sudo make install
+
+# Check executable type
+file hello
+
+# Check shared library dependencies
+ldd hello
+
+# Find executable
+which hello
+
+# Display executable location
+whereis hello
