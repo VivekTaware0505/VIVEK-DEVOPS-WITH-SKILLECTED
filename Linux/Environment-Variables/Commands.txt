@@ -70,3 +70,59 @@ nano ~/.profile
 
 # Run command with temporary environment variable
 APP_ENV=testing ./app.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is an environment variable?
+A named value available to processes in their environment.
+2. What is $PATH?
+A list of directories that the shell searches for executable commands.
+3. What does export do?
+It places a shell variable into the environment inherited by child processes.
+4. env vs printenv?
+Both can display environment variables; printenv is specifically designed to print environment variables.
+5. What is .bashrc?
+A Bash startup configuration file commonly used for interactive shell settings.
+6. What does source ~/.bashrc do?
+It executes/reloads the .bashrc file in the current shell.
+7. How do you add a directory to PATH?
+export PATH="$PATH:/path/to/directory"
+8. Why are environment variables useful in DevOps?
+They allow applications and deployment processes to receive environment-specific configuration without hard-coding it into source code.
+9. Where should passwords/API keys be stored?
+Use an appropriate secret-management system or secure secret mechanism—not plain text committed to Git.
+10. Give a Docker environment-variable example.
+docker run -e APP_ENV=production myapp
