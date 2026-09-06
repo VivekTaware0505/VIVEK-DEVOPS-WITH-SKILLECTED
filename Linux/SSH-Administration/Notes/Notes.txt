@@ -1,1 +1,304 @@
-
+What is SSH?
+SSH = Secure Shell
+SSH allows you to securely access and manage another Linux machine over a network.
+Example:
+Your Computer
+     │
+     │ SSH
+     ▼
+Linux Server
+Typical DevOps use:
+ssh user@server-ip
+Example:
+ssh ubuntu@192.168.1.100
+2. SSH Client vs SSH Server
+SSH Client
+The machine from which you connect.
+Command:
+ssh
+SSH Server
+The machine receiving the connection.
+The server runs:
+sshd
+Check SSH service:
+sudo systemctl status ssh
+On some distributions the service may be named:
+sudo systemctl status sshd
+3. SSH Default Port
+SSH normally uses:
+Port 22
+Connection:
+ssh user@server-ip
+Specify another port:
+ssh -p 2222 user@server-ip
+4. Install SSH Server on Ubuntu
+On the machine you want to remotely access:
+sudo apt update
+sudo apt install openssh-server
+Check:
+sudo systemctl status ssh
+Start it:
+sudo systemctl start ssh
+Enable at boot:
+sudo systemctl enable ssh
+Restart:
+sudo systemctl restart ssh
+5. Find Server IP
+On the Linux server:
+ip a
+or:
+hostname -I
+Example:
+192.168.1.100
+From another computer:
+ssh vivek@192.168.1.100
+6. SSH Password Authentication
+Basic connection:
+ssh username@server-ip
+Example:
+ssh vivek@192.168.1.100
+You'll be asked for the user's password if password authentication is enabled.
+7. SSH Configuration
+The main SSH server configuration file is:
+/etc/ssh/sshd_config
+View it:
+sudo less /etc/ssh/sshd_config
+Before changing configuration, make a backup:
+sudo cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+After changes, validate configuration:
+sudo sshd -t
+If there is no output, the configuration syntax is generally valid.
+Then restart:
+sudo systemctl restart ssh
+8. SSH Keys 🔑
+This is one of the most important DevOps concepts.
+Instead of relying only on passwords, SSH can authenticate using a key pair.
+You have:
+Private Key 🔐
+Public Key 🔓
+Private Key
+Keep it secret.
+~/.ssh/id_ed25519
+Public Key
+Can be placed on the server.
+~/.ssh/id_ed25519.pub
+Think:
+Private Key → Your computer
+Public Key  → Server
+Never share your private key.
+9. Generate SSH Key
+Recommended modern option:
+ssh-keygen -t ed25519
+You'll see something similar to:
+Enter file in which to save the key:
+Press Enter to use the default location.
+Then you'll get:
+~/.ssh/id_ed25519
+~/.ssh/id_ed25519.pub
+Check:
+ls -la ~/.ssh
+10. Understanding ~/.ssh
+Typical directory:
+~/.ssh/
+├── id_ed25519
+├── id_ed25519.pub
+├── known_hosts
+└── config
+id_ed25519
+Private key.
+DO NOT SHARE.
+id_ed25519.pub
+Public key.
+known_hosts
+Stores information about servers you've connected to.
+config
+Optional SSH client configuration.
+11. Copy Public Key to Server
+The easiest method:
+ssh-copy-id username@server-ip
+Example:
+ssh-copy-id vivek@192.168.1.100
+Then connect:
+ssh vivek@192.168.1.100
+If configured correctly, your key can authenticate you.
+12. authorized_keys
+On the server:
+~/.ssh/authorized_keys
+View:
+cat ~/.ssh/authorized_keys
+This file contains public keys that are authorized to log in to that account.
+Typical structure:
+Client
+  │
+  │ Private Key
+  ▼
+SSH Server
+  │
+  ▼
+authorized_keys
+  │
+  ▼
+Authentication
+13. SSH File Permissions
+SSH is sensitive to permissions.
+Example:
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+Private key:
+chmod 600 ~/.ssh/id_ed25519
+Public key:
+chmod 644 ~/.ssh/id_ed25519.pub
+Check:
+ls -la ~/.ssh
+14. known_hosts
+When you connect to a server for the first time:
+ssh user@server-ip
+SSH may ask you to verify the server's host key.
+After accepting it, information is stored in:
+~/.ssh/known_hosts
+View:
+cat ~/.ssh/known_hosts
+This helps SSH detect unexpected host-key changes.
+15. SSH Config File
+You can simplify repeated connections.
+Create:
+nano ~/.ssh/config
+Example:
+Host myserver
+    HostName 192.168.1.100
+    User vivek
+    Port 22
+Then instead of:
+ssh vivek@192.168.1.100
+you can use:
+ssh myserver
+Very useful when managing multiple servers.
+16. Copy Files with SCP
+SCP = Secure Copy Protocol
+Copy local file → server:
+scp file.txt user@server-ip:/home/user/
+Example:
+scp app.jar vivek@192.168.1.100:/home/vivek/
+Copy server → local:
+scp user@server-ip:/home/user/app.jar .
+Copy directory:
+scp -r project/ user@server-ip:/home/user/
+17. SFTP
+SFTP = SSH File Transfer Protocol
+Connect:
+sftp user@server-ip
+Inside SFTP:
+ls
+Download:
+get file.txt
+Upload:
+put file.txt
+Exit:
+exit
+18. SSH Troubleshooting
+Test connectivity
+ping server-ip
+Check SSH port:
+nc -zv server-ip 22
+Check server listening ports:
+sudo ss -ltnp
+Check SSH service:
+sudo systemctl status ssh
+Check logs:
+sudo journalctl -u ssh
+Follow logs:
+sudo journalctl -u ssh -f
+Use verbose SSH debugging:
+ssh -v user@server-ip
+More detailed:
+ssh -vv user@server-ip
+Maximum debugging:
+ssh -vvv user@server-ip
+-vvv is extremely useful when troubleshooting authentication or connection problems.
+19. Common SSH Errors
+Connection refused
+Possible causes:
+SSH service isn't running
+Wrong port
+Firewall blocking connection
+Check:
+sudo systemctl status ssh
+Connection timed out
+Possible causes:
+Network problem
+Firewall
+Security group
+Wrong IP
+Permission denied
+Possible causes:
+Wrong username
+Wrong password
+SSH key problem
+Public key not installed
+Incorrect ~/.ssh permissions
+Debug:
+ssh -vvv user@server-ip
+20. SSH + AWS EC2 🚀
+This is especially important for your DevOps/AWS learning.
+Typical architecture:
+Your PC
+   │
+   │ SSH
+   │
+   ▼
+AWS EC2
+   │
+   └── Linux Server
+For an EC2 instance, you may receive a private key such as:
+my-server.pem
+Example:
+ssh -i my-server.pem ubuntu@PUBLIC-IP
+For Amazon Linux, the username is often different from Ubuntu, so always check the AMI documentation/instance details.
+On Linux/macOS, the private key commonly needs restrictive permissions:
+chmod 400 my-server.pem
+Never upload .pem private keys to GitHub.
+21. SSH Security Hardening
+Once you understand the basics, administrators commonly consider:
+✓ Use SSH keys
+✓ Protect private keys
+✓ Use least privilege
+✓ Keep OpenSSH updated
+✓ Use firewall rules
+✓ Monitor authentication logs
+✓ Remove unnecessary accounts
+✓ Review authorized keys
+✓ Consider changing exposed SSH configuration where appropriate
+✓ Disable unnecessary authentication methods
+⚠️ Configuration changes should be tested carefully, especially on remote servers, because a mistake can lock you out.
+🧪 Practical SSH Lab
+If you have two Ubuntu machines, use:
+Machine A = SSH Client
+Machine B = SSH Server
+On Machine B
+sudo apt update
+sudo apt install openssh-server
+Check:
+sudo systemctl status ssh
+Find IP:
+hostname -I
+On Machine A
+ssh username@SERVER-IP
+Example:
+ssh vivek@192.168.1.100
+Generate key
+On Machine A:
+ssh-keygen -t ed25519
+Then:
+ssh-copy-id vivek@192.168.1.100
+Test:
+ssh vivek@192.168.1.100
+Test SCP
+echo "SSH Lab" > test.txt
+Copy:
+scp test.txt vivek@192.168.1.100:/home/vivek/
+Test SFTP
+sftp vivek@192.168.1.100
+Then:
+put test.txt
+Exit:
+exit
