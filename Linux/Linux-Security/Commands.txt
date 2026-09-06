@@ -1,1 +1,453 @@
 
+# Linux Security - Commands Reference
+# Topic 19
+
+# ==================================================
+# 1. USER & IDENTITY INFORMATION
+# ==================================================
+
+# Show current user
+whoami
+
+# Show user ID, group ID and groups
+id
+
+# Show groups of current user
+groups
+
+# Show information about another user
+id username
+
+# List users
+cat /etc/passwd
+
+# List usernames and UIDs
+cut -d: -f1,3 /etc/passwd
+
+
+# ==================================================
+# 2. SUDO / ROOT PRIVILEGES
+# ==================================================
+
+# Run command with administrator privileges
+sudo command
+
+# Open root shell (use carefully)
+sudo -i
+
+# Show sudo permissions for current user
+sudo -l
+
+# Safely edit sudo configuration
+sudo visudo
+
+
+# ==================================================
+# 3. FILE PERMISSIONS
+# ==================================================
+
+# View permissions
+ls -l
+
+# Change permissions using numeric mode
+chmod 755 file
+
+# Owner: rwx
+# Group: r-x
+# Others: r-x
+chmod 755 file
+
+# Owner: rwx
+# Group: r-x
+# Others: ---
+chmod 750 file
+
+# Owner: rw-
+# Group: r--
+# Others: ---
+chmod 640 file
+
+# Add execute permission for owner
+chmod u+x script.sh
+
+# Remove write permission from others
+chmod o-w file
+
+# Add read permission for group
+chmod g+r file
+
+
+# ==================================================
+# 4. FILE OWNERSHIP
+# ==================================================
+
+# Change owner
+sudo chown username file
+
+# Change group
+sudo chgrp groupname file
+
+# Change owner and group
+sudo chown username:groupname file
+
+# Change ownership recursively
+sudo chown -R username:groupname directory/
+
+
+# ==================================================
+# 5. UMASK
+# ==================================================
+
+# Display current umask
+umask
+
+# Set temporary umask
+umask 027
+
+# Create test file
+touch test.txt
+
+# Create test directory
+mkdir testdir
+
+# Check permissions
+ls -l test.txt
+ls -ld testdir
+
+
+# ==================================================
+# 6. SPECIAL PERMISSIONS
+# ==================================================
+
+# Find SUID files
+find / -perm -4000 -type f 2>/dev/null
+
+# Find SGID files
+find / -perm -2000 -type f 2>/dev/null
+
+# Add SGID to directory
+chmod g+s directory/
+
+# Add Sticky Bit
+chmod +t directory/
+
+# View special permissions
+ls -ld directory/
+
+
+# ==================================================
+# 7. PASSWORD MANAGEMENT
+# ==================================================
+
+# Change current user's password
+passwd
+
+# Change another user's password
+sudo passwd username
+
+# Lock user account
+sudo passwd -l username
+
+# Unlock user account
+sudo passwd -u username
+
+# Display password/account aging information
+sudo chage -l username
+
+
+# ==================================================
+# 8. USER MANAGEMENT
+# ==================================================
+
+# Create user
+sudo useradd -m username
+
+# Create group
+sudo groupadd groupname
+
+# Add user to group
+sudo usermod -aG groupname username
+
+# Remove user from group
+sudo gpasswd -d username groupname
+
+# Delete user
+sudo userdel username
+
+# Delete user and home directory
+sudo userdel -r username
+
+
+# ==================================================
+# 9. PASSWORD / ACCOUNT FILES
+# ==================================================
+
+# View account information
+cat /etc/passwd
+
+# View protected password database
+sudo cat /etc/shadow
+
+# Check permissions of shadow file
+ls -l /etc/shadow
+
+
+# ==================================================
+# 10. UFW FIREWALL
+# ==================================================
+
+# Check firewall status
+sudo ufw status
+
+# Detailed firewall status
+sudo ufw status verbose
+
+# Show numbered rules
+sudo ufw status numbered
+
+# Enable firewall
+sudo ufw enable
+
+# Disable firewall
+sudo ufw disable
+
+# Allow HTTP
+sudo ufw allow 80/tcp
+
+# Allow HTTPS
+sudo ufw allow 443/tcp
+
+# Allow SSH port
+sudo ufw allow 22/tcp
+
+# Deny a port
+sudo ufw deny 8080/tcp
+
+# Delete a rule
+sudo ufw delete deny 8080/tcp
+
+# Delete rule by number
+sudo ufw delete 2
+
+# Reset firewall rules
+# WARNING: removes existing UFW rules
+sudo ufw reset
+
+
+# ==================================================
+# 11. NETWORK LISTENING PORTS
+# ==================================================
+
+# Show listening TCP/UDP ports
+ss -tuln
+
+# Show listening ports with process information
+sudo ss -tulnp
+
+# Show all TCP connections
+ss -t
+
+# Show all UDP connections
+ss -u
+
+# Show listening TCP ports
+ss -ltn
+
+# Show listening UDP ports
+ss -lun
+
+
+# ==================================================
+# 12. RUNNING SERVICES
+# ==================================================
+
+# List running services
+systemctl --type=service --state=running
+
+# Check service status
+systemctl status service-name
+
+# Start service
+sudo systemctl start service-name
+
+# Stop service
+sudo systemctl stop service-name
+
+# Restart service
+sudo systemctl restart service-name
+
+# Enable service at boot
+sudo systemctl enable service-name
+
+# Disable service at boot
+sudo systemctl disable service-name
+
+
+# ==================================================
+# 13. SYSTEM UPDATES
+# ==================================================
+
+# Update package information
+sudo apt update
+
+# Upgrade installed packages
+sudo apt upgrade
+
+# Show packages that can be upgraded
+apt list --upgradable
+
+
+# ==================================================
+# 14. SECURITY LOGS
+# ==================================================
+
+# View authentication log
+sudo less /var/log/auth.log
+
+# Search failed authentication attempts
+sudo grep "Failed" /var/log/auth.log
+
+# Search authentication events
+sudo grep -i "authentication" /var/log/auth.log
+
+# View system journal
+sudo journalctl
+
+# Follow logs in real time
+sudo journalctl -f
+
+# Search authentication-related journal entries
+sudo journalctl | grep -i "authentication"
+
+# View logs since today
+sudo journalctl --since today
+
+
+# ==================================================
+# 15. FILE SEARCH / SECURITY AUDITING
+# ==================================================
+
+# Find files owned by a user
+find / -user username 2>/dev/null
+
+# Find world-writable files
+find / -perm -002 -type f 2>/dev/null
+
+# Find files with SUID
+find / -perm -4000 -type f 2>/dev/null
+
+# Find files with SGID
+find / -perm -2000 -type f 2>/dev/null
+
+
+# ==================================================
+# 16. SECURITY CHECKS
+# ==================================================
+
+# Current user
+whoami
+
+# User identity
+id
+
+# Current groups
+groups
+
+# File permissions
+ls -l
+
+# Current firewall status
+sudo ufw status verbose
+
+# Listening ports
+sudo ss -tulnp
+
+# Running services
+systemctl --type=service --state=running
+
+# System uptime
+uptime
+
+# Kernel information
+uname -a
+
+# Disk usage
+df -h
+
+# Memory usage
+free -h
+
+
+# ==================================================
+# 17. PRACTICAL SECURITY LAB
+# ==================================================
+
+# Create security group
+sudo groupadd securitylab
+
+# Create test user
+sudo useradd -m securityuser
+
+# Set password
+sudo passwd securityuser
+
+# Add user to security group
+sudo usermod -aG securitylab securityuser
+
+# Verify user
+id securityuser
+
+# Create security directory
+sudo mkdir /opt/securitylab
+
+# Change owner and group
+sudo chown securityuser:securitylab /opt/securitylab
+
+# Set secure permissions
+sudo chmod 750 /opt/securitylab
+
+# Check directory
+ls -ld /opt/securitylab
+
+# Check current umask
+umask
+
+# Set test umask
+umask 027
+
+# Create test file
+touch security-test.txt
+
+# Create test directory
+mkdir security-test-dir
+
+# Check permissions
+ls -l security-test.txt
+ls -ld security-test-dir
+
+# Check firewall
+sudo ufw status verbose
+
+# Check listening ports
+ss -tuln
+
+
+# ==================================================
+# 18. IMPORTANT SECURITY PRACTICES
+# ==================================================
+
+# NEVER expose passwords in scripts
+# NEVER commit passwords/API keys to GitHub
+# NEVER use chmod 777 unnecessarily
+# NEVER run everything as root
+# NEVER enable unnecessary services
+# ALWAYS review file permissions
+# ALWAYS keep Linux updated
+# ALWAYS use least privilege
+# ALWAYS monitor authentication/security logs
+# ALWAYS review exposed/listening ports
+
+
+# ==================================================
+# END OF LINUX SECURITY COMMANDS
+# ==================================================
