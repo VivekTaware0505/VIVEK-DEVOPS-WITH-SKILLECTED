@@ -1,1 +1,310 @@
+🌐 Topic 24 — NFS (Network File System)
+NFS is an important Linux administration and DevOps concept. It allows one Linux machine to access a directory stored on another Linux machine over the network.
+1. What is NFS?
+NFS = Network File System
+Normally:
+Server
+└── /data
+    ├── file1.txt
+    └── file2.txt
 
+Only that server directly owns the files.
+With NFS:
+              Network
+                 │
+        ┌────────┴────────┐
+        ↓                 ↓
+   NFS Server         NFS Client
+   /shared             /mnt/shared
+        │                 │
+        └────── Files ────┘
+
+The client can access the server's shared directory as if it were a local directory.
+2. Real-World Example
+Suppose you have:
+Server A
+IP: 192.168.1.10
+/data/shared
+
+and:
+Server B
+IP: 192.168.1.20
+
+Server A exports /data/shared.
+Server B mounts it:
+sudo mount 192.168.1.10:/data/shared /mnt/shared
+
+Now Server B can access:
+/mnt/shared
+
+which actually stores the data on Server A.
+3. NFS Architecture
+Remember:
+NFS Server
+    │
+    │ Export
+    ↓
+/data/shared
+    │
+    │ Network
+    ↓
+NFS Client
+    │
+    │ Mount
+    ↓
+/mnt/shared
+
+NFS Server
+The machine that shares the directory.
+NFS Client
+The machine that mounts and uses the shared directory.
+4. Important NFS Terms
+Term	Meaning
+NFS Server	Shares files
+NFS Client	Accesses shared files
+Export	Directory shared by server
+Mount	Attaching filesystem to a directory
+/etc/exports	NFS server configuration
+exportfs	Manage exported filesystems
+
+
+5. Install NFS Server — Ubuntu
+On the server:
+sudo apt update
+
+Install:
+sudo apt install nfs-kernel-server
+
+Check service:
+sudo systemctl status nfs-kernel-server
+
+Start it:
+sudo systemctl start nfs-kernel-server
+
+Enable at boot:
+sudo systemctl enable nfs-kernel-server
+
+6. Create a Shared Directory
+Example:
+sudo mkdir -p /data/shared
+
+Create a test file:
+echo "Hello from NFS Server" | sudo tee /data/shared/server.txt
+
+Check:
+ls -l /data/shared
+
+7. Configure /etc/exports
+This is one of the most important NFS files.
+Open:
+sudo nano /etc/exports
+
+Example:
+/data/shared 192.168.1.20(rw,sync,no_subtree_check)
+
+Meaning:
+/data/shared
+     ↓
+Shared directory
+
+192.168.1.20
+     ↓
+Allowed client
+
+rw
+     ↓
+Read + Write
+
+sync
+     ↓
+Write changes synchronously
+
+no_subtree_check
+     ↓
+Avoid subtree checking
+8. Export the Directory
+After editing /etc/exports:
+sudo exportfs -a
+Check exports:
+sudo exportfs -v
+You should see your shared directory.
+9. Install NFS Client
+On the client machine:
+sudo apt update
+Install:
+sudo apt install nfs-common
+10. Check Available NFS Shares
+From the client:
+showmount -e 192.168.1.10
+Example:
+Export list for 192.168.1.10:
+
+/data/shared 192.168.1.20
+This means the server is exporting /data/shared.
+11. Create Mount Point
+On the client:
+sudo mkdir -p /mnt/shared
+12. Mount NFS Share
+sudo mount 192.168.1.10:/data/shared /mnt/shared
+Check:
+df -h
+You can also use:
+mount | grep nfs
+13. Test NFS
+On the client:
+ls -l /mnt/shared
+You should see:
+server.txt
+Create a file:
+sudo touch /mnt/shared/client.txt
+Then on the NFS server:
+ls -l /data/shared
+You should see:
+server.txt
+client.txt
+🎯 That's NFS working.
+14. Mount Permanently
+The mount created using mount normally doesn't survive a reboot.
+To make it permanent, edit:
+sudo nano /etc/fstab
+Add:
+192.168.1.10:/data/shared /mnt/shared nfs defaults,_netdev 0 0
+Then test the configuration:
+sudo mount -a
+If there are no errors, check:
+df -h
+Why _netdev?
+It tells the system:
+This filesystem requires the network.
+
+That's useful for network-mounted filesystems during boot.
+15. Unmount NFS
+sudo umount /mnt/shared
+If it's busy:
+sudo lsof +D /mnt/shared
+Find which process is using it before attempting further action.
+16. NFS Permissions
+This is very important.
+NFS does not simply ignore Linux permissions.
+For example:
+NFS
+ ↓
+Linux filesystem permissions
+ ↓
+User / Group ownership
+Check:
+ls -ld /data/shared
+You may see:
+drwxr-xr-x
+Ownership:
+ls -ld /data/shared
+You can change ownership:
+sudo chown user:user /data/shared
+And permissions:
+sudo chmod 755 /data/shared
+Be careful with broad permissions such as:
+chmod 777
+Avoid using them in production just to "make it work."
+17. Important NFS Options
+Example:
+/data/shared 192.168.1.20(rw,sync,no_subtree_check)
+rw
+Read and write.
+ro
+Read-only.
+/data/shared 192.168.1.20(ro)
+sync
+Changes are written synchronously.
+async
+Can improve performance in some situations but has different durability characteristics.
+no_subtree_check
+Disables subtree checking and is commonly used to avoid certain pathname/file-handle issues.
+18. Read-Only NFS Share
+Suppose you only want clients to read files.
+/data/shared 192.168.1.20(ro,sync,no_subtree_check)
+Now the client can read:
+cat /mnt/shared/server.txt
+but should not be allowed to modify the export through NFS.
+19. NFS + Firewall
+Remember your previous topic:
+🔥 Firewall
+NFS traffic must also be allowed through the network/security controls between client and server.
+Check the server:
+sudo ufw status
+If you're configuring NFS in a controlled lab, make sure the required NFS traffic is permitted between the client and server.
+Don't blindly open NFS services to the public Internet.
+20. NFS in DevOps
+A common architecture might look like:
+                Application Servers
+             ┌──────────┬──────────┐
+             ↓          ↓          ↓
+           App 1      App 2      App 3
+             │          │          │
+             └──────┬───┴──────────┘
+                    ↓
+                NFS Server
+                    │
+                /shared-data
+Multiple servers can access shared data.
+This can be useful for:
+- shared application files
+- internal file storage
+- build artifacts
+- configuration/data sharing
+- centralized storage in certain architectures
+For highly available production systems, however, NFS itself can become a dependency, so architecture and availability requirements need to be considered.
+21. NFS vs Samba
+You'll encounter Samba in the next few topics.
+Feature	NFS	Samba
+Common environment	Linux/Unix	Windows + Linux
+Protocol	NFS	SMB/CIFS
+Linux-to-Linux	⭐⭐⭐⭐⭐	⭐⭐⭐
+Windows compatibility	Limited	⭐⭐⭐⭐⭐
+Typical use	Linux shared storage	Cross-platform file sharing
+
+
+Easy memory trick:
+Linux ↔ Linux
+     ↓
+    NFS
+
+Linux ↔ Windows
+     ↓
+   Samba
+🧪 Practical NFS Lab
+If you have two Ubuntu machines/VMs, use:
+Server:
+192.168.1.10
+
+Client:
+192.168.1.20
+Server
+sudo apt update
+sudo apt install nfs-kernel-server
+
+sudo mkdir -p /data/shared
+
+echo "NFS Server Test" | sudo tee /data/shared/test.txt
+
+sudo nano /etc/exports
+Add:
+/data/shared 192.168.1.20(rw,sync,no_subtree_check)
+Then:
+sudo exportfs -a
+sudo exportfs -v
+sudo systemctl status nfs-kernel-server
+Client
+sudo apt update
+sudo apt install nfs-common
+
+showmount -e 192.168.1.10
+
+sudo mkdir -p /mnt/shared
+
+sudo mount 192.168.1.10:/data/shared /mnt/shared
+
+ls -l /mnt/shared
+Test:
+echo "Created from client" | sudo tee /mnt/shared/client.txt
+Then check the server:
+ls -l /data/shared
