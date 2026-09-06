@@ -1,1 +1,40 @@
+ls -lah /var/log
 
+cat /var/log/syslog
+sudo less /var/log/syslog
+
+sudo less /var/log/auth.log
+
+journalctl
+journalctl -n 20
+journalctl -f
+
+journalctl -u ssh
+journalctl -u ssh -n 50
+journalctl -u ssh -f
+
+journalctl --since today
+journalctl --since "1 hour ago"
+
+journalctl -k
+dmesg
+dmesg | tail
+
+head file.log
+head -n 20 file.log
+
+tail file.log
+tail -n 50 file.log
+tail -f file.log
+
+grep "error" file.log
+grep -i "error" file.log
+grep -E "error|failed|warning" file.log
+
+grep -i "error" file.log | wc -l
+
+journalctl --disk-usage
+
+which logrotate
+cat /etc/logrotate.conf
+ls /etc/logrotate.d/
