@@ -1,1 +1,173 @@
+Samba allows Linux machines to share files and folders with Windows computers using the SMB/CIFS protocol.
+Think of it like:
+Windows PC
+    │
+    │ SMB
+    ▼
+Linux Samba Server
+    │
+    ▼
+/shared
+1. Samba vs NFS
+Feature	Samba	NFS
+Main use	Linux ↔ Windows	Linux ↔ Linux
+Protocol	SMB/CIFS	NFS
+Windows support	⭐⭐⭐⭐⭐	Limited
+Linux support	✅	✅
+Configuration	/etc/samba/smb.conf	/etc/exports
 
+
+DevOps point: Samba is useful when Linux servers need to provide shared storage to Windows systems.
+2. Install Samba
+sudo apt update
+sudo apt install samba
+Check the service:
+sudo systemctl status smbd
+Start and enable it:
+sudo systemctl enable --now smbd
+Check:
+sudo systemctl status smbd
+3. Create a Shared Folder
+For our lab:
+sudo mkdir -p /srv/samba/shared
+Create a test file:
+echo "Hello from Samba Server" | sudo tee /srv/samba/shared/test.txt
+Check:
+ls -l /srv/samba/shared
+4. Configure Samba
+Open:
+sudo nano /etc/samba/smb.conf
+Add at the bottom:
+[shared]
+    path = /srv/samba/shared
+    browsable = yes
+    read only = no
+    guest ok = yes
+Meaning
+- [shared] → name of the network share
+- path → actual Linux directory
+- browsable = yes → share can be discovered
+- read only = no → writing is allowed
+- guest ok = yes → no username/password required
+⚠️ Important: guest ok = yes is suitable for a controlled learning lab, not a production server.
+5. Validate Configuration
+Before restarting Samba:
+sudo testparm
+
+If the configuration is valid, restart:
+sudo systemctl restart smbd
+
+6. Test Samba Locally
+Install the Samba client:
+sudo apt install smbclient
+
+List available shares:
+smbclient -L localhost -N
+
+You should see something similar to:
+Sharename
+---------
+shared
+Connect:
+smbclient //localhost/shared -N
+Inside the Samba shell:
+ls
+Download a file:
+get test.txt
+Upload a file:
+put myfile.txt
+Exit:
+exit
+7. Access Samba from Windows 🪟
+Find your Linux IP:
+ip a
+Suppose your Linux IP is:
+192.168.1.10
+On Windows, open File Explorer and enter:
+\\192.168.1.10\shared
+You should see:
+test.txt
+You can also use Map Network Drive to make the share appear like a normal Windows drive.
+8. Authenticated Samba Share 🔐
+For production-style learning, authentication is better than guest access.
+Create a Linux user:
+sudo adduser sambauser
+Set a Samba password:
+sudo smbpasswd -a sambauser
+Enable the Samba account:
+sudo smbpasswd -e sambauser
+Create another directory:
+sudo mkdir -p /srv/samba/private
+Give the user ownership:
+sudo chown -R sambauser:sambauser /srv/samba/private
+Open configuration:
+sudo nano /etc/samba/smb.conf
+Add:
+[private]
+    path = /srv/samba/private
+    browsable = yes
+    read only = no
+    valid users = sambauser
+Validate:
+sudo testparm
+Restart:
+sudo systemctl restart smbd
+Now Windows can access:
+\\192.168.1.10\private
+It will ask for:
+Username: sambauser
+Password: <Samba password>
+9. Firewall
+Samba primarily uses TCP 445 for modern SMB traffic.
+Check UFW:
+sudo ufw status
+Check whether a Samba profile exists:
+sudo ufw app list | grep -i samba
+If available:
+sudo ufw allow Samba
+For a local network, a more restrictive rule is preferable:
+sudo ufw allow from 192.168.1.0/24 to any port 445 proto tcp
+⚠️ Never expose Samba directly to the public Internet.
+10. Troubleshooting Commands
+Check Samba service
+sudo systemctl status smbd
+Validate configuration
+sudo testparm
+Check SMB port
+sudo ss -tulpn | grep 445
+View Samba logs
+journalctl -u smbd
+Test available shares
+smbclient -L localhost -N
+Test network connectivity
+ping SERVER_IP
+Test port 445
+nc -zv SERVER_IP 445
+🧪 Practical Samba Lab
+Do this yourself:
+Step 1
+Install Samba.
+Step 2
+Create:
+/srv/samba/shared
+Step 3
+Create:
+test.txt
+Step 4
+Configure [shared].
+Step 5
+Run:
+sudo testparm
+Step 6
+Restart:
+sudo systemctl restart smbd
+Step 7
+Test:
+smbclient -L localhost -N
+Step 8
+From Windows:
+\\LINUX_IP\shared
+Step 9
+Create a file from Windows and verify it on Linux:
+ls -l /srv/samba/shared
+This is a real DevOps/Linux administration lab worth documenting on GitHub.
