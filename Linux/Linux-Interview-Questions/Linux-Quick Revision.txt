@@ -1,1 +1,35 @@
 
+pwd       → current directory
+ls        → list files
+cd        → change directory
+mkdir     → create directory
+touch     → create file
+cp        → copy
+mv        → move/rename
+rm        → remove
+cat       → display file
+less      → view file
+grep      → search text
+find      → find files
+chmod     → change permissions
+chown     → change ownership
+ps        → processes
+top       → process monitoring
+kill      → terminate process
+df        → filesystem space
+du        → directory/file space
+lsblk     → block devices
+ip a      → IP/interfaces
+ip route  → routing table
+ss        → sockets/ports
+ping      → connectivity
+dig       → DNS lookup
+ssh       → remote login
+scp       → secure copy
+rsync     → synchronization
+tar       → archive
+systemctl → services
+journalctl → logs
+crontab   → scheduled jobs
+env       → environment
+export    → export variable
