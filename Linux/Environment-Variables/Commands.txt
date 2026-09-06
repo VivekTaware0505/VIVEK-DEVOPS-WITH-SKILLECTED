@@ -1,1 +1,72 @@
 
+# ==========================================
+# LINUX ENVIRONMENT VARIABLES
+# ==========================================
+
+# Display all environment variables
+env
+
+# Display all environment variables
+printenv
+
+# Display specific variable
+printenv HOME
+
+# Print variable
+echo $HOME
+
+# Important variables
+echo $USER
+echo $HOME
+echo $SHELL
+echo $PATH
+echo $PWD
+echo $OLDPWD
+echo $HOSTNAME
+echo $LANG
+echo $TERM
+
+# Find command location
+which ls
+
+# Check command type
+type ls
+
+# Create shell variable
+NAME="Vivek"
+
+# Read variable
+echo $NAME
+
+# Export variable
+export NAME
+
+# Create environment variable
+export APP_ENV="development"
+
+# Check environment variable
+printenv APP_ENV
+
+# Change variable
+export APP_ENV="production"
+
+# Remove variable
+unset APP_ENV
+
+# View PATH
+echo $PATH
+
+# Add directory to PATH temporarily
+export PATH="$PATH:$HOME/scripts"
+
+# Reload Bash configuration
+source ~/.bashrc
+
+# Edit Bash configuration
+nano ~/.bashrc
+
+# Edit profile
+nano ~/.profile
+
+# Run command with temporary environment variable
+APP_ENV=testing ./app.sh
