@@ -1,1 +1,379 @@
+What Is Job Scheduling?
+Normally you manually run:
+./backup.sh
+But suppose you want the backup to run every day automatically.
+Cron can do this:
+Linux
+  ↓
+Cron
+  ↓
+11:00 PM
+  ↓
+backup.sh
+  ↓
+Backup created
+This is automation.
+2️⃣ What Is Cron?
+Cron is a Linux service that runs scheduled commands and scripts.
+A scheduled task is commonly called a:
+Cron job
 
+Examples:
+Run backup every day
+Run cleanup every Sunday
+Run monitoring script every 5 minutes
+Run a script after reboot
+3️⃣ Check Cron Service
+On Ubuntu:
+systemctl status cron
+You may see:
+Active: active (running)
+If it isn't running:
+sudo systemctl start cron
+Enable it at boot:
+sudo systemctl enable cron
+Check:
+systemctl is-active cron
+4️⃣ What Is Crontab?
+crontab means cron table.
+It stores scheduled jobs for a user.
+View your current jobs:
+crontab -l
+If you haven't created any jobs, you may see:
+no crontab for user
+5️⃣ Create a Cron Job
+Edit your crontab:
+crontab -e
+You'll get an editor.
+For practice, we'll create a job that runs every minute.
+Add:
+* * * * * echo "Cron is working" >> ~/cron-test.txt
+Save and exit.
+After a couple of minutes:
+cat ~/cron-test.txt
+You should see multiple entries.
+🎯 Congratulations — you just created your first automated Linux job.
+6️⃣ Cron Syntax ⭐
+This is the most important part.
+* * * * * command
+│ │ │ │ │
+│ │ │ │ └── Day of week
+│ │ │ └──── Month
+│ │ └────── Day of month
+│ └──────── Hour
+└────────── Minute
+So:
+* * * * * command
+means:
+Run every minute.
+
+7️⃣ Five Cron Fields
+Field	Range
+Minute	0–59
+Hour	0–23
+Day of month	1–31
+Month	1–12
+Day of week	0–7
+
+
+For day of week:
+0 or 7 = Sunday
+1 = Monday
+2 = Tuesday
+...
+6 = Saturday
+8️⃣ Examples
+Every minute
+* * * * * command
+Every hour
+0 * * * * command
+Every day at 10 PM
+0 22 * * * command
+Every day at 9 AM
+0 9 * * * command
+Every Monday at 8 AM
+0 8 * * 1 command
+Every Sunday at midnight
+0 0 * * 0 command
+9️⃣ Every 5 Minutes
+Use:
+*/5 * * * * command
+Meaning:
+00
+05
+10
+15
+20
+25
+...
+🔟 Every 10 Minutes
+*/10 * * * * command
+1️⃣1️⃣ Every 2 Hours
+0 */2 * * * command
+Meaning:
+00:00
+02:00
+04:00
+06:00
+...
+1️⃣2️⃣ Multiple Values
+You can specify multiple hours:
+0 9,18 * * * command
+Runs at:
+09:00
+18:00
+1️⃣3️⃣ Ranges
+Example:
+0 9-17 * * 1-5 command
+This means:
+Every hour from 9 AM through 5 PM, Monday through Friday.
+
+Very useful for business-hour automation.
+1️⃣4️⃣ Special Cron Shortcuts
+Cron provides shortcuts.
+Every reboot
+@reboot command
+Every day
+@daily command
+Every week
+@weekly command
+Every month
+@monthly command
+Every year
+@yearly command
+Every hour
+@hourly command
+Example:
+@daily /home/vivek/backup.sh
+1️⃣5️⃣ Running a Script with Cron
+Suppose your script is:
+/home/vivek/scripts/backup.sh
+You want it to run every day at 11 PM:
+0 23 * * * /home/vivek/scripts/backup.sh
+⚠️ With cron, use absolute paths whenever practical.
+Don't rely on your interactive shell's $PATH.
+1️⃣6️⃣ Make Sure Script Is Executable
+chmod +x /home/vivek/scripts/backup.sh
+Test it manually first:
+/home/vivek/scripts/backup.sh
+Only after it works should you schedule it.
+🔥 1️⃣7️⃣ Real DevOps Example — Automated Backup
+Create:
+nano ~/backup.sh
+Example:
+#!/bin/bash
+
+BACKUP_DIR="$HOME/backups"
+SOURCE_DIR="$HOME/project"
+
+mkdir -p "$BACKUP_DIR"
+
+tar -czf "$BACKUP_DIR/project-$(date +%Y-%m-%d).tar.gz" "$SOURCE_DIR"
+
+echo "Backup completed: $(date)"
+Make executable:
+chmod +x ~/backup.sh
+Test:
+~/backup.sh
+Now schedule:
+crontab -e
+Add:
+0 23 * * * /home/vivek/backup.sh >> /home/vivek/backup.log 2>&1
+This means:
+23:00 every day
+       ↓
+backup.sh
+       ↓
+backup.log
+🔥 1️⃣8️⃣ Why >> and 2>&1?
+This:
+>> backup.log
+sends normal output to the log file.
+This:
+2>&1
+sends error output to the same place.
+So:
+command >> backup.log 2>&1
+means:
+Save both normal output and errors in backup.log.
+
+This is extremely useful for debugging scheduled jobs.
+1️⃣9️⃣ Cron Environment Is Different
+This is a very important DevOps concept.
+Your interactive terminal might have:
+PATH
+JAVA_HOME
+AWS credentials/configuration
+custom aliases
+But cron runs with a more limited/non-interactive environment.
+That's why scripts should generally:
+- Use absolute paths.
+- Set required environment variables explicitly.
+- Avoid relying on aliases.
+- Test the script independently first.
+For example, don't write:
+ll
+in a cron job.
+Instead:
+/usr/bin/ls -lah
+2️⃣0️⃣ View Cron Jobs
+crontab -l
+2️⃣1️⃣ Edit Cron Jobs
+crontab -e
+2️⃣2️⃣ Remove Your Cron Jobs
+crontab -r
+⚠️ Be careful.
+This removes all cron jobs for your current user.
+Don't run it casually.
+2️⃣3️⃣ System Cron
+There are also system-wide scheduling locations.
+Important locations include:
+/etc/crontab
+/etc/cron.hourly/
+/etc/cron.daily/
+/etc/cron.weekly/
+/etc/cron.monthly/
+You can inspect:
+cat /etc/crontab
+2️⃣4️⃣ Cron Logs
+On Ubuntu, cron activity can often be found through the system journal:
+journalctl -u cron
+For recent entries:
+journalctl -u cron --since "1 hour ago"
+You can also inspect traditional logs if your system is configured to record them:
+grep CRON /var/log/syslog
+🧪 Practical Lab
+Let's do a proper hands-on exercise.
+Step 1 — Create a script
+mkdir -p ~/cron-lab
+cd ~/cron-lab
+nano test.sh
+Put:
+#!/bin/bash
+
+echo "Cron executed at: $(date)" >> "$HOME/cron-lab/output.log"
+Save.
+Step 2 — Make it executable
+chmod +x test.sh
+Step 3 — Test manually
+./test.sh
+Check:
+cat output.log
+Step 4 — Schedule it
+crontab -e
+Add:
+* * * * * /home/YOUR_USERNAME/cron-lab/test.sh
+Replace YOUR_USERNAME with your actual Linux username.
+You can find it:
+whoami
+Step 5 — Wait
+Wait 1–2 minutes and run:
+cat ~/cron-lab/output.log
+You should see:
+Cron executed at: Sun Sep 06 ...
+Cron executed at: Sun Sep 06 ...
+🎯 Your script is now being automatically executed by Linux.
+🧹 Remove the Practice Job
+After testing:
+crontab -e
+Remove:
+* * * * * /home/YOUR_USERNAME/cron-lab/test.sh
+Then save.
+🧪 Challenge 🔥
+Create:
+system-monitor.sh
+The script should:
+1. Display hostname.
+2. Display current date.
+3. Display uptime.
+4. Display disk usage.
+5. Save the result to a log file.
+Then create a cron job that runs it:
+Every 5 minutes
+
+Hint:
+*/5 * * * * /path/to/system-monitor.sh
+
+
+
+
+
+
+
+
+# Linux Job Scheduling — Cron & Crontab
+
+## Cron
+
+Cron is a Linux service used to execute commands and scripts
+automatically at scheduled times.
+
+## Crontab
+
+View jobs:
+
+crontab -l
+
+Edit jobs:
+
+crontab -e
+
+Remove all current user's jobs:
+
+crontab -r
+
+## Cron Syntax
+
+* * * * * command
+│ │ │ │ │
+│ │ │ │ └── Day of week
+│ │ │ └──── Month
+│ │ └────── Day of month
+│ └──────── Hour
+└────────── Minute
+
+## Examples
+
+Every minute:
+
+* * * * * command
+
+Every 5 minutes:
+
+*/5 * * * * command
+
+Every day at 11 PM:
+
+0 23 * * * command
+
+Every Monday at 8 AM:
+
+0 8 * * 1 command
+
+## Special Schedules
+
+@reboot
+@hourly
+@daily
+@weekly
+@monthly
+@yearly
+
+## DevOps Usage
+
+Cron can automate:
+
+- Backups
+- Monitoring
+- Log cleanup
+- Reports
+- Maintenance tasks
+- Automation scripts
+
+## Important Practices
+
+- Use absolute paths.
+- Test scripts manually first.
+- Redirect output to log files.
+- Don't depend on interactive shell aliases.
+- Be careful with permissions.
