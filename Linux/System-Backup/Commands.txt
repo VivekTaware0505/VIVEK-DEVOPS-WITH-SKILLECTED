@@ -1,1 +1,112 @@
 
+# ==========================================
+# LINUX SYSTEM BACKUP
+# ==========================================
+
+# Check tar
+tar --version
+
+# Create tar archive
+tar -cvf backup.tar /path/to/data
+
+# Create gzip compressed backup
+tar -czvf backup.tar.gz /path/to/data
+
+# List backup contents
+tar -tzvf backup.tar.gz
+
+# Extract backup
+tar -xzvf backup.tar.gz
+
+# Extract to specific directory
+tar -xzvf backup.tar.gz -C /tmp/restore
+
+# Install rsync
+sudo apt install rsync
+
+# Basic rsync
+rsync -av source/ destination/
+
+# Human-readable rsync
+rsync -avh source/ destination/
+
+# Rsync with compression
+rsync -avz source/ destination/
+
+# Rsync to remote server
+rsync -av source/ user@SERVER_IP:/backup/
+
+# Check rsync version
+rsync --version
+
+# Create backup directory
+mkdir -p ~/backups
+
+# Check backup files
+ls -lh ~/backups
+
+# MySQL logical backup
+mysqldump -u root -p database_name > database_backup.sql
+
+# MySQL restore
+mysql -u root -p database_name < database_backup.sql
+
+# Edit cron
+crontab -e
+
+# List cron jobs
+crontab -l
+
+# Check disk space
+df -h
+
+# Check directory size
+du -sh /path/to/data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is a backup?
+A separate copy of data used for recovery.
+2. What is the difference between full and incremental backup?
+Full copies everything; incremental copies changes since the previous backup.
+3. What is tar?
+An archiving utility commonly used to package files/directories.
+4. What does -z do in tar?
+Uses gzip compression.
+5. What is rsync?
+A tool for efficiently synchronizing files and directories.
+6. Why is rsync useful in DevOps?
+It can efficiently synchronize data locally or between servers.
+7. What is the 3-2-1 backup rule?
+3 copies, 2 different storage/media types, and 1 off-site copy.
+8. Backup vs snapshot?
+A backup is a separate recoverable copy; a snapshot is a point-in-time state of storage/system data.
+9. Why test backups?
+Because a backup that cannot be restored is not a reliable recovery mechanism.
+10. Should backups be stored on the same server?
+Not as the only backup. A separate/off-site copy protects against server failure or disaster.
