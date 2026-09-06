@@ -1,1 +1,334 @@
+What is a Pipe?
+Linux uses the | symbol as a pipe.
+Example:
+ls | grep ".txt"
+Here:
+ls
+ ↓
+output
+ ↓
+|
+ ↓
+grep
+ ↓
+filtered output
+So | connects commands together.
+2. Simple Example
+Run:
+ls
+Suppose output is:
+file1.txt
+file2.txt
+image.png
+notes.txt
+script.sh
+Now:
+ls | grep ".txt"
+Output:
+file1.txt
+file2.txt
+notes.txt
+grep filtered the output.
+3. Why Pipes Are Important in DevOps
+Imagine a server has thousands of processes.
+You don't want:
+ps aux
+and manually search through everything.
+Instead:
+ps aux | grep nginx
+Now you see only relevant lines.
+This is why you'll constantly see commands like:
+command1 | command2 | command3
+in Linux administration, DevOps, cloud troubleshooting, and shell scripts.
+4. What is a Filter?
+A filter takes input, processes it, and produces output.
+Common Linux filters:
+grep
+sort
+uniq
+head
+tail
+cut
+tr
+wc
+awk
+sed
+Think:
+Input
+  ↓
+Filter
+  ↓
+Output
+5. grep
+grep searches text.
+Example:
+grep "error" logfile.txt
+Find error inside a file.
+Case-insensitive search
+grep -i "error" logfile.txt
+Search recursively
+grep -r "error" /var/log
+Show line numbers
+grep -n "error" logfile.txt
+6. Pipe + grep
+Very common:
+ps aux | grep nginx
+Another:
+systemctl list-units | grep ssh
+Another:
+ss -tuln | grep 8080
+This is extremely useful for troubleshooting.
+7. head
+Shows the beginning of output.
+head file.txt
+First 10 lines by default.
+First 5:
+head -n 5 file.txt
+With a pipe:
+ps aux | head
+8. tail
+Shows the end of a file.
+tail file.txt
+Last 10 lines by default.
+Last 20:
+tail -n 20 file.txt
+9. Real-Time Logs with tail -f
+This is very important for DevOps.
+tail -f /var/log/syslog
+It continuously displays new log entries.
+You can combine it with grep:
+tail -f /var/log/syslog | grep "error"
+Now you're watching the log and displaying matching error lines.
+Press:
+Ctrl + C
+to stop.
+10. sort
+Sort lines alphabetically.
+sort names.txt
+Numerical sorting:
+sort -n numbers.txt
+Reverse:
+sort -r names.txt
+11. uniq
+Removes adjacent duplicate lines.
+Example:
+apple
+apple
+banana
+banana
+orange
+Run:
+uniq file.txt
+Output:
+apple
+banana
+orange
+Important
+uniq works on adjacent duplicates.
+Therefore this is commonly used:
+sort file.txt | uniq
+12. Count Duplicate Values
+Very useful:
+sort file.txt | uniq -c
+Example:
+3 apple
+2 banana
+5 orange
+You can sort by frequency:
+sort file.txt | uniq -c | sort -nr
+This pattern is extremely useful for log analysis.
+13. wc
+wc means word count, but it can count more than words.
+wc file.txt
+Count lines:
+wc -l file.txt
+Count words:
+wc -w file.txt
+Count characters:
+wc -c file.txt
+14. Pipe + wc
+How many processes?
+ps aux | wc -l
+How many SSH connections?
+ss -tn | grep ":22" | wc -l
+How many .txt files?
+ls | grep "\.txt$" | wc -l
+15. cut
+cut extracts specific parts of text.
+Suppose:
+Vivek:24:Pune
+Rahul:25:Mumbai
+Amit:23:Nashik
+Command:
+cut -d ":" -f 1 file.txt
+Output:
+Vivek
+Rahul
+Amit
+Here:
+-d ":" → delimiter is :
+-f 1   → select field 1
+Field 2:
+cut -d ":" -f 2 file.txt
+Output:
+24
+25
+23
+16. tr
+tr translates or replaces characters.
+Convert lowercase to uppercase:
+echo "hello" | tr 'a-z' 'A-Z'
+Output:
+HELLO
+Replace spaces with underscores:
+echo "Linux DevOps" | tr ' ' '_'
+Output:
+Linux_DevOps
+17. awk
+awk is extremely powerful for processing structured text.
+Example:
+echo "Vivek 24 Pune" | awk '{print $1}'
+Output:
+Vivek
+Second field:
+echo "Vivek 24 Pune" | awk '{print $2}'
+Output:
+24
+Third:
+echo "Vivek 24 Pune" | awk '{print $3}'
+Output:
+Pune
+18. sed
+sed is commonly used for searching and replacing text.
+Example:
+echo "Hello Linux" | sed 's/Linux/DevOps/'
+Output:
+Hello DevOps
+Replace text in a file:
+sed 's/old/new/g' file.txt
+The g means replace all matching occurrences on each line.
+19. Redirection vs Pipe
+This is an important interview question.
+Pipe
+command1 | command2
+Output of command 1 becomes input to command 2.
+>
+command > file.txt
+Sends output into a file and overwrites it.
+>>
+command >> file.txt
+Appends output to a file.
+<
+command < file.txt
+Uses a file as command input.
+20. Example
+ls > files.txt
+Now files.txt contains the output of ls.
+Append:
+ls >> files.txt
+Pipe:
+ls | grep ".txt"
+Remember:
+|  → command to command
+>  → command to file
+>> → append to file
+<  → file to command
+21. Multiple Pipes
+You can connect many commands.
+Example:
+ps aux | grep nginx | wc -l
+Flow:
+ps aux
+   ↓
+grep nginx
+   ↓
+wc -l
+   ↓
+Number of matching lines
+Another powerful example:
+cat access.log | awk '{print $1}' | sort | uniq -c | sort -nr | head
+This can help identify the most frequent client IPs in a web access log.
+22. Practical DevOps Example — Find Top IPs
+Suppose an Nginx access log has client IPs in the first field.
+You can use:
+awk '{print $1}' access.log | sort | uniq -c | sort -nr | head
+Conceptually:
+access.log
+    ↓
+awk
+    ↓
+Extract IP
+    ↓
+sort
+    ↓
+Group identical IPs
+    ↓
+uniq -c
+    ↓
+Count
+    ↓
+sort -nr
+    ↓
+Highest count first
+    ↓
+head
+    ↓
+Top results
+This is a great real-world Linux/DevOps example.
+23. Another Example — Find Errors
+grep -i "error" /var/log/syslog | tail -20
+Meaning:
+syslog
+ ↓
+find errors
+ ↓
+show last 20 matching lines
+24. Find Running Java Applications
+ps aux | grep java
+Find Java processes while excluding the grep command:
+ps aux | grep '[j]ava'
+25. Find a Port
+Suppose you want to know whether port 8080 is listening:
+ss -tuln | grep 8080
+Or:
+sudo ss -tulpn | grep 8080
+This is very useful when troubleshooting Spring Boot applications.
+26. Pipes in Bash Scripts
+You can use pipes inside scripts:
+#!/bin/bash
 
+PROCESS_COUNT=$(ps aux | wc -l)
+
+echo "Processes: $PROCESS_COUNT"
+Another:
+#!/bin/bash
+
+ERRORS=$(grep -i "error" application.log | wc -l)
+
+echo "Errors found: $ERRORS"
+This is where pipes become very powerful in automation.
+🧪 Practical Lab
+Create a test file:
+cat > users.txt <<EOF
+Vivek 24 Pune
+Rahul 25 Mumbai
+Amit 23 Pune
+Priya 24 Delhi
+Vivek 24 Pune
+Rahul 25 Mumbai
+Vivek 24 Pune
+EOF
+Count lines
+wc -l users.txt
+Extract names
+awk '{print $1}' users.txt
+Find Vivek
+grep "Vivek" users.txt
+Count Vivek entries
+grep "Vivek" users.txt | wc -l
+Get unique names
+awk '{print $1}' users.txt | sort | uniq
+Count each name
+awk '{print $1}' users.txt | sort | uniq -c
+Sort by highest count
+awk '{print $1}' users.txt | sort | uniq -c | sort -nr
