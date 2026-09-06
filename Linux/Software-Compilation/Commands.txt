@@ -61,3 +61,45 @@ which hello
 
 # Display executable location
 whereis hello
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is compilation?
+Converting source code into executable/machine code.
+2. What is GCC?
+GNU Compiler Collection, commonly used to compile C/C++ programs on Linux.
+3. What is make?
+A build automation tool that follows instructions from a Makefile.
+4. What is a Makefile?
+A file containing rules describing how software should be built.
+5. What does ./configure do?
+It prepares/checks a source project for the current system and generates build configuration for Autotools projects.
+6. What does make install do?
+Installs the software built by the project.
+7. Difference between make and make install?
+make
+ ↓
+Build software
+
+make install
+ ↓
+Install built software
+8. Why use build-essential?
+It installs common tools needed for building software from source, including GCC and Make.
+9. What does ldd do?
+Shows shared-library dependencies of an executable.
+10. Should you always compile software from source?
+No. Prefer trusted distribution packages when they satisfy your requirements.
