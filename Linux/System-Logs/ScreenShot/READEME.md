@@ -1,1 +1,9 @@
-
+01-var-log.png
+02-journalctl.png
+03-service-logs.png
+04-tail-follow.png
+05-grep-errors.png
+06-log-count.png
+07-logrotate.png
+08-log-monitor-script.png
+09-devops-troubleshooting.png
