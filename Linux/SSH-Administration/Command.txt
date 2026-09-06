@@ -1,1 +1,19 @@
-
+ssh
+ssh -p
+ssh -i
+ssh-keygen
+ssh-copy-id
+scp
+sftp
+ssh-add
+ssh-agent
+sshd
+systemctl status ssh
+systemctl restart ssh
+sshd -t
+ssh -v
+ssh -vv
+ssh -vvv
+ss
+journalctl -u ssh
+chmod ~/.ssh permissions
