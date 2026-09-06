@@ -89,3 +89,32 @@ curl http://localhost:8080
 
 # Test TCP port
 nc -zv localhost 8080
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+Beginner
+1. What is a firewall?
+A system that controls incoming and outgoing network traffic according to security rules.
+2. What is UFW?
+Uncomplicated Firewall, a user-friendly firewall management tool commonly used on Ubuntu.
+3. What is port 22?
+The default TCP port commonly used by SSH.
+4. What is port 80?
+The standard port for HTTP.
+5. What is port 443?
+The standard port for HTTPS.
+DevOps
+6. What is the difference between UFW and iptables?
+UFW is a simpler high-level interface, while iptables provides lower-level packet-filtering rule management.
+7. What happens if AWS Security Group allows port 80 but UFW blocks it?
+The traffic can reach the EC2 instance but may be blocked by UFW.
+8. Why should SSH be allowed before enabling UFW on a remote server?
+To prevent the firewall from blocking your SSH connection and locking you out.
