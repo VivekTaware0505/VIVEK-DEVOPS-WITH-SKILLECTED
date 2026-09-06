@@ -1,1 +1,103 @@
+# ==========================================
+# LINUX LVM COMMANDS
+# ==========================================
 
+# Show disks and partitions
+lsblk
+
+# Show partition information
+sudo fdisk -l
+
+# Show physical volumes
+sudo pvs
+
+# Detailed physical volume information
+sudo pvdisplay
+
+# Show volume groups
+sudo vgs
+
+# Detailed volume group information
+sudo vgdisplay
+
+# Show logical volumes
+sudo lvs
+
+# Detailed logical volume information
+sudo lvdisplay
+
+
+# ==========================================
+# CREATE LVM
+# ==========================================
+
+# Create Physical Volume
+sudo pvcreate /dev/sdb
+
+# Create Volume Group
+sudo vgcreate vgdata /dev/sdb
+
+# Create 20GB Logical Volume
+sudo lvcreate -L 20G -n lvdata vgdata
+
+# Create Logical Volume using all free space
+sudo lvcreate -l 100%FREE -n lvdata vgdata
+
+
+# ==========================================
+# FILESYSTEM
+# ==========================================
+
+# Create ext4 filesystem
+sudo mkfs.ext4 /dev/vgdata/lvdata
+
+# Create mount directory
+sudo mkdir /data
+
+# Mount Logical Volume
+sudo mount /dev/vgdata/lvdata /data
+
+# Show mounted filesystems
+df -h
+
+# Show filesystem type
+lsblk -f
+
+
+# ==========================================
+# EXTEND LVM
+# ==========================================
+
+# Extend LV by 5GB
+sudo lvextend -L +5G /dev/vgdata/lvdata
+
+# Extend LV and filesystem
+sudo lvextend -r -L +5G /dev/vgdata/lvdata
+
+# Resize ext4 filesystem
+sudo resize2fs /dev/vgdata/lvdata
+
+
+# ==========================================
+# ADD STORAGE
+# ==========================================
+
+# Create PV from another disk
+sudo pvcreate /dev/sdc
+
+# Add PV to existing VG
+sudo vgextend vgdata /dev/sdc
+
+
+# ==========================================
+# LVM INFORMATION
+# ==========================================
+
+sudo pvs
+sudo vgs
+sudo lvs
+sudo pvdisplay
+sudo vgdisplay
+sudo lvdisplay
+lsblk
+df -h
