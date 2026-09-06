@@ -101,3 +101,38 @@ sudo vgdisplay
 sudo lvdisplay
 lsblk
 df -h
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Interview Questions
+1. What is LVM?
+Logical Volume Management is a Linux storage management system that provides flexible management of storage volumes.
+2. What are the three main components of LVM?
+PV → VG → LV
+3. What is a PV?
+Physical Volume — a disk or partition initialized for LVM.
+4. What is a VG?
+Volume Group — a pool of storage made from one or more PVs.
+5. What is an LV?
+Logical Volume — a virtual storage volume allocated from a VG.
+6. How do you check LVM physical volumes?
+sudo pvs
+7. How do you check volume groups?
+sudo vgs
+8. How do you check logical volumes?
+sudo lvs
+9. What is one major advantage of LVM?
+Flexible storage allocation and easier expansion of logical volumes.
+10. What is the biggest danger when reducing an LV?
+Incorrectly reducing the filesystem/LV can cause data loss.
