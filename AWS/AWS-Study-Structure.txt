@@ -1,1 +1,82 @@
 
+Phase 1 — AWS Fundamentals
+1. Introduction to AWS
+2. AWS Global Infrastructure
+3. AWS Account & IAM
+4. Regions & Availability Zones
+5. AWS Management Console
+6. AWS CLI
+7. AWS Shared Responsibility Model
+
+
+Phase 2 — Compute
+8. EC2
+9. AMI
+10. Instance Types
+11. Key Pairs
+12. Security Groups
+13. Elastic IP
+14. EBS
+15. Snapshots
+16. User Data
+17. EC2 Storage & Volumes
+18. EC2 Troubleshooting
+
+
+
+Phase 3 — Networking
+19. VPC
+20. Subnets
+21. Route Tables
+22. Internet Gateway
+23. NAT Gateway
+24. Security Groups vs NACL
+25. VPC Peering
+26. Cross-Region VPC Peering
+27. Cross-Account VPC Peering
+28. Private/Public EC2 Architecture
+
+
+Phase 4 — Storage & Database
+29. S3
+30. S3 Storage Classes
+31. S3 Lifecycle
+32. S3 Versioning
+33. S3 Static Website
+34. RDS
+35. DynamoDB
+Phase 5 — AWS DevOps Services
+36. CloudWatch
+37. CloudTrail
+38. Load Balancer
+39. Auto Scaling
+40. Route 53
+41. ECR
+42. ECS
+43. Lambda
+44. Secrets Manager
+45. Systems Manager
+
+
+Phase 6 — Advanced AWS
+46. CloudFormation
+47. AWS Organizations
+48. IAM Advanced
+49. High Availability
+50. Fault Tolerance
+51. Disaster Recovery
+52. AWS Cost Management
+
+
+
+Phase 7 — AWS Hands-on Projects
+53. Deploy a website on EC2
+54. Public + Private EC2 architecture
+55. VPC with NAT Gateway
+56. Cross-region VPC peering
+57. Cross-account VPC peering
+58. S3 static website
+59. EC2 + RDS architecture
+60. Load Balancer + Auto Scaling
+61. Docker application on AWS
+62. Complete AWS DevOps project
